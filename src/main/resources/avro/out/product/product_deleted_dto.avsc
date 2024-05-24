@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "ProductDeletedDTO",
+  "namespace": "br.com.rodrigogurgel.catalog.out.events.dto",
+  "fields": [
+    {
+      "name": "productId",
+      "type": "string"
+    },
+    {
+      "name": "storeId",
+      "type": "string"
+    },
+    {
+      "name": "reference",
+      "type": "string"
+    }
+  ]
+}

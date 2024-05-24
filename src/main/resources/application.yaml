@@ -1,0 +1,25 @@
+spring:
+    application:
+        name: catalog
+    kafka:
+        consumer:
+            key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+            value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+            properties:
+                schema.registry.url: "http://localhost:8081"
+                specific.avro.reader: true
+                spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+                spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.KafkaAvroDeserializer
+        producer:
+            properties:
+                schema.registry.url: "http://localhost:8081"
+                value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
+            key-serializer: org.apache.kafka.common.serialization.StringSerializer
+            value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+
+catalog:
+    output-topic: "catalog-output"
+server:
+    port: 3000
+    servlet:
+        context-path: /catalog/api/

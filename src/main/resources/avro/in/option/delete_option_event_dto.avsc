@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "DeleteOptionEventDTO",
+  "namespace": "br.com.rodrigogurgel.catalog.in.events.dto",
+  "fields": [
+    {
+      "name": "optionId",
+      "type": "string"
+    },
+    {
+      "name": "storeId",
+      "type": "string"
+    }
+  ]
+}

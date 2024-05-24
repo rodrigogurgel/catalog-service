@@ -1,0 +1,104 @@
+version: "3"
+
+services:
+    zookeeper:
+        image: confluentinc/cp-zookeeper:latest
+        hostname: zookeeper
+        container_name: zookeeper
+        ports:
+            - "2181:2181"
+        networks:
+            - kafka_network
+        environment:
+            ZOOKEEPER_CLIENT_PORT: 2181
+            ZOOKEEPER_TICK_TIME: 2000
+
+    broker:
+        image: confluentinc/cp-server:latest
+        hostname: broker
+        container_name: broker
+        depends_on:
+            - zookeeper
+        ports:
+            - "9092:9092"
+        networks:
+            - kafka_network
+        environment:
+            KAFKA_BROKER_ID: 1
+            KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+            KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+            KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+            KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
+            CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker:29092
+            CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zookeeper:2181
+            CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+            CONFLUENT_METRICS_ENABLE: "true"
+            CONFLUENT_SUPPORT_CUSTOMER_ID: "anonymous"
+        links:
+            - zookeeper
+
+    schema-registry:
+        image: confluentinc/cp-schema-registry:latest
+        hostname: schema-registry
+        container_name: schema-registry
+        depends_on:
+            - zookeeper
+            - broker
+        ports:
+            - "8081:8081"
+        networks:
+            - kafka_network
+        environment:
+            SCHEMA_REGISTRY_HOST_NAME: schema-registry
+            SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
+            SCHEMA_REGISTRY_LISTENERS: http://schema-registry:8081
+            SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+            SCHEMA_REGISTRY_DEBUG: 'true'
+        links:
+            - broker
+
+    akhq:
+        image: tchiotludo/akhq
+        restart: unless-stopped
+        container_name: akhq
+        environment:
+            AKHQ_CONFIGURATION: |
+                akhq:
+                  connections:
+                    docker-kafka-server:
+                      properties:
+                        bootstrap.servers: "broker:29092"
+                      schema-registry:
+                        url: "http://schema-registry:8081"
+                      connect:
+                        - name: "connect"
+                          url: "http://connect:8083"
+
+        ports:
+            - "8080:8080"
+        networks:
+            - kafka_network
+        depends_on:
+            - zookeeper
+            - broker
+            - schema-registry
+        links:
+            - broker
+            - schema-registry
+
+    dynamodb-local:
+        command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+        image: "amazon/dynamodb-local:latest"
+        container_name: dynamodb-local
+        ports:
+            - "8000:8000"
+        volumes:
+            - "./docker/dynamodb:/home/dynamodblocal/data"
+        working_dir: /home/dynamodblocal
+
+networks:
+    kafka_network:
+        driver: bridge

@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "DeleteCustomizationEventDTO",
+  "namespace": "br.com.rodrigogurgel.catalog.in.events.dto",
+  "fields": [
+    {
+      "name": "customizationId",
+      "type": "string"
+    },
+    {
+      "name": "storeId",
+      "type": "string"
+    }
+  ]
+}

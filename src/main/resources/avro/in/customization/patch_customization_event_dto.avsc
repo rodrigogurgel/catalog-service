@@ -1,0 +1,71 @@
+{
+  "type": "record",
+  "name": "PatchCustomizationEventDTO",
+  "namespace": "br.com.rodrigogurgel.catalog.in.events.dto",
+  "fields": [
+    {
+      "name": "customizationId",
+      "type": "string"
+    },
+    {
+      "name": "storeId",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "description",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "minPermitted",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null
+    },
+    {
+      "name": "maxPermitted",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null
+    },
+    {
+      "name": "status",
+      "type": [
+        "null",
+        {
+          "name": "StatusEventDTO",
+          "type": "enum",
+          "symbols": [
+            "AVAILABLE",
+            "UNAVAILABLE"
+          ],
+          "default": "AVAILABLE"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "index",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null
+    }
+  ]
+}

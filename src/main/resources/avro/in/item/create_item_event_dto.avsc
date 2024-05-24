@@ -1,0 +1,35 @@
+{
+  "type": "record",
+  "name": "CreateItemEventDTO",
+  "namespace": "br.com.rodrigogurgel.catalog.in.events.dto",
+  "fields": [
+    {
+      "name": "itemId",
+      "type": "string"
+    },
+    {
+      "name": "storeId",
+      "type": "string"
+    },
+    {
+      "name": "categoryId",
+      "type": "string"
+    },
+    {
+      "name": "productId",
+      "type": "string"
+    },
+    {
+      "name": "price",
+      "type": "double"
+    },
+    {
+      "name": "index",
+      "type": "int"
+    },
+    {
+      "name": "reference",
+      "type": "string"
+    }
+  ]
+}

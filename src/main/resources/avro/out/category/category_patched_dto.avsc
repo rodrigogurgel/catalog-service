@@ -1,0 +1,50 @@
+{
+  "type": "record",
+  "name": "CategoryPatchedDTO",
+  "namespace": "br.com.rodrigogurgel.catalog.out.events.dto",
+  "fields": [
+    {
+      "name": "categoryId",
+      "type": "string"
+    },
+    {
+      "name": "storeId",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "status",
+      "type": [
+        "null",
+        {
+          "name": "StatusDTO",
+          "type": "enum",
+          "symbols": [
+            "AVAILABLE",
+            "UNAVAILABLE"
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "index",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null
+    },
+    {
+      "name": "reference",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "type": "record",
+  "name": "CreateCustomizationEventDTO",
+  "namespace": "br.com.rodrigogurgel.catalog.in.events.dto",
+  "fields": [
+    {
+      "name": "customizationId",
+      "type": "string"
+    },
+    {
+      "name": "storeId",
+      "type": "string"
+    },
+    {
+      "name": "optionId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "minPermitted",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "name": "maxPermitted",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "name": "description",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "index",
+      "type": "int"
+    },
+    {
+      "name": "reference",
+      "type": "string"
+    }
+  ]
+}

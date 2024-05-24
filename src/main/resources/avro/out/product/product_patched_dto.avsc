@@ -1,0 +1,43 @@
+{
+  "type": "record",
+  "name": "ProductPatchedDTO",
+  "namespace": "br.com.rodrigogurgel.catalog.out.events.dto",
+  "fields": [
+    {
+      "name": "productId",
+      "type": "string"
+    },
+    {
+      "name": "storeId",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "description",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "image",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "reference",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "type": "record",
+  "name": "UpdateCategoryEventDTO",
+  "namespace": "br.com.rodrigogurgel.catalog.in.events.dto",
+  "fields": [
+    {
+      "name": "categoryId",
+      "type": "string"
+    },
+    {
+      "name": "storeId",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "status",
+      "type": {
+        "name": "StatusEventDTO",
+        "type": "enum",
+        "symbols": [
+          "AVAILABLE",
+          "UNAVAILABLE"
+        ]
+      }
+    },
+    {
+      "name": "index",
+      "type": "int"
+    }
+  ]
+}
