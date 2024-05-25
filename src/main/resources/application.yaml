@@ -20,6 +20,11 @@ spring:
 catalog:
     output-topic: "catalog-output"
 server:
-    port: 3000
+    port: 3001
     servlet:
         context-path: /catalog/api/
+management:
+    endpoints:
+        web:
+            exposure:
+                include: health,info,prometheus

@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "PatchCustomizationEventDTO",
-  "namespace": "br.com.rodrigogurgel.catalog.in.events.dto",
+  "namespace": "br.com.rodrigogurgel.catalogservice.in.events.dto",
   "fields": [
     {
       "name": "customizationId",

@@ -41,6 +41,7 @@ dependencies {
 	val kafkaAvroSerializerVersion = properties["kafkaAvroSerializerVersion"]
 	val avroVersion = properties["avroVersion"]
 	val michaelBullKotlinResultVersion = properties["michaelBullKotlinResultVersion"]
+	val rxJavaVersion = properties["rxJavaVersion"]
 
 	// DynamoDB
 	implementation(platform("software.amazon.awssdk:bom:$awsSdkVersion"))
@@ -73,7 +74,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("com.michael-bull.kotlin-result:kotlin-result:$michaelBullKotlinResultVersion")
 	implementation("com.michael-bull.kotlin-result:kotlin-result-coroutines:$michaelBullKotlinResultVersion")
-
+	implementation("io.reactivex.rxjava3:rxjava:$rxJavaVersion")
 
 	// Micrometer
 	implementation("io.micrometer:micrometer-registry-prometheus")

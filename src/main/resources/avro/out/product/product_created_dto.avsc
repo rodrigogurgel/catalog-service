@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "ProductCreatedDTO",
-  "namespace": "br.com.rodrigogurgel.catalog.out.events.dto",
+  "namespace": "br.com.rodrigogurgel.catalogservice.out.events.dto",
   "fields": [
     {
       "name": "productId",
