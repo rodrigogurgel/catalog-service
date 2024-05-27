@@ -151,12 +151,6 @@ val avroGen by tasks.register("generateAvroJavaClasses") {
     }
 }
 
-sourceSets.main {
-    java {
-        srcDir("/src/main/avro")
-    }
-}
-
 tasks.jar {
     enabled = false
     archiveClassifier = ""

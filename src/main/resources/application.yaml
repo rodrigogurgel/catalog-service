@@ -1,6 +1,6 @@
 spring:
     application:
-        name: catalog
+        name: catalog-service
     kafka:
         consumer:
             key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
