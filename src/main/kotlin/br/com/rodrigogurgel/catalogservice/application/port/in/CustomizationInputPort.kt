@@ -5,9 +5,9 @@ import com.github.michaelbull.result.Result
 import java.util.UUID
 
 interface CustomizationInputPort {
-    suspend fun create(customization: Customization): Result<Unit, Throwable>
-    suspend fun update(customization: Customization): Result<Unit, Throwable>
-    suspend fun patch(customization: Customization): Result<Unit, Throwable>
-    suspend fun delete(storeId: UUID, customizationId: UUID): Result<Unit, Throwable>
+    suspend fun create(idempotencyId: UUID, correlationId: UUID, customization: Customization): Result<Unit, Throwable>
+    suspend fun update(idempotencyId: UUID, correlationId: UUID, customization: Customization): Result<Unit, Throwable>
+    suspend fun patch(idempotencyId: UUID, correlationId: UUID, customization: Customization): Result<Unit, Throwable>
+    suspend fun delete(idempotencyId: UUID, correlationId: UUID, customization: Customization): Result<Unit, Throwable>
     suspend fun searchByReferenceBeginsWith(storeId: UUID, reference: String): Result<List<Customization>, Throwable>
 }

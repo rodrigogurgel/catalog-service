@@ -11,7 +11,6 @@ import br.com.rodrigogurgel.catalogservice.domain.Product
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.mapError
-import com.github.michaelbull.result.onFailure
 import io.reactivex.rxjava3.core.Flowable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
@@ -50,7 +49,7 @@ class ProductDynamoDBDatastore(
         dynamoDbAsyncTable.putItem(request).await()
     }.mapError { error ->
         when (error) {
-            is ConditionalCheckFailedException -> throw ProductAlreadyExistsDatastoreException(
+            is ConditionalCheckFailedException -> ProductAlreadyExistsDatastoreException(
                 product.productId!!
             )
 
@@ -69,7 +68,7 @@ class ProductDynamoDBDatastore(
         dynamoDbAsyncTable.updateItem(updateItemRequest).await()
     }.mapError { error ->
         when (error) {
-            is ConditionalCheckFailedException -> throw ProductNotFoundDatastoreException(
+            is ConditionalCheckFailedException -> ProductNotFoundDatastoreException(
                 product.storeId!!,
                 product.productId!!
             )
@@ -94,7 +93,7 @@ class ProductDynamoDBDatastore(
         dynamoDbAsyncTable.deleteItem(request).await()
     }.mapError { error ->
         when (error) {
-            is ConditionalCheckFailedException -> throw ProductNotFoundDatastoreException(
+            is ConditionalCheckFailedException -> ProductNotFoundDatastoreException(
                 storeId,
                 productId
             )
@@ -114,7 +113,7 @@ class ProductDynamoDBDatastore(
         dynamoDbAsyncTable.updateItem(updateItemRequest).await()
     }.mapError { error ->
         when (error) {
-            is ConditionalCheckFailedException -> throw ProductNotFoundDatastoreException(
+            is ConditionalCheckFailedException -> ProductNotFoundDatastoreException(
                 product.storeId!!,
                 product.productId!!
             )
@@ -143,15 +142,16 @@ class ProductDynamoDBDatastore(
                 Flowable.fromPublisher(publisher).toList().blockingGet()
             }
                 .map { product -> product.toDomain() }
-        }.onFailure {
-            throw BatchGetProductDatastoreException(
+        }.mapError {
+            BatchGetProductDatastoreException(
                 productIds.map { id ->
                     Key
                         .builder()
                         .partitionValue(storeId.toString())
                         .sortValue(id.toString())
                         .build()
-                }.toSet()
+                }.toSet(),
+                it
             )
         }
 }

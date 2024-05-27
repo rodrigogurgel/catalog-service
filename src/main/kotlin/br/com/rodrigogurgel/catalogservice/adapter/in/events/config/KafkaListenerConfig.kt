@@ -1,6 +1,10 @@
 package br.com.rodrigogurgel.catalogservice.adapter.`in`.events.config
 
+import br.com.rodrigogurgel.catalogservice.application.common.toUUID
+import br.com.rodrigogurgel.catalogservice.application.port.`in`.IdempotencyInputPort
+import br.com.rodrigogurgel.catalogservice.domain.Idempotency
 import io.micrometer.core.instrument.MeterRegistry
+import kotlinx.coroutines.runBlocking
 import org.apache.avro.generic.GenericRecord
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.slf4j.LoggerFactory
@@ -14,6 +18,7 @@ import org.springframework.kafka.core.MicrometerConsumerListener
 import org.springframework.kafka.listener.ContainerProperties
 import org.springframework.kafka.listener.DefaultErrorHandler
 import org.springframework.util.backoff.FixedBackOff
+import java.util.UUID
 
 @Configuration
 class KafkaListenerConfig(
@@ -21,12 +26,27 @@ class KafkaListenerConfig(
     private val concurrency: Int,
     private val properties: KafkaProperties,
     private val meterRegistry: MeterRegistry,
+    private val idempotencyInputPort: IdempotencyInputPort,
 ) {
     private val logger = LoggerFactory.getLogger(KafkaListenerConfig::class.java)
 
     private val defaultErrorHandler = DefaultErrorHandler(
-        { _, error ->
-            logger.error("Some error happened", error)
+        { consumerRecord, error ->
+            val record = runCatching { consumerRecord.value() }.getOrNull() ?: return@DefaultErrorHandler
+            val headers = consumerRecord.headers().associate { it.key() to it.value() }
+
+            logger.error(
+                "An unexpected error happened while try process record type [${record::class.qualifiedName}]",
+                error
+            )
+
+            val idempotencyId =
+                runCatching { consumerRecord.key().toString().toUUID() }.getOrNull() ?: return@DefaultErrorHandler
+            val correlationId = headers["correlationId"]?.toUUID() ?: UUID.randomUUID()
+
+            runBlocking {
+                idempotencyInputPort.patch(Idempotency.failure(idempotencyId, correlationId))
+            }
         },
         FixedBackOff(0L, 0L),
     ).apply { isAckAfterHandle = true }

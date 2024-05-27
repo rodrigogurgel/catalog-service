@@ -10,7 +10,6 @@ import br.com.rodrigogurgel.catalogservice.domain.Idempotency
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.mapError
-import com.github.michaelbull.result.onFailure
 import kotlinx.coroutines.future.await
 import org.springframework.stereotype.Service
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable
@@ -74,5 +73,5 @@ class IdempotencyDynamoDBDatastore(
         ).build()
 
         dynamoDbAsyncTable.getItem(request)?.await()?.toDomain()
-    }.onFailure { throw it }
+    }
 }

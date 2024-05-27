@@ -19,7 +19,11 @@ class CreateCategoryEventStrategyImpl(
         idempotencyId: UUID,
         correlationId: UUID,
         record: CreateCategoryEventDTO,
-    ): Result<Unit, Throwable> = categoryInputPort.create(idempotencyId, correlationId, record.toDomain())
+    ): Result<Unit, Throwable> = categoryInputPort.create(
+        idempotencyId,
+        correlationId,
+        record.toDomain()
+    )
 
     override fun canProcess(record: GenericRecord): Boolean {
         return record is CreateCategoryEventDTO

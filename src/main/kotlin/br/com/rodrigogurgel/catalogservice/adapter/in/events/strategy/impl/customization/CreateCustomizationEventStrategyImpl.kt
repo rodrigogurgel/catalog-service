@@ -15,8 +15,12 @@ class CreateCustomizationEventStrategyImpl(
     private val customizationInputPort: CustomizationInputPort,
 ) : GenericRecordEventStrategy<CreateCustomizationEventDTO> {
     @Timed("create.customization.event")
-    override suspend fun process(idempotencyId: UUID, correlationId: UUID, record: CreateCustomizationEventDTO): Result<Unit, Throwable> =
-        customizationInputPort.create(record.toDomain())
+    override suspend fun process(
+        idempotencyId: UUID,
+        correlationId: UUID,
+        record: CreateCustomizationEventDTO,
+    ): Result<Unit, Throwable> =
+        customizationInputPort.create(idempotencyId, correlationId, record.toDomain())
 
     override fun canProcess(record: GenericRecord): Boolean {
         return record is CreateCustomizationEventDTO

@@ -10,7 +10,6 @@ import br.com.rodrigogurgel.catalogservice.domain.Item
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.mapError
-import com.github.michaelbull.result.onFailure
 import kotlinx.coroutines.future.await
 import org.springframework.stereotype.Repository
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable
@@ -44,7 +43,7 @@ class ItemDynamoDBDatastore(
     }.mapError { error ->
         when (error) {
             is ConditionalCheckFailedException -> throw ItemAlreadyExistsDatastoreException(item.itemId!!)
-            else -> throw error
+            else -> error
         }
     }
 
@@ -64,7 +63,7 @@ class ItemDynamoDBDatastore(
                 item.itemId!!
             )
 
-            else -> throw error
+            else -> error
         }
     }
 
@@ -89,7 +88,7 @@ class ItemDynamoDBDatastore(
                 itemId
             )
 
-            else -> throw error
+            else -> error
         }
     }
 
@@ -105,7 +104,7 @@ class ItemDynamoDBDatastore(
     }.mapError { error ->
         when (error) {
             is ConditionalCheckFailedException -> throw ItemNotFoundDatastoreException(item.storeId!!, item.itemId!!)
-            else -> throw error
+            else -> error
         }
     }
 
@@ -122,5 +121,5 @@ class ItemDynamoDBDatastore(
             storeId,
             itemId
         )
-    }.onFailure { throw it }
+    }
 }

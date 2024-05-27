@@ -15,8 +15,12 @@ class PatchProductEventStrategyImpl(
     private val productInputPort: ProductInputPort,
 ) : GenericRecordEventStrategy<PatchProductEventDTO> {
     @Timed("patch.product.event")
-    override suspend fun process(idempotencyId: UUID, correlationId: UUID, record: PatchProductEventDTO): Result<Unit, Throwable> =
-        productInputPort.patch(record.toDomain())
+    override suspend fun process(
+        idempotencyId: UUID,
+        correlationId: UUID,
+        record: PatchProductEventDTO,
+    ): Result<Unit, Throwable> =
+        productInputPort.patch(idempotencyId, correlationId, record.toDomain())
 
     override fun canProcess(record: GenericRecord): Boolean {
         return record is PatchProductEventDTO

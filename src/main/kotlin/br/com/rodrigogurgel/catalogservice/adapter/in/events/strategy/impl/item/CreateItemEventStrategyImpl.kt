@@ -15,8 +15,12 @@ class CreateItemEventStrategyImpl(
     private val itemInputPort: ItemInputPort,
 ) : GenericRecordEventStrategy<CreateItemEventDTO> {
     @Timed("create.item.event")
-    override suspend fun process(idempotencyId: UUID, correlationId: UUID, record: CreateItemEventDTO): Result<Unit, Throwable> =
-        itemInputPort.create(record.toDomain())
+    override suspend fun process(
+        idempotencyId: UUID,
+        correlationId: UUID,
+        record: CreateItemEventDTO,
+    ): Result<Unit, Throwable> =
+        itemInputPort.create(idempotencyId, correlationId, record.toDomain())
 
     override fun canProcess(record: GenericRecord): Boolean {
         return record is CreateItemEventDTO

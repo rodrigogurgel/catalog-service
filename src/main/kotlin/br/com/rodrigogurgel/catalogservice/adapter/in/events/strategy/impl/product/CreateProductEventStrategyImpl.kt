@@ -15,8 +15,12 @@ class CreateProductEventStrategyImpl(
     private val productInputPort: ProductInputPort,
 ) : GenericRecordEventStrategy<CreateProductEventDTO> {
     @Timed("create.product.event")
-    override suspend fun process(idempotencyId: UUID, correlationId: UUID, record: CreateProductEventDTO): Result<Unit, Throwable> =
-        productInputPort.create(record.toDomain())
+    override suspend fun process(
+        idempotencyId: UUID,
+        correlationId: UUID,
+        record: CreateProductEventDTO,
+    ): Result<Unit, Throwable> =
+        productInputPort.create(idempotencyId, correlationId, record.toDomain())
 
     override fun canProcess(record: GenericRecord): Boolean {
         return record is CreateProductEventDTO

@@ -15,8 +15,12 @@ class UpdateOptionEventStrategyImpl(
     private val optionInputPort: OptionInputPort,
 ) : GenericRecordEventStrategy<UpdateOptionEventDTO> {
     @Timed("update.option.event")
-    override suspend fun process(idempotencyId: UUID, correlationId: UUID, record: UpdateOptionEventDTO): Result<Unit, Throwable> =
-        optionInputPort.update(record.toDomain())
+    override suspend fun process(
+        idempotencyId: UUID,
+        correlationId: UUID,
+        record: UpdateOptionEventDTO,
+    ): Result<Unit, Throwable> =
+        optionInputPort.update(idempotencyId, correlationId, record.toDomain())
 
     override fun canProcess(record: GenericRecord): Boolean {
         return record is UpdateOptionEventDTO

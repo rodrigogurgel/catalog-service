@@ -4,6 +4,7 @@ import br.com.rodrigogurgel.catalogservice.application.common.toUUID
 import br.com.rodrigogurgel.catalogservice.domain.Customization
 import br.com.rodrigogurgel.catalogservice.domain.Status
 import br.com.rodrigogurgel.catalogservice.`in`.events.dto.CreateCustomizationEventDTO
+import br.com.rodrigogurgel.catalogservice.`in`.events.dto.DeleteCustomizationEventDTO
 import br.com.rodrigogurgel.catalogservice.`in`.events.dto.PatchCustomizationEventDTO
 import br.com.rodrigogurgel.catalogservice.`in`.events.dto.UpdateCustomizationEventDTO
 
@@ -45,5 +46,18 @@ fun PatchCustomizationEventDTO.toDomain(): Customization {
         maxPermitted = maxPermitted,
         status = status?.toDomain(),
         index = index,
+    )
+}
+
+fun DeleteCustomizationEventDTO.toDomain(): Customization {
+    return Customization(
+        customizationId = customizationId.toString().toUUID(),
+        storeId = storeId.toString().toUUID(),
+        name = null,
+        description = null,
+        minPermitted = null,
+        maxPermitted = null,
+        status = null,
+        index = null,
     )
 }

@@ -10,3 +10,5 @@ fun String.getPkAndSkOrNull(): Pair<String, String>? {
 }
 
 fun String.toUUID(): UUID = UUID.fromString(this)
+
+fun ByteArray.toUUID(): UUID = UUID.fromString(String(this))

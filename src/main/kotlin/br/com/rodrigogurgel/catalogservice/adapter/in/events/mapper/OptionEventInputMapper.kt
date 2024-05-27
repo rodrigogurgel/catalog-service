@@ -4,6 +4,7 @@ import br.com.rodrigogurgel.catalogservice.application.common.toUUID
 import br.com.rodrigogurgel.catalogservice.domain.Option
 import br.com.rodrigogurgel.catalogservice.domain.Status
 import br.com.rodrigogurgel.catalogservice.`in`.events.dto.CreateOptionEventDTO
+import br.com.rodrigogurgel.catalogservice.`in`.events.dto.DeleteOptionEventDTO
 import br.com.rodrigogurgel.catalogservice.`in`.events.dto.PatchOptionEventDTO
 import br.com.rodrigogurgel.catalogservice.`in`.events.dto.UpdateOptionEventDTO
 
@@ -47,5 +48,19 @@ fun PatchOptionEventDTO.toDomain(): Option {
         minPermitted = minPermitted,
         maxPermitted = maxPermitted,
         index = index,
+    )
+}
+
+fun DeleteOptionEventDTO.toDomain(): Option {
+    return Option(
+        optionId = optionId.toString().toUUID(),
+        storeId = storeId.toString().toUUID(),
+        customizationId = null,
+        productId = null,
+        price = null,
+        status = null,
+        minPermitted = null,
+        maxPermitted = null,
+        index = null,
     )
 }

@@ -4,6 +4,7 @@ import br.com.rodrigogurgel.catalogservice.application.common.toUUID
 import br.com.rodrigogurgel.catalogservice.domain.Item
 import br.com.rodrigogurgel.catalogservice.domain.Status
 import br.com.rodrigogurgel.catalogservice.`in`.events.dto.CreateItemEventDTO
+import br.com.rodrigogurgel.catalogservice.`in`.events.dto.DeleteItemEventDTO
 import br.com.rodrigogurgel.catalogservice.`in`.events.dto.PatchItemEventDTO
 import br.com.rodrigogurgel.catalogservice.`in`.events.dto.UpdateItemEventDTO
 
@@ -41,5 +42,17 @@ fun PatchItemEventDTO.toDomain(): Item {
         price = price?.toBigDecimal(),
         status = status?.toDomain(),
         index = index,
+    )
+}
+
+fun DeleteItemEventDTO.toDomain(): Item {
+    return Item(
+        storeId = storeId.toString().toUUID(),
+        categoryId = null,
+        itemId = itemId.toString().toUUID(),
+        productId = null,
+        price = null,
+        status = null,
+        index = null,
     )
 }

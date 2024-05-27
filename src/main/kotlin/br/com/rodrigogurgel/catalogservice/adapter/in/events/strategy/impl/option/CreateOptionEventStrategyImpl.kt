@@ -15,8 +15,12 @@ class CreateOptionEventStrategyImpl(
     private val optionInputPort: OptionInputPort,
 ) : GenericRecordEventStrategy<CreateOptionEventDTO> {
     @Timed("create.option.event")
-    override suspend fun process(idempotencyId: UUID, correlationId: UUID, record: CreateOptionEventDTO): Result<Unit, Throwable> =
-        optionInputPort.create(record.toDomain())
+    override suspend fun process(
+        idempotencyId: UUID,
+        correlationId: UUID,
+        record: CreateOptionEventDTO,
+    ): Result<Unit, Throwable> =
+        optionInputPort.create(idempotencyId, correlationId, record.toDomain())
 
     override fun canProcess(record: GenericRecord): Boolean {
         return record is CreateOptionEventDTO

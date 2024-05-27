@@ -20,7 +20,11 @@ class UpdateCategoryEventStrategyImpl(
         correlationId: UUID,
         record: UpdateCategoryEventDTO,
     ): Result<Unit, Throwable> =
-        categoryInputPort.update(idempotencyId, correlationId, record.toDomain())
+        categoryInputPort.update(
+            idempotencyId,
+            correlationId,
+            record.toDomain()
+        )
 
     override fun canProcess(record: GenericRecord): Boolean {
         return record is UpdateCategoryEventDTO

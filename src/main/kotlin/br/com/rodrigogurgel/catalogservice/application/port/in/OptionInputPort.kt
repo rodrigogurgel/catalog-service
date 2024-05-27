@@ -5,9 +5,9 @@ import com.github.michaelbull.result.Result
 import java.util.UUID
 
 interface OptionInputPort {
-    suspend fun create(option: Option): Result<Unit, Throwable>
-    suspend fun update(option: Option): Result<Unit, Throwable>
-    suspend fun delete(storeId: UUID, optionId: UUID): Result<Unit, Throwable>
-    suspend fun patch(option: Option): Result<Unit, Throwable>
+    suspend fun create(idempotencyId: UUID, correlationId: UUID, option: Option): Result<Unit, Throwable>
+    suspend fun update(idempotencyId: UUID, correlationId: UUID, option: Option): Result<Unit, Throwable>
+    suspend fun delete(idempotencyId: UUID, correlationId: UUID, option: Option): Result<Unit, Throwable>
+    suspend fun patch(idempotencyId: UUID, correlationId: UUID, option: Option): Result<Unit, Throwable>
     suspend fun searchByReferenceBeginsWith(storeId: UUID, reference: String): Result<List<Option>, Throwable>
 }

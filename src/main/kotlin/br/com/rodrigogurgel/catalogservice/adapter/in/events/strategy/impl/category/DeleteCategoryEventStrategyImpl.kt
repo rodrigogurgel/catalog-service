@@ -1,7 +1,7 @@
 package br.com.rodrigogurgel.catalogservice.adapter.`in`.events.strategy.impl.category
 
+import br.com.rodrigogurgel.catalogservice.adapter.`in`.events.mapper.toDomain
 import br.com.rodrigogurgel.catalogservice.adapter.`in`.events.strategy.GenericRecordEventStrategy
-import br.com.rodrigogurgel.catalogservice.application.common.toUUID
 import br.com.rodrigogurgel.catalogservice.application.port.`in`.CategoryInputPort
 import br.com.rodrigogurgel.catalogservice.`in`.events.dto.DeleteCategoryEventDTO
 import com.github.michaelbull.result.Result
@@ -23,8 +23,7 @@ class DeleteCategoryEventStrategyImpl(
         categoryInputPort.delete(
             idempotencyId,
             correlationId,
-            record.storeId.toString().toUUID(),
-            record.categoryId.toString().toUUID()
+            record.toDomain()
         )
 
     override fun canProcess(record: GenericRecord): Boolean {

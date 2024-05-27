@@ -26,8 +26,8 @@ data class Idempotency(
 
         fun success(
             idempotencyId: UUID,
-            correlationId: UUID,
-            storeId: UUID,
+            correlationId: UUID? = null,
+            storeId: UUID? = null,
             createdAt: OffsetDateTime? = null,
         ): Idempotency {
             return Idempotency(idempotencyId, correlationId, storeId, IdempotencyStatus.SUCCESS, createdAt)
@@ -35,8 +35,8 @@ data class Idempotency(
 
         fun failure(
             idempotencyId: UUID,
-            correlationId: UUID,
-            storeId: UUID,
+            correlationId: UUID? = null,
+            storeId: UUID? = null,
             createdAt: OffsetDateTime? = null,
         ): Idempotency {
             return Idempotency(idempotencyId, correlationId, storeId, IdempotencyStatus.FAILURE, createdAt)

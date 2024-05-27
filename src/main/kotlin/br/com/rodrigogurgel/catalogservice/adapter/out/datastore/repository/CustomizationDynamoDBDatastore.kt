@@ -12,7 +12,6 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.andThen
 import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.mapError
-import com.github.michaelbull.result.onFailure
 import io.reactivex.rxjava3.core.Flowable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
@@ -54,7 +53,7 @@ class CustomizationDynamoDBDatastore(
         dynamoDbAsyncTable.putItem(request).await()
     }.mapError { error ->
         when (error) {
-            is ConditionalCheckFailedException -> throw CustomizationAlreadyExistsDatastoreException(
+            is ConditionalCheckFailedException -> CustomizationAlreadyExistsDatastoreException(
                 customization.customizationId!!
             )
 
@@ -73,7 +72,7 @@ class CustomizationDynamoDBDatastore(
         dynamoDbAsyncTable.updateItem(updateItemRequest).await()
     }.mapError { error ->
         when (error) {
-            is ConditionalCheckFailedException -> throw CustomizationNotFoundDatastoreException(
+            is ConditionalCheckFailedException -> CustomizationNotFoundDatastoreException(
                 customization.storeId!!,
                 customization.customizationId!!
             )
@@ -99,7 +98,7 @@ class CustomizationDynamoDBDatastore(
             dynamoDbAsyncTable.deleteItem(request).await()
         }.mapError { error ->
             when (error) {
-                is ConditionalCheckFailedException -> throw CustomizationNotFoundDatastoreException(
+                is ConditionalCheckFailedException -> CustomizationNotFoundDatastoreException(
                     storeId,
                     customizationId
                 )
@@ -119,7 +118,7 @@ class CustomizationDynamoDBDatastore(
         dynamoDbAsyncTable.updateItem(updateItemRequest).await()
     }.mapError { error ->
         when (error) {
-            is ConditionalCheckFailedException -> throw CustomizationNotFoundDatastoreException(
+            is ConditionalCheckFailedException -> CustomizationNotFoundDatastoreException(
                 customization.storeId!!,
                 customization.customizationId!!
             )
@@ -133,7 +132,6 @@ class CustomizationDynamoDBDatastore(
         reference: String,
     ): Result<List<Customization>, Throwable> = getKeysFromReference(storeId, reference)
         .andThen { findByKeys(it) }
-        .onFailure { throw it }
 
     private suspend fun getKeysFromReference(storeId: UUID, reference: String): Result<Set<Key>, Throwable> =
         runSuspendCatching {
@@ -158,7 +156,7 @@ class CustomizationDynamoDBDatastore(
                         .sortValue(customization.customizationId.toString())
                         .build()
                 }.toSet()
-        }.onFailure { throw it }
+        }
 
     private suspend fun findByKeys(keys: Set<Key>): Result<List<Customization>, Throwable> = runSuspendCatching {
         val readBatch = keys.map { key ->
@@ -179,5 +177,5 @@ class CustomizationDynamoDBDatastore(
         withContext(Dispatchers.IO) {
             Flowable.fromPublisher(publisher).map { customization -> customization.toDomain() }.toList().blockingGet()
         }
-    }.onFailure { throw BatchGetCustomizationDatastoreException(keys) }
+    }.mapError { BatchGetCustomizationDatastoreException(keys, it) }
 }

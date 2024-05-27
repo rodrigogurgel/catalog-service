@@ -20,7 +20,11 @@ class PatchCategoryEventStrategyImpl(
         correlationId: UUID,
         record: PatchCategoryEventDTO,
     ): Result<Unit, Throwable> =
-        categoryInputPort.patch(idempotencyId, correlationId, record.toDomain())
+        categoryInputPort.patch(
+            idempotencyId,
+            correlationId,
+            record.toDomain()
+        )
 
     override fun canProcess(record: GenericRecord): Boolean {
         return record is PatchCategoryEventDTO

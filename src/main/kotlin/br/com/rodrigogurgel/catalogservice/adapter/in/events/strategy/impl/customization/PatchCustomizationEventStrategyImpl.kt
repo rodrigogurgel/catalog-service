@@ -15,8 +15,12 @@ class PatchCustomizationEventStrategyImpl(
     private val customizationInputPort: CustomizationInputPort,
 ) : GenericRecordEventStrategy<PatchCustomizationEventDTO> {
     @Timed("patch.customization.event")
-    override suspend fun process(idempotencyId: UUID, correlationId: UUID, record: PatchCustomizationEventDTO): Result<Unit, Throwable> =
-        customizationInputPort.patch(record.toDomain())
+    override suspend fun process(
+        idempotencyId: UUID,
+        correlationId: UUID,
+        record: PatchCustomizationEventDTO,
+    ): Result<Unit, Throwable> =
+        customizationInputPort.patch(idempotencyId, correlationId, record.toDomain())
 
     override fun canProcess(record: GenericRecord): Boolean {
         return record is PatchCustomizationEventDTO

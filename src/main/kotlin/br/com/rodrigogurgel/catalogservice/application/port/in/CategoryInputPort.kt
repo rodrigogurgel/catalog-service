@@ -10,8 +10,7 @@ interface CategoryInputPort {
     suspend fun delete(
         idempotencyId: UUID,
         correlationId: UUID,
-        storeId: UUID,
-        categoryId: UUID,
+        category: Category,
     ): Result<Unit, Throwable>
 
     suspend fun patch(idempotencyId: UUID, correlationId: UUID, category: Category): Result<Unit, Throwable>

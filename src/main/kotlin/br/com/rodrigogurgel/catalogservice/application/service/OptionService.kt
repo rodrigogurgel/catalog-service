@@ -1,5 +1,7 @@
 package br.com.rodrigogurgel.catalogservice.application.service
 
+import br.com.rodrigogurgel.catalogservice.application.common.toUUID
+import br.com.rodrigogurgel.catalogservice.application.port.`in`.IdempotencyInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.`in`.OptionInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.out.datastore.OptionDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.domain.Option
@@ -10,16 +12,35 @@ import java.util.UUID
 @Service
 class OptionService(
     private val optionDatastoreOutputPort: OptionDatastoreOutputPort,
-//    private val idempotencyOutputPort: IdempotencyOutputPort,
+    private val idempotencyInputPort: IdempotencyInputPort,
 ) : OptionInputPort {
-    override suspend fun create(option: Option): Result<Unit, Throwable> = optionDatastoreOutputPort.create(option)
+    override suspend fun create(idempotencyId: UUID, correlationId: UUID, option: Option): Result<Unit, Throwable> =
+        idempotencyInputPort.runWithIdempotency(
+            idempotencyId,
+            correlationId,
+            option.storeId!!
+        ) { optionDatastoreOutputPort.create(option) }
 
-    override suspend fun update(option: Option): Result<Unit, Throwable> = optionDatastoreOutputPort.update(option)
+    override suspend fun update(idempotencyId: UUID, correlationId: UUID, option: Option): Result<Unit, Throwable> =
+        idempotencyInputPort.runWithIdempotency(
+            idempotencyId,
+            correlationId,
+            option.storeId!!
+        ) { optionDatastoreOutputPort.update(option) }
 
-    override suspend fun delete(storeId: UUID, optionId: UUID): Result<Unit, Throwable> =
-        optionDatastoreOutputPort.delete(storeId, optionId)
+    override suspend fun delete(idempotencyId: UUID, correlationId: UUID, option: Option): Result<Unit, Throwable> =
+        idempotencyInputPort.runWithIdempotency(
+            idempotencyId,
+            correlationId,
+            option.storeId!!
+        ) { optionDatastoreOutputPort.delete(option.storeId.toString().toUUID(), option.optionId.toString().toUUID()) }
 
-    override suspend fun patch(option: Option): Result<Unit, Throwable> = optionDatastoreOutputPort.patch(option)
+    override suspend fun patch(idempotencyId: UUID, correlationId: UUID, option: Option): Result<Unit, Throwable> =
+        idempotencyInputPort.runWithIdempotency(
+            idempotencyId,
+            correlationId,
+            option.storeId!!
+        ) { optionDatastoreOutputPort.patch(option) }
 
     override suspend fun searchByReferenceBeginsWith(
         storeId: UUID,

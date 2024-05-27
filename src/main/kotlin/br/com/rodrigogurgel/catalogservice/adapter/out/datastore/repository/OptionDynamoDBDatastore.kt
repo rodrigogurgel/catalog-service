@@ -17,7 +17,6 @@ import io.reactivex.rxjava3.core.Flowable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient
@@ -39,8 +38,6 @@ class OptionDynamoDBDatastore(
     private val enhancedAsyncClient: DynamoDbEnhancedAsyncClient,
 ) : OptionDatastoreOutputPort {
 
-    private val logger = LoggerFactory.getLogger(OptionDynamoDBDatastore::class.java)
-
     companion object {
         private val NOT_EXISTS_EXPRESSION = Expression.builder().expression("attribute_not_exists(option_id)").build()
         private val EXISTS_EXPRESSION = Expression.builder().expression("attribute_exists(option_id)").build()
@@ -56,11 +53,11 @@ class OptionDynamoDBDatastore(
         dynamoDbAsyncTable.putItem(request).await()
     }.mapError { error ->
         when (error) {
-            is ConditionalCheckFailedException -> throw OptionAlreadyExistsDatastoreException(
+            is ConditionalCheckFailedException -> OptionAlreadyExistsDatastoreException(
                 option.optionId!!
             )
 
-            else -> throw error
+            else -> error
         }
     }
 
@@ -75,12 +72,12 @@ class OptionDynamoDBDatastore(
         dynamoDbAsyncTable.updateItem(updateItemRequest).await()
     }.mapError { error ->
         when (error) {
-            is ConditionalCheckFailedException -> throw OptionNotFoundDatastoreException(
+            is ConditionalCheckFailedException -> OptionNotFoundDatastoreException(
                 option.storeId!!,
                 option.optionId!!
             )
 
-            else -> throw error
+            else -> error
         }
     }
 
@@ -100,12 +97,12 @@ class OptionDynamoDBDatastore(
         dynamoDbAsyncTable.deleteItem(request).await()
     }.mapError { error ->
         when (error) {
-            is ConditionalCheckFailedException -> throw OptionNotFoundDatastoreException(
+            is ConditionalCheckFailedException -> OptionNotFoundDatastoreException(
                 storeId,
                 optionId
             )
 
-            else -> throw error
+            else -> error
         }
     }
 
@@ -120,12 +117,12 @@ class OptionDynamoDBDatastore(
         dynamoDbAsyncTable.updateItem(updateItemRequest).await()
     }.mapError { error ->
         when (error) {
-            is ConditionalCheckFailedException -> throw OptionNotFoundDatastoreException(
+            is ConditionalCheckFailedException -> OptionNotFoundDatastoreException(
                 option.storeId!!,
                 option.optionId!!
             )
 
-            else -> throw error
+            else -> error
         }
     }
 
@@ -134,7 +131,7 @@ class OptionDynamoDBDatastore(
         reference: String,
     ): Result<List<Option>, Throwable> = getKeysFromReference(storeId, reference)
         .andThen { findByKeys(it) }
-        .onFailure { throw it }
+        .onFailure { it }
 
     private suspend fun getKeysFromReference(storeId: UUID, reference: String): Result<Set<Key>, Throwable> =
         runSuspendCatching {
@@ -162,7 +159,7 @@ class OptionDynamoDBDatastore(
                         .sortValue(option.optionId.toString())
                         .build()
                 }.toSet()
-        }.onFailure { throw it }
+        }.onFailure { it }
 
     private suspend fun findByKeys(keys: Set<Key>): Result<List<Option>, Throwable> = runSuspendCatching {
         val readBatch = keys.map { key ->
@@ -185,5 +182,5 @@ class OptionDynamoDBDatastore(
             Flowable.fromPublisher(publisher)
                 .map { option -> option.toDomain() }.toList().blockingGet()
         }
-    }.onFailure { throw BatchGetOptionDatastoreException(keys) }
+    }.mapError { BatchGetOptionDatastoreException(keys, it) }
 }
