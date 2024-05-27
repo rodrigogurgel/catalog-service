@@ -27,21 +27,21 @@ class ItemService(
             idempotencyId,
             correlationId,
             item.storeId!!
-        ){ itemDatastoreOutputPort.update(item) }
+        ) { itemDatastoreOutputPort.update(item) }
 
     override suspend fun delete(idempotencyId: UUID, correlationId: UUID, item: Item): Result<Unit, Throwable> =
         idempotencyInputPort.runWithIdempotency(
             idempotencyId,
             correlationId,
             item.storeId!!
-        ){ itemDatastoreOutputPort.delete(item.storeId.toString().toUUID(), item.itemId.toString().toUUID()) }
+        ) { itemDatastoreOutputPort.delete(item.storeId.toString().toUUID(), item.itemId.toString().toUUID()) }
 
     override suspend fun patch(idempotencyId: UUID, correlationId: UUID, item: Item): Result<Unit, Throwable> =
         idempotencyInputPort.runWithIdempotency(
             idempotencyId,
             correlationId,
             item.storeId!!
-        ){ itemDatastoreOutputPort.patch(item) }
+        ) { itemDatastoreOutputPort.patch(item) }
 
     override suspend fun find(storeId: UUID, itemId: UUID): Result<Item, Throwable> =
         itemDatastoreOutputPort.find(storeId, itemId)
