@@ -11,13 +11,13 @@ import com.github.michaelbull.result.coroutines.coroutineBinding
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.unwrap
 import io.micrometer.core.annotation.Timed
-import java.util.UUID
 import kotlinx.coroutines.async
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @RequestMapping("/v1/items")

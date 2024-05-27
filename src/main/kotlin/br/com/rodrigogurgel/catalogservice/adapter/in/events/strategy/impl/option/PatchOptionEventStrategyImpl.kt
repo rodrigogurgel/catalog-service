@@ -8,13 +8,14 @@ import com.github.michaelbull.result.Result
 import io.micrometer.core.annotation.Timed
 import org.apache.avro.generic.GenericRecord
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class PatchOptionEventStrategyImpl(
     private val optionInputPort: OptionInputPort,
 ) : GenericRecordEventStrategy<PatchOptionEventDTO> {
     @Timed("patch.option.event")
-    override suspend fun process(record: PatchOptionEventDTO): Result<Unit, Throwable> =
+    override suspend fun process(idempotencyId: UUID, correlationId: UUID, record: PatchOptionEventDTO): Result<Unit, Throwable> =
         optionInputPort.patch(record.toDomain())
 
     override fun canProcess(record: GenericRecord): Boolean {

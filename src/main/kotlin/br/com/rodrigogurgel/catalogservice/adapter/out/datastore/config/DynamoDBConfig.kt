@@ -3,10 +3,10 @@ package br.com.rodrigogurgel.catalogservice.adapter.out.datastore.config
 import br.com.rodrigogurgel.catalogservice.adapter.out.datastore.config.extensions.createTableWithIndices
 import br.com.rodrigogurgel.catalogservice.adapter.out.datastore.dto.CategoryDataStoreDTO
 import br.com.rodrigogurgel.catalogservice.adapter.out.datastore.dto.CustomizationDatastoreDTO
+import br.com.rodrigogurgel.catalogservice.adapter.out.datastore.dto.IdempotencyDatastoreDTO
 import br.com.rodrigogurgel.catalogservice.adapter.out.datastore.dto.ItemDatastoreDTO
 import br.com.rodrigogurgel.catalogservice.adapter.out.datastore.dto.OptionDatastoreDTO
 import br.com.rodrigogurgel.catalogservice.adapter.out.datastore.dto.ProductDatastoreDTO
-import java.net.URI
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
@@ -17,6 +17,7 @@ import software.amazon.awssdk.enhanced.dynamodb.TableSchema
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import software.amazon.awssdk.services.dynamodb.model.ProjectionType
+import java.net.URI
 
 @Configuration
 class DynamoDBConfig {
@@ -76,4 +77,10 @@ class DynamoDBConfig {
         enhancedAsyncClient.table("option", TableSchema.fromBean(OptionDatastoreDTO::class.java))
             .apply { createTableWithIndices(ProjectionType.KEYS_ONLY, ProjectionType.KEYS_ONLY) }
 
+    @Bean
+    fun idempotencyDynamoDbAsyncTable(
+        enhancedAsyncClient: DynamoDbEnhancedAsyncClient,
+    ): DynamoDbAsyncTable<IdempotencyDatastoreDTO> =
+        enhancedAsyncClient.table("idempotency", TableSchema.fromBean(IdempotencyDatastoreDTO::class.java))
+            .apply { createTableWithIndices(ProjectionType.KEYS_ONLY, ProjectionType.KEYS_ONLY) }
 }

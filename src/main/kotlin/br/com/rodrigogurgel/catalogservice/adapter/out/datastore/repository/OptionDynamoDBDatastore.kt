@@ -14,7 +14,6 @@ import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onFailure
 import io.reactivex.rxjava3.core.Flowable
-import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
@@ -32,6 +31,7 @@ import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest
 import software.amazon.awssdk.enhanced.dynamodb.model.ReadBatch
 import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest
 import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException
+import java.util.UUID
 
 @Repository
 class OptionDynamoDBDatastore(

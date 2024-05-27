@@ -11,7 +11,6 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onFailure
-import java.util.UUID
 import kotlinx.coroutines.future.await
 import org.springframework.stereotype.Repository
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable
@@ -22,6 +21,7 @@ import software.amazon.awssdk.enhanced.dynamodb.model.GetItemEnhancedRequest
 import software.amazon.awssdk.enhanced.dynamodb.model.PutItemEnhancedRequest
 import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest
 import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException
+import java.util.UUID
 
 @Repository
 class ItemDynamoDBDatastore(

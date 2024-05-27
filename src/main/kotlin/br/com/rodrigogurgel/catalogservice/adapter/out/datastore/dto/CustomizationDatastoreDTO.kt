@@ -1,13 +1,12 @@
 package br.com.rodrigogurgel.catalogservice.adapter.out.datastore.dto
 
-import java.util.UUID
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondarySortKey
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey
-
+import java.util.UUID
 
 @DynamoDbBean
 data class CustomizationDatastoreDTO(

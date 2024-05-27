@@ -8,13 +8,14 @@ import com.github.michaelbull.result.Result
 import io.micrometer.core.annotation.Timed
 import org.apache.avro.generic.GenericRecord
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class DeleteCustomizationEventStrategyImpl(
     private val customizationInputPort: CustomizationInputPort,
 ) : GenericRecordEventStrategy<DeleteCustomizationEventDTO> {
     @Timed("delete.customization.event")
-    override suspend fun process(record: DeleteCustomizationEventDTO): Result<Unit, Throwable> =
+    override suspend fun process(idempotencyId: UUID, correlationId: UUID, record: DeleteCustomizationEventDTO): Result<Unit, Throwable> =
         customizationInputPort.delete(record.storeId.toString().toUUID(), record.customizationId.toString().toUUID())
 
     override fun canProcess(record: GenericRecord): Boolean {

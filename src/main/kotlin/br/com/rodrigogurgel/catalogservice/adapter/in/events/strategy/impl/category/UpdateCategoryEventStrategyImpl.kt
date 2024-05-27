@@ -8,14 +8,19 @@ import com.github.michaelbull.result.Result
 import io.micrometer.core.annotation.Timed
 import org.apache.avro.generic.GenericRecord
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class UpdateCategoryEventStrategyImpl(
     private val categoryInputPort: CategoryInputPort,
 ) : GenericRecordEventStrategy<UpdateCategoryEventDTO> {
     @Timed("update.category.event")
-    override suspend fun process(record: UpdateCategoryEventDTO): Result<Unit, Throwable> =
-        categoryInputPort.update(record.toDomain())
+    override suspend fun process(
+        idempotencyId: UUID,
+        correlationId: UUID,
+        record: UpdateCategoryEventDTO,
+    ): Result<Unit, Throwable> =
+        categoryInputPort.update(idempotencyId, correlationId, record.toDomain())
 
     override fun canProcess(record: GenericRecord): Boolean {
         return record is UpdateCategoryEventDTO

@@ -1,6 +1,5 @@
 package br.com.rodrigogurgel.catalogservice.adapter.out.datastore.config.extensions
 
-import java.util.concurrent.CompletableFuture
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable
 import software.amazon.awssdk.enhanced.dynamodb.TableMetadata
 import software.amazon.awssdk.enhanced.dynamodb.model.CreateTableEnhancedRequest
@@ -8,6 +7,7 @@ import software.amazon.awssdk.enhanced.dynamodb.model.EnhancedGlobalSecondaryInd
 import software.amazon.awssdk.enhanced.dynamodb.model.EnhancedLocalSecondaryIndex
 import software.amazon.awssdk.services.dynamodb.model.Projection
 import software.amazon.awssdk.services.dynamodb.model.ProjectionType
+import java.util.concurrent.CompletableFuture
 
 fun DynamoDbAsyncTable<*>.createTableWithIndices(
     globalIndicesProjection: ProjectionType,

@@ -5,8 +5,14 @@ import com.github.michaelbull.result.Result
 import java.util.UUID
 
 interface CategoryInputPort {
-    suspend fun create(category: Category): Result<Unit, Throwable>
-    suspend fun update(category: Category): Result<Unit, Throwable>
-    suspend fun delete(storeId: UUID, categoryId: UUID): Result<Unit, Throwable>
-    suspend fun patch(category: Category): Result<Unit, Throwable>
+    suspend fun create(idempotencyId: UUID, correlationId: UUID, category: Category): Result<Unit, Throwable>
+    suspend fun update(idempotencyId: UUID, correlationId: UUID, category: Category): Result<Unit, Throwable>
+    suspend fun delete(
+        idempotencyId: UUID,
+        correlationId: UUID,
+        storeId: UUID,
+        categoryId: UUID,
+    ): Result<Unit, Throwable>
+
+    suspend fun patch(idempotencyId: UUID, correlationId: UUID, category: Category): Result<Unit, Throwable>
 }

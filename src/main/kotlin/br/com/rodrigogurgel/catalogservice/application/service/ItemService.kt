@@ -10,6 +10,7 @@ import java.util.UUID
 @Service
 class ItemService(
     private val itemDatastoreOutputPort: ItemDatastoreOutputPort,
+//    private val idempotencyOutputPort: IdempotencyOutputPort,
 ) : ItemInputPort {
 
     override suspend fun create(item: Item): Result<Unit, Throwable> = itemDatastoreOutputPort.create(item)

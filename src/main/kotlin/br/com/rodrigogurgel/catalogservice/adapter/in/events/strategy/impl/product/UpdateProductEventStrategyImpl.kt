@@ -8,13 +8,14 @@ import com.github.michaelbull.result.Result
 import io.micrometer.core.annotation.Timed
 import org.apache.avro.generic.GenericRecord
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class UpdateProductEventStrategyImpl(
     private val productInputPort: ProductInputPort,
 ) : GenericRecordEventStrategy<UpdateProductEventDTO> {
     @Timed("update.product.event")
-    override suspend fun process(record: UpdateProductEventDTO): Result<Unit, Throwable> =
+    override suspend fun process(idempotencyId: UUID, correlationId: UUID, record: UpdateProductEventDTO): Result<Unit, Throwable> =
         productInputPort.update(record.toDomain())
 
     override fun canProcess(record: GenericRecord): Boolean {

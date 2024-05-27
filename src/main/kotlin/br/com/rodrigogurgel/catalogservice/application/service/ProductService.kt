@@ -10,6 +10,7 @@ import java.util.UUID
 @Service
 class ProductService(
     private val productDatastore: ProductDatastoreOutputPort,
+//    private val idempotencyOutputPort: IdempotencyOutputPort,
 ) : ProductInputPort {
 
     override suspend fun create(product: Product): Result<Unit, Throwable> = productDatastore.create(product)

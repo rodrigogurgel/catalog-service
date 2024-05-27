@@ -9,7 +9,6 @@ import br.com.rodrigogurgel.catalogservice.domain.Category
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.mapError
-import java.util.UUID
 import kotlinx.coroutines.future.await
 import org.springframework.stereotype.Repository
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbAsyncTable
@@ -19,6 +18,7 @@ import software.amazon.awssdk.enhanced.dynamodb.model.DeleteItemEnhancedRequest
 import software.amazon.awssdk.enhanced.dynamodb.model.PutItemEnhancedRequest
 import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest
 import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException
+import java.util.UUID
 
 @Repository
 class CategoryDynamoDBDatastore(
@@ -40,7 +40,7 @@ class CategoryDynamoDBDatastore(
         dynamoDbAsyncTable.putItem(request).await()
     }.mapError { error ->
         when (error) {
-            is ConditionalCheckFailedException -> throw CategoryAlreadyExistsDatastoreException(category.categoryId!!)
+            is ConditionalCheckFailedException -> CategoryAlreadyExistsDatastoreException(category.categoryId!!)
             else -> error
         }
     }
