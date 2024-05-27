@@ -1,0 +1,4 @@
+root = true
+
+[{.gradle.kts,.kt,.kts,.main.kts}]
+ktlint_disabled_rules=package-name

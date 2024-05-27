@@ -19,12 +19,18 @@ spring:
 
 catalog:
     output-topic: "catalog-output"
+    consumer:
+        concurrency: 10
 server:
-    port: 3001
+    port: 8080
     servlet:
         context-path: /catalog/api/
 management:
     endpoints:
         web:
             exposure:
-                include: health,info,prometheus
+                include: health,info,metrics,prometheus
+    prometheus:
+        metrics:
+            export:
+                enabled: true

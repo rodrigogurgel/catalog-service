@@ -5,9 +5,9 @@ import br.com.rodrigogurgel.catalogservice.out.events.dto.ProductCreatedDTO
 import br.com.rodrigogurgel.catalogservice.out.events.dto.ProductDeletedDTO
 import br.com.rodrigogurgel.catalogservice.out.events.dto.ProductPatchedDTO
 import br.com.rodrigogurgel.catalogservice.out.events.dto.ProductUpdatedDTO
+import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.runCatching
-import com.github.michaelbull.result.Result
 import org.apache.avro.generic.GenericRecord
 import org.slf4j.LoggerFactory
 

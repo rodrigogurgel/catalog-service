@@ -42,5 +42,8 @@ out/
 ### Genereted Avro Files ###
 src/main/avro
 
-### Docker ###
-docker/
+### Dynamo Volume ###
+**/dynamodb/
+
+## Prometheus ##
+!**/prometheus/*.yml

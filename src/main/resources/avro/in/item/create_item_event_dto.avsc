@@ -24,6 +24,18 @@
       "type": "double"
     },
     {
+      "name": "status",
+      "type": {
+        "name": "StatusEventDTO",
+        "type": "enum",
+        "symbols": [
+          "AVAILABLE",
+          "UNAVAILABLE"
+        ],
+        "default": "AVAILABLE"
+      }
+    },
+    {
       "name": "index",
       "type": "int"
     },

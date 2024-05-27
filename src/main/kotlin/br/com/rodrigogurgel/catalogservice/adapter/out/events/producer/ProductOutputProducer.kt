@@ -4,17 +4,17 @@ import br.com.rodrigogurgel.catalogservice.adapter.out.events.mapper.toProductCr
 import br.com.rodrigogurgel.catalogservice.adapter.out.events.mapper.toProductDeletedDTO
 import br.com.rodrigogurgel.catalogservice.adapter.out.events.mapper.toProductPatchedDTO
 import br.com.rodrigogurgel.catalogservice.adapter.out.events.mapper.toProductUpdatedDTO
-import br.com.rodrigogurgel.catalogservice.domain.Product
 import br.com.rodrigogurgel.catalogservice.application.port.out.events.ProductEventOutputPort
+import br.com.rodrigogurgel.catalogservice.domain.Product
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.andThen
-import java.util.UUID
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class ProductOutputProducer(
     private val genericOutputProducer: GenericOutputProducer
-): ProductEventOutputPort {
+) : ProductEventOutputPort {
     override fun created(transactionId: UUID, product: Product): Result<Unit, Throwable> =
         product.toProductCreatedDTO().andThen { genericOutputProducer.send(transactionId, it) }
 

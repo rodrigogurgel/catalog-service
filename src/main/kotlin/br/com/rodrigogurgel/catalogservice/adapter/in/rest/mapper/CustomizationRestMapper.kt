@@ -20,6 +20,6 @@ fun Customization.toResponseDTO(
         maxPermitted = maxPermitted!!,
         status = status!!.toResponseDTO(),
         index = index!!,
-        options = options[reference].orEmpty().map { option -> option.toResponseDTO(products, customizations, options) },
+        options = options[reference].orEmpty().map { option -> option.toResponseDTO(products, customizations, options) }
     )
 }

@@ -1,15 +1,15 @@
 package br.com.rodrigogurgel.catalogservice.adapter.out.events.producer
 
+import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.runCatching
-import com.github.michaelbull.result.Result
-import java.util.UUID
 import org.apache.avro.generic.GenericRecord
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class GenericOutputProducer(

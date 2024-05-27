@@ -40,6 +40,22 @@
       "default": null
     },
     {
+      "name": "status",
+      "type": [
+        "null",
+        {
+          "name": "StatusEventDTO",
+          "type": "enum",
+          "symbols": [
+            "AVAILABLE",
+            "UNAVAILABLE"
+          ],
+          "default": "AVAILABLE"
+        }
+      ],
+      "default": null
+    },
+    {
       "name": "index",
       "type": "int"
     },

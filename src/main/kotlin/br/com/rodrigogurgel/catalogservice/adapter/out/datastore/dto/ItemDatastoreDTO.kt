@@ -6,6 +6,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttri
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondarySortKey
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey
 
 @DynamoDbBean
@@ -16,6 +17,7 @@ data class ItemDatastoreDTO(
 
     @get:DynamoDbPartitionKey
     @get:DynamoDbAttribute("store_id")
+    @get:DynamoDbSecondaryPartitionKey(indexNames = ["ReferenceIndex"])
     var storeId: UUID? = null,
 
     @get:DynamoDbAttribute("category_id")
@@ -34,6 +36,6 @@ data class ItemDatastoreDTO(
     var index: Int? = null,
 
     @get:DynamoDbAttribute("reference")
-    @get:DynamoDbSecondaryPartitionKey(indexNames = ["ReferenceIndex"])
+    @get:DynamoDbSecondarySortKey(indexNames = ["ReferenceIndex"])
     var reference: String? = null,
 )

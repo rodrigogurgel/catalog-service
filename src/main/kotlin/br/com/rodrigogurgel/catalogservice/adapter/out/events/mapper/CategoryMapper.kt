@@ -5,9 +5,9 @@ import br.com.rodrigogurgel.catalogservice.`in`.events.dto.CategoryDeletedDTO
 import br.com.rodrigogurgel.catalogservice.out.events.dto.CategoryCreatedDTO
 import br.com.rodrigogurgel.catalogservice.out.events.dto.CategoryPatchedDTO
 import br.com.rodrigogurgel.catalogservice.out.events.dto.CategoryUpdatedDTO
+import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.runCatching
-import com.github.michaelbull.result.Result
 import org.apache.avro.generic.GenericRecord
 import org.slf4j.LoggerFactory
 

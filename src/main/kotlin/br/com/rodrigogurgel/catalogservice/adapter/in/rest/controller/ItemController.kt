@@ -2,6 +2,7 @@ package br.com.rodrigogurgel.catalogservice.adapter.`in`.rest.controller
 
 import br.com.rodrigogurgel.catalogservice.adapter.`in`.rest.dto.response.ItemResponseDTO
 import br.com.rodrigogurgel.catalogservice.adapter.`in`.rest.mapper.toResponseDTO
+import br.com.rodrigogurgel.catalogservice.application.exception.`in`.rest.item.ItemNotFoundRestException
 import br.com.rodrigogurgel.catalogservice.application.port.`in`.CustomizationInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.`in`.ItemInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.`in`.OptionInputPort
@@ -9,6 +10,7 @@ import br.com.rodrigogurgel.catalogservice.application.port.`in`.ProductInputPor
 import com.github.michaelbull.result.coroutines.coroutineBinding
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.unwrap
+import io.micrometer.core.annotation.Timed
 import java.util.UUID
 import kotlinx.coroutines.async
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,24 +28,28 @@ class ItemController(
     private val productInputPort: ProductInputPort,
 ) {
 
+    @Timed("get.item.rest")
     @GetMapping("/{itemId}")
     suspend fun getItemById(
         @RequestHeader("Store-ID") storeId: UUID,
         @PathVariable(value = "itemId") itemId: UUID,
     ): ItemResponseDTO = coroutineBinding {
         val item = itemInputPort.find(storeId, itemId).bind()
-        val reference = item.reference ?: throw RuntimeException("Item with id $itemId not found")
+        val reference = item.reference ?: throw ItemNotFoundRestException(item.itemId!!)
 
         val options = async { optionInputPort.searchByReferenceBeginsWith(storeId, reference).bind() }
         val customizations = async { customizationInputPort.searchByReferenceBeginsWith(storeId, reference).bind() }
 
         val productIds = options.await().map { option -> option.productId!! } + item.productId!!
-
         val products = productInputPort.find(storeId, productIds.toSet()).bind()
 
         val productsMap = products.associateBy { product -> product.productId!! }
-        val customizationsMap = customizations.await()
-            .groupBy { customization -> customization.reference!!.removeSuffix("#CUSTOMIZATION#${customization.customizationId}") }
+        val customizationsMap = customizations
+            .await()
+            .groupBy { customization ->
+                customization.reference!!.removeSuffix("#CUSTOMIZATION#${customization.customizationId}")
+            }
+
         val optionsMap =
             options.await().groupBy { option -> option.reference!!.removeSuffix("#OPTION#${option.optionId}") }
 

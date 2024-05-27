@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 
 services:
     zookeeper:
@@ -61,7 +61,7 @@ services:
             - broker
 
     akhq:
-        image: tchiotludo/akhq
+        image: tchiotludo/akhq:latest
         restart: unless-stopped
         container_name: akhq
         environment:
@@ -78,7 +78,7 @@ services:
                           url: "http://connect:8083"
 
         ports:
-            - "8080:8080"
+            - "8090:8080"
         networks:
             - kafka_network
         depends_on:
@@ -90,7 +90,7 @@ services:
             - schema-registry
 
     dynamodb-local:
-        command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+        command: "-jar DynamoDBLocal.jar -inMemory -sharedDb"
         image: "amazon/dynamodb-local:latest"
         container_name: dynamodb-local
         ports:
@@ -98,6 +98,27 @@ services:
         volumes:
             - "./docker/dynamodb:/home/dynamodblocal/data"
         working_dir: /home/dynamodblocal
+
+    prometheus:
+        container_name: prometheus
+        image: prom/prometheus:latest
+        restart: always
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        command:
+            - --config.file=/etc/prometheus/prometheus.yml
+        volumes:
+            - "./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+        ports:
+            - "9090:9090"
+
+    grafana:
+        container_name: grafana
+        image: grafana/grafana:latest
+        volumes:
+            - "./docker/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml"
+        ports:
+            - "8091:3000"
 
 networks:
     kafka_network:

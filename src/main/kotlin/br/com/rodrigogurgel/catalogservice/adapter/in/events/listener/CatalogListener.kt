@@ -1,8 +1,9 @@
 package br.com.rodrigogurgel.catalogservice.adapter.`in`.events.listener
 
 import br.com.rodrigogurgel.catalogservice.adapter.`in`.events.strategy.GenericRecordEventStrategy
+import br.com.rodrigogurgel.catalogservice.application.exception.`in`.events.UnsupportedRecordTypeException
+import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.onFailure
-import com.github.michaelbull.result.runCatching
 import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.runBlocking
 import org.apache.avro.generic.GenericRecord
@@ -26,23 +27,27 @@ class CatalogListener(
         topics = ["catalog-input"],
         containerFactory = "catalogContainerFactory"
     )
-    fun onMessage(consumerRecords: List<ConsumerRecord<String, GenericRecord>>, acknowledgment: Acknowledgment) {
-        val processTimeMs = measureTimeMillis {
-            consumerRecords.parallelStream().forEach { consumerRecord ->
-                runCatching {
+    fun onMessage(
+        consumerRecords: List<ConsumerRecord<String, GenericRecord>>,
+        acknowledgment: Acknowledgment,
+    ) {
+        consumerRecords.parallelStream().forEach { consumerRecord ->
+            runBlocking {
+                runSuspendCatching {
                     val record = consumerRecord.value()
 
                     val strategy = processors
                         .firstOrNull { it.canProcess(record) }
-                        ?: throw IllegalArgumentException("No processor found for record: ${record::class.qualifiedName}")
+                        ?: throw UnsupportedRecordTypeException(record)
 
-                    runBlocking {
+                    val processTimeMs = measureTimeMillis {
                         strategy.process(record)
                     }
+                    logger.info("Process time: $processTimeMs to strategy ${strategy::class.simpleName}")
+
                 }.onFailure { logger.error("Error while processing record", it) }
             }
         }
-        logger.info("Process time: $processTimeMs")
 
         acknowledgment.acknowledge()
     }

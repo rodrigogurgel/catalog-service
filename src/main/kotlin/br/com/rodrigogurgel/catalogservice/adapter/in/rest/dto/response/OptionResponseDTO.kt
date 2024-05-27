@@ -3,7 +3,7 @@ package br.com.rodrigogurgel.catalogservice.adapter.`in`.rest.dto.response
 import java.math.BigDecimal
 import java.util.UUID
 
-data class OptionResponseDTO (
+data class OptionResponseDTO(
     val optionId: UUID,
     val storeId: UUID,
     val customizationId: UUID,

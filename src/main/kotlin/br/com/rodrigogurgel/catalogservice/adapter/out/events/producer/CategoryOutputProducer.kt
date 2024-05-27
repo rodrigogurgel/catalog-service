@@ -4,12 +4,12 @@ import br.com.rodrigogurgel.catalogservice.adapter.out.events.mapper.toCategoryC
 import br.com.rodrigogurgel.catalogservice.adapter.out.events.mapper.toCategoryDeletedDTO
 import br.com.rodrigogurgel.catalogservice.adapter.out.events.mapper.toCategoryPatchedDTO
 import br.com.rodrigogurgel.catalogservice.adapter.out.events.mapper.toCategoryUpdatedDTO
-import br.com.rodrigogurgel.catalogservice.domain.Category
 import br.com.rodrigogurgel.catalogservice.application.port.out.events.CategoryEventOutputPort
+import br.com.rodrigogurgel.catalogservice.domain.Category
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.andThen
-import java.util.UUID
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class CategoryOutputProducer(

@@ -24,7 +24,7 @@
     {
       "name": "status",
       "type": {
-        "name": "StatusDTO",
+        "name": "StatusEventDTO",
         "type": "enum",
         "symbols": [
           "AVAILABLE",
