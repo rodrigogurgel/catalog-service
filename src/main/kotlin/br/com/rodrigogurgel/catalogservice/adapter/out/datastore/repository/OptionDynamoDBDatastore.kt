@@ -12,7 +12,6 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.andThen
 import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.mapError
-import com.github.michaelbull.result.onFailure
 import io.reactivex.rxjava3.core.Flowable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
@@ -131,7 +130,6 @@ class OptionDynamoDBDatastore(
         reference: String,
     ): Result<List<Option>, Throwable> = getKeysFromReference(storeId, reference)
         .andThen { findByKeys(it) }
-        .onFailure { it }
 
     private suspend fun getKeysFromReference(storeId: UUID, reference: String): Result<Set<Key>, Throwable> =
         runSuspendCatching {
@@ -159,7 +157,7 @@ class OptionDynamoDBDatastore(
                         .sortValue(option.optionId.toString())
                         .build()
                 }.toSet()
-        }.onFailure { it }
+        }
 
     private suspend fun findByKeys(keys: Set<Key>): Result<List<Option>, Throwable> = runSuspendCatching {
         val readBatch = keys.map { key ->
