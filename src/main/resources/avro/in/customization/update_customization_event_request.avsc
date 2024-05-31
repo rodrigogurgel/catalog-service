@@ -1,0 +1,88 @@
+{
+  "type": "record",
+  "name": "UpdateCustomizationEventRequest",
+  "namespace": "br.com.rodrigogurgel.catalogservice.in.events.request",
+  "fields": [
+    {
+      "name": "transaction",
+      "type": {
+        "type": "record",
+        "name": "TransactionEventRequest",
+        "fields": [
+          {
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "name": "correlationId",
+            "type": "string"
+          },
+          {
+            "name": "createdBy",
+            "type": "string"
+          },
+          {
+            "name": "createdFrom",
+            "type": "string"
+          },
+          {
+            "name": "createdAt",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "name": "data",
+      "type": {
+        "name": "UpdateCustomizationEventRequestData",
+        "type": "record",
+        "fields": [
+          {
+            "name": "customizationId",
+            "type": "string"
+          },
+          {
+            "name": "storeId",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          {
+            "name": "minPermitted",
+            "type": "int"
+          },
+          {
+            "name": "maxPermitted",
+            "type": "int"
+          },
+          {
+            "name": "status",
+            "type": {
+              "name": "StatusEventRequest",
+              "type": "enum",
+              "symbols": [
+                "AVAILABLE",
+                "UNAVAILABLE"
+              ],
+              "default": "AVAILABLE"
+            }
+          },
+          {
+            "name": "index",
+            "type": "int"
+          }
+        ]
+      }
+    }
+  ]
+}

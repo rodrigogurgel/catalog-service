@@ -57,25 +57,25 @@ class ProductDynamoDBDatastore(
         }
     }
 
-    override suspend fun update(product: Product): Result<Unit, Throwable> = runSuspendCatching<Unit> {
-        val updateItemRequest = UpdateItemEnhancedRequest
-            .builder(ProductDatastoreDTO::class.java)
-            .ignoreNulls(false)
-            .item(product.toDatastoreDTO())
-            .conditionExpression(EXISTS_EXPRESSION)
-            .build()
+    override suspend fun update(product: Product): Result<Unit, Throwable> =
+        runSuspendCatching<Unit> {
+            val updateItemRequest = UpdateItemEnhancedRequest
+                .builder(ProductDatastoreDTO::class.java)
+                .item(product.toDatastoreDTO())
+                .conditionExpression(EXISTS_EXPRESSION)
+                .build()
 
-        dynamoDbAsyncTable.updateItem(updateItemRequest).await()
-    }.mapError { error ->
-        when (error) {
-            is ConditionalCheckFailedException -> ProductNotFoundDatastoreException(
-                product.storeId!!,
-                product.productId!!
-            )
+            dynamoDbAsyncTable.updateItem(updateItemRequest).await()
+        }.mapError { error ->
+            when (error) {
+                is ConditionalCheckFailedException -> ProductNotFoundDatastoreException(
+                    product.storeId!!,
+                    product.productId!!
+                )
 
-            else -> error
+                else -> error
+            }
         }
-    }
 
     override suspend fun delete(storeId: UUID, productId: UUID): Result<Unit, Throwable> = runSuspendCatching<Unit> {
         val request = DeleteItemEnhancedRequest
@@ -96,26 +96,6 @@ class ProductDynamoDBDatastore(
             is ConditionalCheckFailedException -> ProductNotFoundDatastoreException(
                 storeId,
                 productId
-            )
-
-            else -> error
-        }
-    }
-
-    override suspend fun patch(product: Product): Result<Unit, Throwable> = runSuspendCatching<Unit> {
-        val updateItemRequest = UpdateItemEnhancedRequest
-            .builder(ProductDatastoreDTO::class.java)
-            .ignoreNulls(true)
-            .item(product.toDatastoreDTO())
-            .conditionExpression(EXISTS_EXPRESSION)
-            .build()
-
-        dynamoDbAsyncTable.updateItem(updateItemRequest).await()
-    }.mapError { error ->
-        when (error) {
-            is ConditionalCheckFailedException -> ProductNotFoundDatastoreException(
-                product.storeId!!,
-                product.productId!!
             )
 
             else -> error

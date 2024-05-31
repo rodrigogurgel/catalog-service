@@ -8,6 +8,7 @@ interface ItemDatastoreOutputPort {
     suspend fun create(item: Item): Result<Unit, Throwable>
     suspend fun update(item: Item): Result<Unit, Throwable>
     suspend fun delete(storeId: UUID, itemId: UUID): Result<Unit, Throwable>
-    suspend fun patch(item: Item): Result<Unit, Throwable>
     suspend fun find(storeId: UUID, itemId: UUID): Result<Item, Throwable>
+    suspend fun searchByProductId(storeId: UUID, productId: UUID): Result<List<Item>, Throwable>
+    suspend fun searchByCategoryId(storeId: UUID, categoryId: UUID): Result<List<Item>, Throwable>
 }

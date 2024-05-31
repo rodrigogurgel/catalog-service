@@ -8,5 +8,4 @@ interface CategoryDatastoreOutputPort {
     suspend fun create(category: Category): Result<Unit, Throwable>
     suspend fun update(category: Category): Result<Unit, Throwable>
     suspend fun delete(storeId: UUID, categoryId: UUID): Result<Unit, Throwable>
-    suspend fun patch(category: Category): Result<Unit, Throwable>
 }

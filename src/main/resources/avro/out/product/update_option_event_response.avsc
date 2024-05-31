@@ -1,0 +1,123 @@
+{
+  "type": "record",
+  "name": "UpdateProductEventResponse",
+  "namespace": "br.com.rodrigogurgel.catalogservice.out.events.response",
+  "fields": [
+    {
+      "name": "transaction",
+      "type": {
+        "type": "record",
+        "name": "TransactionEventResponse",
+        "fields": [
+          {
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "name": "correlationId",
+            "type": "string"
+          },
+          {
+            "name": "storeId",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "type": {
+              "name": "TransactionTypeEventResponse",
+              "type": "enum",
+              "symbols": [
+                "CREATE_CATEGORY",
+                "DELETE_CATEGORY",
+                "UPDATE_CATEGORY",
+                "CREATE_ITEM",
+                "DELETE_ITEM",
+                "UPDATE_ITEM",
+                "CREATE_PRODUCT",
+                "DELETE_PRODUCT",
+                "UPDATE_PRODUCT",
+                "CREATE_CUSTOMIZATION",
+                "DELETE_CUSTOMIZATION",
+                "UPDATE_CUSTOMIZATION",
+                "CREATE_OPTION",
+                "DELETE_OPTION",
+                "UPDATE_OPTION"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "name": "TransactionStatusEventResponse",
+              "type": "enum",
+              "symbols": [
+                "CREATED",
+                "DISCARD",
+                "SUCCESS",
+                "FAILURE"
+              ]
+            }
+          },
+          {
+            "name": "message",
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          {
+            "name": "createdBy",
+            "type": "string"
+          },
+          {
+            "name": "createdFrom",
+            "type": "string"
+          },
+          {
+            "name": "createdAt",
+            "type": "long"
+          },
+          {
+            "name": "updatedAt",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "name": "data",
+      "type": {
+        "name": "UpdateProductEventResponseData",
+        "type": "record",
+        "fields": [
+          {
+            "name": "productId",
+            "type": "string"
+          },
+          {
+            "name": "storeId",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          {
+            "name": "image",
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

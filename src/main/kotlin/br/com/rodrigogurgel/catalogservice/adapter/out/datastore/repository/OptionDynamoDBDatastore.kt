@@ -60,25 +60,25 @@ class OptionDynamoDBDatastore(
         }
     }
 
-    override suspend fun update(option: Option): Result<Unit, Throwable> = runSuspendCatching<Unit> {
-        val updateItemRequest = UpdateItemEnhancedRequest
-            .builder(OptionDatastoreDTO::class.java)
-            .ignoreNulls(false)
-            .item(option.toDatastoreDTO())
-            .conditionExpression(EXISTS_EXPRESSION)
-            .build()
+    override suspend fun update(option: Option): Result<Unit, Throwable> =
+        runSuspendCatching<Unit> {
+            val updateItemRequest = UpdateItemEnhancedRequest
+                .builder(OptionDatastoreDTO::class.java)
+                .item(option.toDatastoreDTO().copy(reference = null))
+                .conditionExpression(EXISTS_EXPRESSION)
+                .build()
 
-        dynamoDbAsyncTable.updateItem(updateItemRequest).await()
-    }.mapError { error ->
-        when (error) {
-            is ConditionalCheckFailedException -> OptionNotFoundDatastoreException(
-                option.storeId!!,
-                option.optionId!!
-            )
+            dynamoDbAsyncTable.updateItem(updateItemRequest).await()
+        }.mapError { error ->
+            when (error) {
+                is ConditionalCheckFailedException -> OptionNotFoundDatastoreException(
+                    option.storeId!!,
+                    option.optionId!!
+                )
 
-            else -> error
+                else -> error
+            }
         }
-    }
 
     override suspend fun delete(storeId: UUID, optionId: UUID): Result<Unit, Throwable> = runSuspendCatching<Unit> {
         val request = DeleteItemEnhancedRequest
@@ -105,33 +105,17 @@ class OptionDynamoDBDatastore(
         }
     }
 
-    override suspend fun patch(option: Option): Result<Unit, Throwable> = runSuspendCatching<Unit> {
-        val updateItemRequest = UpdateItemEnhancedRequest
-            .builder(OptionDatastoreDTO::class.java)
-            .ignoreNulls(true)
-            .item(option.toDatastoreDTO())
-            .conditionExpression(EXISTS_EXPRESSION)
-            .build()
-
-        dynamoDbAsyncTable.updateItem(updateItemRequest).await()
-    }.mapError { error ->
-        when (error) {
-            is ConditionalCheckFailedException -> OptionNotFoundDatastoreException(
-                option.storeId!!,
-                option.optionId!!
-            )
-
-            else -> error
-        }
-    }
-
     override suspend fun searchByReferenceBeginsWith(
         storeId: UUID,
         reference: String,
-    ): Result<List<Option>, Throwable> = getKeysFromReference(storeId, reference)
+    ): Result<List<Option>, Throwable> = getKeysByReference(storeId, reference)
         .andThen { findByKeys(it) }
 
-    private suspend fun getKeysFromReference(storeId: UUID, reference: String): Result<Set<Key>, Throwable> =
+    override suspend fun searchByProductId(storeId: UUID, productId: UUID): Result<List<Option>, Throwable> =
+        getKeysByProductId(storeId, productId)
+            .andThen { findByKeys(it) }
+
+    private suspend fun getKeysByReference(storeId: UUID, reference: String): Result<Set<Key>, Throwable> =
         runSuspendCatching {
             val condition = QueryConditional.sortBeginsWith(
                 Key.builder()
@@ -160,6 +144,8 @@ class OptionDynamoDBDatastore(
         }
 
     private suspend fun findByKeys(keys: Set<Key>): Result<List<Option>, Throwable> = runSuspendCatching {
+        keys.ifEmpty { return@runSuspendCatching emptyList() }
+
         val readBatch = keys.map { key ->
             ReadBatch
                 .builder(OptionDatastoreDTO::class.java)
@@ -181,4 +167,32 @@ class OptionDynamoDBDatastore(
                 .map { option -> option.toDomain() }.toList().blockingGet()
         }
     }.mapError { BatchGetOptionDatastoreException(keys, it) }
+
+    private suspend fun getKeysByProductId(storeId: UUID, productId: UUID): Result<Set<Key>, Throwable> =
+        runSuspendCatching {
+            val condition = QueryConditional.sortBeginsWith(
+                Key.builder()
+                    .partitionValue(storeId.toString())
+                    .sortValue(productId.toString())
+                    .build()
+            )
+
+            val request = QueryEnhancedRequest.builder()
+                .queryConditional(condition)
+                .build()
+
+            val publisher = dynamoDbAsyncTable.index("ProductIdIndex")
+                .query(request)
+
+            withContext(Dispatchers.IO) {
+                Flowable.fromPublisher(publisher).toList().blockingGet()
+            }
+                .flatMap { it.items() }
+                .map { option ->
+                    Key.builder()
+                        .partitionValue(option.storeId.toString())
+                        .sortValue(option.optionId.toString())
+                        .build()
+                }.toSet()
+        }
 }

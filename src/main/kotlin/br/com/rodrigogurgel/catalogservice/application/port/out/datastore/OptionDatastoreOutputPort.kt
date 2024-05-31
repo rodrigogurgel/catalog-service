@@ -8,6 +8,6 @@ interface OptionDatastoreOutputPort {
     suspend fun create(option: Option): Result<Unit, Throwable>
     suspend fun update(option: Option): Result<Unit, Throwable>
     suspend fun delete(storeId: UUID, optionId: UUID): Result<Unit, Throwable>
-    suspend fun patch(option: Option): Result<Unit, Throwable>
     suspend fun searchByReferenceBeginsWith(storeId: UUID, reference: String): Result<List<Option>, Throwable>
+    suspend fun searchByProductId(storeId: UUID, productId: UUID): Result<List<Option>, Throwable>
 }

@@ -4,6 +4,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttri
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey
+import java.time.Instant
 import java.util.UUID
 
 @DynamoDbBean
@@ -24,4 +25,10 @@ data class CategoryDataStoreDTO(
 
     @get:DynamoDbAttribute("index")
     var index: Int? = null,
+
+    @get:DynamoDbAttribute("created_at")
+    var createdAt: Instant? = null,
+
+    @get:DynamoDbAttribute("updated_at")
+    var updatedAt: Instant? = null,
 )

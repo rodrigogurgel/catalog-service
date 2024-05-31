@@ -45,25 +45,25 @@ class CategoryDynamoDBDatastore(
         }
     }
 
-    override suspend fun update(category: Category): Result<Unit, Throwable> = runSuspendCatching<Unit> {
-        val request = UpdateItemEnhancedRequest
-            .builder(CategoryDataStoreDTO::class.java)
-            .ignoreNulls(false)
-            .item(category.toDatastoreDTO())
-            .conditionExpression(EXISTS_EXPRESSION)
-            .build()
+    override suspend fun update(category: Category): Result<Unit, Throwable> =
+        runSuspendCatching<Unit> {
+            val request = UpdateItemEnhancedRequest
+                .builder(CategoryDataStoreDTO::class.java)
+                .item(category.toDatastoreDTO())
+                .conditionExpression(EXISTS_EXPRESSION)
+                .build()
 
-        dynamoDbAsyncTable.updateItem(request).await()
-    }.mapError { error ->
-        when (error) {
-            is ConditionalCheckFailedException -> throw CategoryNotFoundDatastoreException(
-                category.storeId!!,
-                category.categoryId!!
-            )
+            dynamoDbAsyncTable.updateItem(request).await()
+        }.mapError { error ->
+            when (error) {
+                is ConditionalCheckFailedException -> CategoryNotFoundDatastoreException(
+                    category.storeId!!,
+                    category.categoryId!!
+                )
 
-            else -> error
+                else -> error
+            }
         }
-    }
 
     override suspend fun delete(storeId: UUID, categoryId: UUID): Result<Unit, Throwable> = runSuspendCatching<Unit> {
         val request = DeleteItemEnhancedRequest
@@ -81,29 +81,9 @@ class CategoryDynamoDBDatastore(
         dynamoDbAsyncTable.deleteItem(request).await()
     }.mapError { error ->
         when (error) {
-            is ConditionalCheckFailedException -> throw CategoryNotFoundDatastoreException(
+            is ConditionalCheckFailedException -> CategoryNotFoundDatastoreException(
                 storeId,
                 categoryId
-            )
-
-            else -> error
-        }
-    }
-
-    override suspend fun patch(category: Category): Result<Unit, Throwable> = runSuspendCatching<Unit> {
-        val request = UpdateItemEnhancedRequest
-            .builder(CategoryDataStoreDTO::class.java)
-            .ignoreNulls(true)
-            .item(category.toDatastoreDTO())
-            .conditionExpression(EXISTS_EXPRESSION)
-            .build()
-
-        dynamoDbAsyncTable.updateItem(request).await()
-    }.mapError { error ->
-        when (error) {
-            is ConditionalCheckFailedException -> throw CategoryNotFoundDatastoreException(
-                category.storeId!!,
-                category.categoryId!!
             )
 
             else -> error

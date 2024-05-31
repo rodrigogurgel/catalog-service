@@ -1,0 +1,57 @@
+{
+  "type": "record",
+  "name": "DeleteCategoryEventRequest",
+  "namespace": "br.com.rodrigogurgel.catalogservice.in.events.request",
+  "fields": [
+    {
+      "name": "transaction",
+      "type": {
+        "type": "record",
+        "name": "TransactionEventRequest",
+        "fields": [
+          {
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "name": "correlationId",
+            "type": "string"
+          },
+          {
+            "name": "createdBy",
+            "type": "string"
+          },
+          {
+            "name": "createdFrom",
+            "type": "string"
+          },
+          {
+            "name": "createdAt",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "name": "data",
+      "type": {
+        "type": "record",
+        "name": "DeleteCategoryEventRequestData",
+        "fields": [
+          {
+            "name": "categoryId",
+            "type": [
+              "string"
+            ]
+          },
+          {
+            "name": "storeId",
+            "type": [
+              "string"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

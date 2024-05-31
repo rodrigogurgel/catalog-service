@@ -1,0 +1,73 @@
+{
+  "type": "record",
+  "name": "CreateProductEventRequest",
+  "namespace": "br.com.rodrigogurgel.catalogservice.in.events.request",
+  "fields": [
+    {
+      "name": "transaction",
+      "type": {
+        "type": "record",
+        "name": "TransactionEventRequest",
+        "fields": [
+          {
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "name": "correlationId",
+            "type": "string"
+          },
+          {
+            "name": "createdBy",
+            "type": "string"
+          },
+          {
+            "name": "createdFrom",
+            "type": "string"
+          },
+          {
+            "name": "createdAt",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "name": "data",
+      "type": {
+        "name": "CreateProductEventRequestData",
+        "type": "record",
+        "fields": [
+          {
+            "name": "productId",
+            "type": "string"
+          },
+          {
+            "name": "storeId",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          },
+          {
+            "name": "image",
+            "type": [
+              "null",
+              "string"
+            ],
+            "default": null
+          }
+        ]
+      }
+    }
+  ]
+}

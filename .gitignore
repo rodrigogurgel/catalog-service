@@ -47,3 +47,7 @@ src/main/avro
 
 ## Prometheus ##
 !**/prometheus/*.yml
+
+## Env ##
+.*.env
+!.env

@@ -64,6 +64,8 @@ services:
         image: tchiotludo/akhq:latest
         restart: unless-stopped
         container_name: akhq
+        env_file:
+            - .dev.env
         environment:
             AKHQ_CONFIGURATION: |
                 akhq:
@@ -76,6 +78,16 @@ services:
                       connect:
                         - name: "connect"
                           url: "http://connect:8083"
+#                    cloud-server:
+#                      properties:
+#                        bootstrap.servers: "${BOOTSTRAP_SERVERS}"
+#                        security.protocol: SASL_SSL
+#                        sasl.mechanism: PLAIN
+#                        sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username='${CLUSTER_API_KEY}' password='${CLUSTER_API_SECRET}';
+#                      schema-registry:
+#                        url: "${SCHEMA_REGISTRY_URL}"
+#                        basic-auth-username: ${SCHEMA_REGISTRY_API_KEY}
+#                        basic-auth-password: ${SCHEMA_REGISTRY_API_SECRET}
 
         ports:
             - "8090:8080"

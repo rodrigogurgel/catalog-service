@@ -28,6 +28,7 @@ import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest
 import software.amazon.awssdk.enhanced.dynamodb.model.ReadBatch
 import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest
+import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException
 import java.util.UUID
 
@@ -35,12 +36,13 @@ import java.util.UUID
 class CustomizationDynamoDBDatastore(
     private val dynamoDbAsyncTable: DynamoDbAsyncTable<CustomizationDatastoreDTO>,
     private val enhancedAsyncClient: DynamoDbEnhancedAsyncClient,
+    private val dynamoAsyncDbClient: DynamoDbAsyncClient,
 ) : CustomizationDatastoreOutputPort {
 
     companion object {
         private val NOT_EXISTS_EXPRESSION =
             Expression.builder().expression("attribute_not_exists(customization_id)").build()
-        private val EXISTS_EXPRESSION = Expression.builder().expression("attribute_exists(category_id)").build()
+        private val EXISTS_EXPRESSION = Expression.builder().expression("attribute_exists(customization_id)").build()
     }
 
     override suspend fun create(customization: Customization): Result<Unit, Throwable> = runSuspendCatching<Unit> {
@@ -61,25 +63,25 @@ class CustomizationDynamoDBDatastore(
         }
     }
 
-    override suspend fun update(customization: Customization): Result<Unit, Throwable> = runSuspendCatching<Unit> {
-        val updateItemRequest = UpdateItemEnhancedRequest
-            .builder(CustomizationDatastoreDTO::class.java)
-            .ignoreNulls(false)
-            .item(customization.toDatastoreDTO())
-            .conditionExpression(EXISTS_EXPRESSION)
-            .build()
+    override suspend fun update(customization: Customization): Result<Unit, Throwable> =
+        runSuspendCatching<Unit> {
+            val updateItemRequest = UpdateItemEnhancedRequest
+                .builder(CustomizationDatastoreDTO::class.java)
+                .item(customization.toDatastoreDTO().copy(reference = null))
+                .conditionExpression(EXISTS_EXPRESSION)
+                .build()
 
-        dynamoDbAsyncTable.updateItem(updateItemRequest).await()
-    }.mapError { error ->
-        when (error) {
-            is ConditionalCheckFailedException -> CustomizationNotFoundDatastoreException(
-                customization.storeId!!,
-                customization.customizationId!!
-            )
+            dynamoDbAsyncTable.updateItem(updateItemRequest).await()
+        }.mapError { error ->
+            when (error) {
+                is ConditionalCheckFailedException -> CustomizationNotFoundDatastoreException(
+                    customization.storeId!!,
+                    customization.customizationId!!
+                )
 
-            else -> error
+                else -> error
+            }
         }
-    }
 
     override suspend fun delete(storeId: UUID, customizationId: UUID): Result<Unit, Throwable> =
         runSuspendCatching<Unit> {
@@ -106,26 +108,6 @@ class CustomizationDynamoDBDatastore(
                 else -> error
             }
         }
-
-    override suspend fun patch(customization: Customization): Result<Unit, Throwable> = runSuspendCatching<Unit> {
-        val updateItemRequest = UpdateItemEnhancedRequest
-            .builder(CustomizationDatastoreDTO::class.java)
-            .ignoreNulls(true)
-            .item(customization.toDatastoreDTO())
-            .conditionExpression(NOT_EXISTS_EXPRESSION)
-            .build()
-
-        dynamoDbAsyncTable.updateItem(updateItemRequest).await()
-    }.mapError { error ->
-        when (error) {
-            is ConditionalCheckFailedException -> CustomizationNotFoundDatastoreException(
-                customization.storeId!!,
-                customization.customizationId!!
-            )
-
-            else -> error
-        }
-    }
 
     override suspend fun searchByReferenceBeginsWith(
         storeId: UUID,

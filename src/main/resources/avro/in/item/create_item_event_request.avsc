@@ -1,0 +1,85 @@
+{
+  "type": "record",
+  "name": "CreateItemEventRequest",
+  "namespace": "br.com.rodrigogurgel.catalogservice.in.events.request",
+  "fields": [
+    {
+      "name": "transaction",
+      "type": {
+        "type": "record",
+        "name": "TransactionEventRequest",
+        "fields": [
+          {
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "name": "correlationId",
+            "type": "string"
+          },
+          {
+            "name": "createdBy",
+            "type": "string"
+          },
+          {
+            "name": "createdFrom",
+            "type": "string"
+          },
+          {
+            "name": "createdAt",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "name": "data",
+      "type": {
+        "name": "CreateItemEventRequestData",
+        "type": "record",
+        "fields": [
+          {
+            "name": "itemId",
+            "type": "string"
+          },
+          {
+            "name": "storeId",
+            "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "type": "string"
+          },
+          {
+            "name": "price",
+            "type": "double"
+          },
+          {
+            "name": "status",
+            "type": {
+              "name": "StatusEventRequest",
+              "type": "enum",
+              "symbols": [
+                "AVAILABLE",
+                "UNAVAILABLE"
+              ],
+              "default": "AVAILABLE"
+            }
+          },
+          {
+            "name": "index",
+            "type": "int"
+          },
+          {
+            "name": "reference",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}
