@@ -28,7 +28,6 @@ import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest
 import software.amazon.awssdk.enhanced.dynamodb.model.ReadBatch
 import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest
-import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException
 import java.util.UUID
 
@@ -36,7 +35,6 @@ import java.util.UUID
 class CustomizationDynamoDBDatastore(
     private val dynamoDbAsyncTable: DynamoDbAsyncTable<CustomizationDatastoreDTO>,
     private val enhancedAsyncClient: DynamoDbEnhancedAsyncClient,
-    private val dynamoAsyncDbClient: DynamoDbAsyncClient,
 ) : CustomizationDatastoreOutputPort {
 
     companion object {

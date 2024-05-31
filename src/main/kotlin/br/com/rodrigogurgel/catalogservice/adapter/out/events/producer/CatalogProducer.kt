@@ -41,5 +41,5 @@ class CatalogProducer(
         )
 
         kafkaTemplate.send(producerRecord).await()
-    }.mapError { RuntimeException() }
+    }.mapError { NotifyEventResponseException(record) }
 }

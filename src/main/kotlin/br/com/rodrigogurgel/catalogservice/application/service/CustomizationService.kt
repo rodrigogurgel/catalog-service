@@ -64,7 +64,9 @@ class CustomizationService(
                 }
             }
 
-    private suspend fun deleteCustomizationsByReference(transaction: Transaction<Customization>): Result<Unit, Throwable> =
+    private suspend fun deleteCustomizationsByReference(
+        transaction: Transaction<Customization>,
+    ): Result<Unit, Throwable> =
         searchByReferenceBeginsWith(transaction.data!!.storeId!!, transaction.data!!.reference!!)
             .andThen { customizations ->
                 runCatching {

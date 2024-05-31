@@ -68,7 +68,8 @@ class ItemService(
                             transaction.from(
                                 customization,
                                 TransactionType.DELETE_CUSTOMIZATION
-                            ), false
+                            ),
+                            false
                         )
                     }
                 }

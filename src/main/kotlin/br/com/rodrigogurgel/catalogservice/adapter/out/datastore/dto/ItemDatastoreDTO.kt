@@ -19,7 +19,7 @@ data class ItemDatastoreDTO(
 
     @get:DynamoDbPartitionKey
     @get:DynamoDbAttribute("store_id")
-    @get:DynamoDbSecondaryPartitionKey(indexNames = ["ReferenceIndex", "ProductIdIndex",  "CategoryIdIndex"])
+    @get:DynamoDbSecondaryPartitionKey(indexNames = ["ReferenceIndex", "ProductIdIndex", "CategoryIdIndex"])
     var storeId: UUID? = null,
 
     @get:DynamoDbAttribute("category_id")

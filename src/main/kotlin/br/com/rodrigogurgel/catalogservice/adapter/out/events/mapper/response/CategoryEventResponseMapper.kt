@@ -28,7 +28,6 @@ fun Transaction<Category>.toCreateCategoryEventResponse(): CreateCategoryEventRe
         .build()
 }
 
-
 fun Transaction<Category>.toUpdateCategoryEventResponse(): UpdateCategoryEventResponse {
     return UpdateCategoryEventResponse
         .newBuilder()

@@ -31,7 +31,6 @@ fun Transaction<Item>.toCreateItemEventResponse(): CreateItemEventResponse {
         .build()
 }
 
-
 fun Transaction<Item>.toUpdateItemEventResponse(): UpdateItemEventResponse {
     return UpdateItemEventResponse
         .newBuilder()

@@ -33,7 +33,6 @@ fun Transaction<Customization>.toCreateCustomizationEventResponse(): CreateCusto
         .build()
 }
 
-
 fun Transaction<Customization>.toUpdateCustomizationEventResponse(): UpdateCustomizationEventResponse {
     return UpdateCustomizationEventResponse
         .newBuilder()

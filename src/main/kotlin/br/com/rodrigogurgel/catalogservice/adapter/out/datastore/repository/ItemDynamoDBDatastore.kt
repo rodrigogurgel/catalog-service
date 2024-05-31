@@ -64,7 +64,8 @@ class ItemDynamoDBDatastore(
     }.mapError { error ->
         when (error) {
             is ConditionalCheckFailedException -> ItemNotFoundDatastoreException(
-                item.storeId!!, item.itemId!!
+                item.storeId!!,
+                item.itemId!!
             )
 
             else -> error
@@ -80,7 +81,8 @@ class ItemDynamoDBDatastore(
     }.mapError { error ->
         when (error) {
             is ConditionalCheckFailedException -> ItemNotFoundDatastoreException(
-                storeId, itemId
+                storeId,
+                itemId
             )
 
             else -> error
@@ -102,7 +104,6 @@ class ItemDynamoDBDatastore(
 
     override suspend fun searchByCategoryId(storeId: UUID, categoryId: UUID): Result<List<Item>, Throwable> =
         getKeysByCategoryId(storeId, categoryId).andThen { findByKeys(it) }
-
 
     private suspend fun findByKeys(keys: Set<Key>): Result<List<Item>, Throwable> = runSuspendCatching {
         keys.ifEmpty { return@runSuspendCatching emptyList() }

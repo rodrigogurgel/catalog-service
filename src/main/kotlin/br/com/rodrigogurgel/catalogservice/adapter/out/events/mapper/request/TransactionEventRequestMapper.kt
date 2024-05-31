@@ -5,7 +5,7 @@ import br.com.rodrigogurgel.catalogservice.`in`.events.request.TransactionEventR
 import java.time.Instant
 import java.util.UUID
 
-fun Transaction<*>.toTransactionEventRequest() : TransactionEventRequest {
+fun Transaction<*>.toTransactionEventRequest(): TransactionEventRequest {
     return TransactionEventRequest
         .newBuilder()
         .setTransactionId(UUID.randomUUID().toString())

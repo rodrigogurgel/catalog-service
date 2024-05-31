@@ -33,7 +33,6 @@ fun Transaction<Option>.toCreateOptionEventResponse(): CreateOptionEventResponse
         .build()
 }
 
-
 fun Transaction<Option>.toUpdateOptionEventResponse(): UpdateOptionEventResponse {
     return UpdateOptionEventResponse
         .newBuilder()

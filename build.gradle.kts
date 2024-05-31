@@ -116,12 +116,6 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-tasks.clean {
-    doFirst {
-        delete(paths = arrayOf("$rootDir/src/main/avro"))
-    }
-}
-
 buildscript {
     val avroVersion = properties["avroVersion"]
 
@@ -134,7 +128,8 @@ val avroGen by tasks.register("generateAvroJavaClasses") {
     val sourceAvroFiles = fileTree("src/main/resources") {
         include("**/*.avsc")
     }
-    val generatedJavaDir = File("$rootDir/src/main/avro")
+
+    val generatedJavaDir = File("${layout.buildDirectory.get()}/generated/main/java")
 
     doFirst {
     }
@@ -151,9 +146,11 @@ val avroGen by tasks.register("generateAvroJavaClasses") {
     }
 }
 
-sourceSets.main {
-    java {
-        srcDir("/src/main/avro")
+sourceSets {
+    main {
+        java {
+            srcDir("${layout.buildDirectory.get()}/generated/main/java")
+        }
     }
 }
 

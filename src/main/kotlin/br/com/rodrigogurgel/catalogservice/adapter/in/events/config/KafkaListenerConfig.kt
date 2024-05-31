@@ -43,7 +43,6 @@ class KafkaListenerConfig(
     ).apply { isAckAfterHandle = true }
 
     private fun buildContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, GenericRecord> {
-
         val configs = properties.buildConsumerProperties(DefaultSslBundleRegistry())
         val containerFactory = ConcurrentKafkaListenerContainerFactory<String, GenericRecord>()
 
