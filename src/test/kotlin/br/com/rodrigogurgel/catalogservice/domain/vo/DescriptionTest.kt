@@ -14,8 +14,8 @@ class DescriptionTest {
         val descriptionWith1000Letters = Description(random1000Letters)
         val descriptionWith3Letters = Description(random3Letters)
 
-        random1000Letters shouldBe descriptionWith1000Letters.value
-        random3Letters shouldBe descriptionWith3Letters.value
+        descriptionWith1000Letters.value shouldBe random1000Letters
+        descriptionWith3Letters.value shouldBe random3Letters
     }
 
     @Test

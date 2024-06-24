@@ -10,8 +10,9 @@ class QuantityTest {
         val minPermitted = 0
         val maxPermitted = 1
         val quantity = Quantity(minPermitted, maxPermitted)
-        minPermitted shouldBe quantity.minPermitted
-        maxPermitted shouldBe quantity.maxPermitted
+
+        quantity.minPermitted shouldBe minPermitted
+        quantity.maxPermitted shouldBe maxPermitted
     }
 
     @Test
@@ -19,8 +20,10 @@ class QuantityTest {
         val minPermitted = 1
         val maxPermitted = 1
         val quantity = Quantity(minPermitted, maxPermitted)
-        minPermitted shouldBe quantity.minPermitted
-        maxPermitted shouldBe quantity.maxPermitted
+
+        quantity.minPermitted shouldBe minPermitted
+        quantity.maxPermitted shouldBe maxPermitted
+        quantity.minPermitted shouldBe quantity.maxPermitted
     }
 
     @Test

@@ -14,8 +14,8 @@ class NameTest {
         val nameWith30Letters = Name(random30Letters)
         val nameWith3Letters = Name(random3Letters)
 
-        random30Letters shouldBe nameWith30Letters.value
-        random3Letters shouldBe nameWith3Letters.value
+        nameWith30Letters.value shouldBe random30Letters
+        nameWith3Letters.value shouldBe random3Letters
     }
 
     @Test

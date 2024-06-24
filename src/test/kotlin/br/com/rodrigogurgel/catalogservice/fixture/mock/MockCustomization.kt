@@ -1,9 +1,9 @@
 package br.com.rodrigogurgel.catalogservice.fixture.mock
 
+import br.com.rodrigogurgel.catalogservice.domain.entity.Option
 import br.com.rodrigogurgel.catalogservice.domain.vo.Customization
 import br.com.rodrigogurgel.catalogservice.domain.vo.Description
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name
-import br.com.rodrigogurgel.catalogservice.domain.vo.Option
 import br.com.rodrigogurgel.catalogservice.domain.vo.Quantity
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
 import br.com.rodrigogurgel.catalogservice.fixture.randomString

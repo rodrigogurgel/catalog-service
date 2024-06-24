@@ -9,7 +9,7 @@ import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOfferWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOptionWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockProduct
 import io.kotest.assertions.throwables.shouldThrow
-import org.junit.jupiter.api.Assertions.assertEquals
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
 class OfferTest {
@@ -39,12 +39,12 @@ class OfferTest {
             customizations
         )
 
-        assertEquals(id, offer.id)
-        assertEquals(product, offer.product)
-        assertEquals(price, offer.price)
-        assertEquals(status, offer.status)
-        assertEquals(customizations, offer.customizations)
-        assertEquals(Price(10.toBigDecimal()).normalizedValue(), offer.minimalPrice().normalizedValue())
+        offer.id shouldBe id
+        offer.product shouldBe product
+        offer.price shouldBe price
+        offer.status shouldBe status
+        offer.customizations shouldBe customizations
+        offer.minimalPrice().normalizedValue() shouldBe Price(10.toBigDecimal()).normalizedValue()
     }
 
     @Test
@@ -139,7 +139,7 @@ class OfferTest {
             customizations = mutableListOf(customization1)
         }
 
-        assertEquals(Price(8.5.toBigDecimal()).normalizedValue(), item.minimalPrice().normalizedValue())
+        item.minimalPrice().normalizedValue() shouldBe Price(8.5.toBigDecimal()).normalizedValue()
     }
 
     /**
@@ -274,6 +274,6 @@ class OfferTest {
             customizations = mutableListOf(customization1, customization2)
         }
 
-        assertEquals(Price(9.5.toBigDecimal()).normalizedValue(), item.minimalPrice().normalizedValue())
+        item.minimalPrice().normalizedValue() shouldBe Price(9.5.toBigDecimal()).normalizedValue()
     }
 }

@@ -11,7 +11,7 @@ class PriceTest {
     fun `Should instantiate price with success when value is greater than 0`() {
         val moreThan0 = Random.nextDouble(0.1, 1000000.0).toBigDecimal().setScale(2, RoundingMode.UP)
         val price = Price(moreThan0)
-        moreThan0 shouldBe price.normalizedValue()
+        price.normalizedValue() shouldBe moreThan0
     }
 
     @Test

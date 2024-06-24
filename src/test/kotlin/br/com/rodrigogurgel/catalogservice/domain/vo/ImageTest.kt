@@ -10,7 +10,8 @@ class ImageTest {
     fun `Should instantiate Image with success when path is a valid url`() {
         val path = "https://www.example.com"
         val image = Image(path)
-        path shouldBe image.path
+
+        image.path shouldBe path
     }
 
     @Test

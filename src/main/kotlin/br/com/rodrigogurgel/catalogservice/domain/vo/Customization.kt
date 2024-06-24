@@ -1,5 +1,7 @@
 package br.com.rodrigogurgel.catalogservice.domain.vo
 
+import br.com.rodrigogurgel.catalogservice.domain.entity.Option
+
 data class Customization(
     val name: Name,
     val description: Description?,

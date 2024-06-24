@@ -1,5 +1,6 @@
 package br.com.rodrigogurgel.catalogservice.domain.vo
 
+import br.com.rodrigogurgel.catalogservice.domain.entity.Option
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockCustomizationWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOption
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOptionWith
@@ -26,11 +27,11 @@ class CustomizationTest {
             options
         )
 
-        name shouldBe customization.name
-        description shouldBe customization.description
-        quantity shouldBe customization.quantity
-        status shouldBe customization.status
-        options shouldBe customization.options
+        customization.name shouldBe name
+        customization.description shouldBe description
+        customization.quantity shouldBe quantity
+        customization.status shouldBe status
+        customization.options shouldBe options
     }
 
     @Test
@@ -49,11 +50,11 @@ class CustomizationTest {
             options
         )
 
-        name shouldBe customization.name
-        quantity shouldBe customization.quantity
-        status shouldBe customization.status
-        options shouldBe customization.options
-        options.size shouldBe customization.quantity.minPermitted
+        customization.name shouldBe name
+        customization.quantity shouldBe quantity
+        customization.status shouldBe status
+        customization.options shouldBe options
+        customization.quantity.minPermitted shouldBe options.size
     }
 
     @Test
@@ -110,7 +111,7 @@ class CustomizationTest {
             options = mutableListOf(option1, option2)
         }
 
-        Price(10.toBigDecimal()).normalizedValue() shouldBe customization.minimalPrice().normalizedValue()
+        customization.minimalPrice().normalizedValue() shouldBe Price(10.toBigDecimal()).normalizedValue()
     }
 
     @Test
@@ -162,6 +163,6 @@ class CustomizationTest {
             options = mutableListOf(option1, option2)
         }
 
-        Price(10.toBigDecimal()).normalizedValue() shouldBe customization.minimalPrice().normalizedValue()
+        customization.minimalPrice().normalizedValue() shouldBe Price(10.toBigDecimal()).normalizedValue()
     }
 }

@@ -4,7 +4,7 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Description
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name
 import br.com.rodrigogurgel.catalogservice.fixture.randomString
-import org.junit.jupiter.api.Assertions.assertEquals
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
 class StoreTest {
@@ -17,10 +17,10 @@ class StoreTest {
         val products = mutableMapOf<Id, Product>()
         val store = Store(id, name, description, categories, products)
 
-        assertEquals(id, store.id)
-        assertEquals(name, store.name)
-        assertEquals(description, store.description)
-        assertEquals(categories, store.categories)
-        assertEquals(products, store.products)
+        store.id shouldBe id
+        store.name shouldBe name
+        store.description shouldBe description
+        store.categories shouldBe categories
+        store.products shouldBe products
     }
 }

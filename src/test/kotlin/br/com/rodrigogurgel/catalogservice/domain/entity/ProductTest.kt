@@ -5,7 +5,7 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Image
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name
 import br.com.rodrigogurgel.catalogservice.fixture.randomString
-import org.junit.jupiter.api.Assertions.assertEquals
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -23,10 +23,10 @@ class ProductTest {
             image = image
         )
 
-        assertEquals(id, product.id)
-        assertEquals(id.id, product.id.id)
-        assertEquals(name, product.name)
-        assertEquals(description, product.description)
-        assertEquals(image, product.image)
+        product.id shouldBe id
+        product.id.id shouldBe id.id
+        product.name shouldBe name
+        product.description shouldBe description
+        product.image shouldBe image
     }
 }

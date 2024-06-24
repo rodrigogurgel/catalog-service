@@ -5,7 +5,7 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
 import br.com.rodrigogurgel.catalogservice.fixture.randomString
-import org.junit.jupiter.api.Assertions.assertEquals
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
 class CategoryTest {
@@ -24,10 +24,10 @@ class CategoryTest {
             offers
         )
 
-        assertEquals(id, category.id)
-        assertEquals(name, category.name)
-        assertEquals(description, category.description)
-        assertEquals(status, category.status)
-        assertEquals(offers, category.offers)
+        category.id shouldBe id
+        category.name shouldBe name
+        category.description shouldBe description
+        category.status shouldBe status
+        category.offers shouldBe offers
     }
 }
