@@ -1,5 +1,6 @@
 package br.com.rodrigogurgel.catalogservice.domain.vo
 
+import br.com.rodrigogurgel.catalogservice.domain.entity.Customization
 import br.com.rodrigogurgel.catalogservice.domain.entity.Option
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockCustomizationWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOption
@@ -13,6 +14,7 @@ import java.math.BigDecimal
 class CustomizationTest {
     @Test
     fun `Should instantiate with success when minPermitted is equal to 0 and options is not empty`() {
+        val id = Id()
         val name = Name(randomString(30))
         val description = Description(randomString(1000))
         val quantity = Quantity(0, 1)
@@ -20,6 +22,7 @@ class CustomizationTest {
         val options = mutableListOf(mockOption())
 
         val customization = Customization(
+            id,
             name,
             description,
             quantity,
@@ -27,6 +30,7 @@ class CustomizationTest {
             options
         )
 
+        customization.id shouldBe id
         customization.name shouldBe name
         customization.description shouldBe description
         customization.quantity shouldBe quantity
@@ -36,6 +40,7 @@ class CustomizationTest {
 
     @Test
     fun `Should instantiate with success when minPermitted is equal to 1 and options size is equal to minPermitted`() {
+        val id = Id()
         val name = Name(randomString(30))
         val description = Description(randomString(1000))
         val quantity = Quantity(1, 1)
@@ -43,6 +48,7 @@ class CustomizationTest {
         val options = mutableListOf(mockOption())
 
         val customization = Customization(
+            id,
             name,
             description,
             quantity,
@@ -50,6 +56,7 @@ class CustomizationTest {
             options
         )
 
+        customization.id shouldBe id
         customization.name shouldBe name
         customization.quantity shouldBe quantity
         customization.status shouldBe status
@@ -59,6 +66,7 @@ class CustomizationTest {
 
     @Test
     fun `Should instantiate with error when maxPermitted is greater than options size and options is not empty`() {
+        val id = Id()
         val name = Name(randomString(30))
         val description = Description(randomString(1000))
         val quantity = Quantity(1, 2)
@@ -67,6 +75,7 @@ class CustomizationTest {
 
         shouldThrow<IllegalArgumentException> {
             Customization(
+                id,
                 name,
                 description,
                 quantity,
@@ -78,6 +87,7 @@ class CustomizationTest {
 
     @Test
     fun `Should instantiate with error when options is empty`() {
+        val id = Id()
         val name = Name(randomString(30))
         val description = Description(randomString(1000))
         val quantity = Quantity(0, 2)
@@ -86,6 +96,7 @@ class CustomizationTest {
 
         val exception = shouldThrow<IllegalArgumentException> {
             Customization(
+                id,
                 name,
                 description,
                 quantity,

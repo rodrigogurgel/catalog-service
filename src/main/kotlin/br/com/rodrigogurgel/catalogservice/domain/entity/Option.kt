@@ -1,6 +1,5 @@
 package br.com.rodrigogurgel.catalogservice.domain.entity
 
-import br.com.rodrigogurgel.catalogservice.domain.vo.Customization
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Price
 import br.com.rodrigogurgel.catalogservice.domain.vo.Quantity
@@ -12,7 +11,7 @@ data class Option(
     val price: Price,
     val quantity: Quantity,
     val status: Status,
-    val customizations: MutableList<Customization>,
+    val customizations: List<Customization>,
 ) {
     fun minimalPrice(): Price {
         val minPermittedOrOne = if (quantity.minPermitted == 0) 1 else quantity.minPermitted

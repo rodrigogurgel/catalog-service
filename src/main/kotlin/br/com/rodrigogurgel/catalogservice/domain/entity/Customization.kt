@@ -1,13 +1,19 @@
-package br.com.rodrigogurgel.catalogservice.domain.vo
+package br.com.rodrigogurgel.catalogservice.domain.entity
 
-import br.com.rodrigogurgel.catalogservice.domain.entity.Option
+import br.com.rodrigogurgel.catalogservice.domain.vo.Description
+import br.com.rodrigogurgel.catalogservice.domain.vo.Id
+import br.com.rodrigogurgel.catalogservice.domain.vo.Name
+import br.com.rodrigogurgel.catalogservice.domain.vo.Price
+import br.com.rodrigogurgel.catalogservice.domain.vo.Quantity
+import br.com.rodrigogurgel.catalogservice.domain.vo.Status
 
 data class Customization(
+    val id: Id,
     val name: Name,
     val description: Description?,
     val quantity: Quantity,
     val status: Status,
-    val options: MutableList<Option>,
+    val options: List<Option>,
 ) {
     init {
         require(options.isNotEmpty()) {

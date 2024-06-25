@@ -1,8 +1,8 @@
 package br.com.rodrigogurgel.catalogservice.fixture.mock
 
+import br.com.rodrigogurgel.catalogservice.domain.entity.Customization
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
 import br.com.rodrigogurgel.catalogservice.domain.entity.Product
-import br.com.rodrigogurgel.catalogservice.domain.vo.Customization
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Price
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
