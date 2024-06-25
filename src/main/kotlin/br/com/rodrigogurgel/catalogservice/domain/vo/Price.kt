@@ -9,7 +9,9 @@ data class Price(
     fun normalizedValue(): BigDecimal = this.value.setScale(2, RoundingMode.UP)
 
     init {
-        require(value >= BigDecimal.ZERO)
+        require(value >= BigDecimal.ZERO) {
+            "The price must be positive."
+        }
     }
 
     companion object {

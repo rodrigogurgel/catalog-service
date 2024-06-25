@@ -5,7 +5,7 @@ Feature: Create product
       | id                                   | name       | description                  |
       | 65888cdc-7cb6-48f0-972d-65d8b96b4a85 | Mock Store | A description used for tests |
 
-    And the following product information's:
+    And the following product information:
       | name         | description                  | image                   |
       | Mock Product | A description used for tests | http://www.image.com.br |
 

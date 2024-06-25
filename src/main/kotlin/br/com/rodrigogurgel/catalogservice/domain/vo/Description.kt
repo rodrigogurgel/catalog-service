@@ -9,6 +9,8 @@ data class Description(
     }
 
     init {
-        require(value.length in MIN_LENGTH..MAX_LENGTH)
+        require(value.length in MIN_LENGTH..MAX_LENGTH) {
+            "The description need be between $MIN_LENGTH and $MAX_LENGTH characters."
+        }
     }
 }

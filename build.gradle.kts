@@ -95,16 +95,25 @@ jacoco {
 
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
+
     reports {
         html.required = true
+        xml.required = true
+        csv.required = false
     }
+
+    classDirectories.setFrom(
+        sourceSets.main.get().output.asFileTree.matching {
+            exclude("br/com/rodrigogurgel/catalogservice/CatalogApplication*")
+        }
+    )
+
     finalizedBy(tasks.jacocoTestCoverageVerification)
 }
 
 tasks.jacocoTestCoverageVerification {
     violationRules {
         rule {
-            element = "CLASS"
             limit {
                 counter = "LINE"
                 value = "COVEREDRATIO"

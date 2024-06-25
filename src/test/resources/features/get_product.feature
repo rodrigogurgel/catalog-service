@@ -11,7 +11,7 @@ Feature: Get product
 
   Scenario: Get a product with success
     When I get a product with id "5034c1ac-75ac-4e72-a443-7266da86b911" from store with id "65888cdc-7cb6-48f0-972d-65d8b96b4a85"
-    Then the product should have same information's
+    Then the product should have same information
 
   Scenario: Get a product with error when store not exists
     Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated

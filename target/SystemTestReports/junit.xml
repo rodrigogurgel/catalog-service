@@ -1,40 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="Cucumber" time="5.264" tests="23" skipped="0" failures="0" errors="0">
-<testcase classname="Create category" name="Create a category with success" time="3.871">
+<testsuite name="Cucumber" time="6.658" tests="37" skipped="0" failures="0" errors="0">
+<testcase classname="Create category" name="Create a category with success" time="4.268">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
-And the following category information's:...................................passed
+And the following category information:.....................................passed
 When I add a category into store............................................passed
 Then the category should be persist in the datastore........................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Create category" name="Create a category with error when store not exists" time="0.029">
+<testcase classname="Create category" name="Create a category with error when store not exists" time="0.034">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
-And the following category information's:...................................passed
-Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated..passed
+And the following category information:.....................................passed
+Given an id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated.passed
 When I try add a category into store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
 Then I get an error.........................................................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Create product" name="Create a product with success" time="0.042">
+<testcase classname="Create offer" name="Create a offer with success" time="0.196">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
-And the following product information's:....................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer information:........................................passed
+When I create a offer into store............................................passed
+Then the offer should be persist in the datastore...........................passed
+]]></system-out>
+</testcase>
+<testcase classname="Create offer" name="Create a offer shouldn't update any product" time="0.29">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer information:........................................passed
+When I change product name to "New Product Name"............................passed
+And I create a offer into store with this product...........................passed
+Then the offer with new product name should be persist in the datastore.....passed
+But the product shouldn't be updated in the datastore.......................passed
+]]></system-out>
+</testcase>
+<testcase classname="Create offer" name="Create a offer with error when store not exists" time="0.042">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer information:........................................passed
+Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated..passed
+When I try create a offer into store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
+Then I get an error.........................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Create offer" name="Create a offer with error when category not exists" time="0.027">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer information:........................................passed
+Given an id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated.passed
+When I try create a offer into category with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
+Then I get an error.........................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Create offer" name="Create a offer with error when product not exists" time="0.03">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer information:........................................passed
+Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no product associated.passed
+When I try create a offer with product that has this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
+Then I get an error.........................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Create product" name="Create a product with success" time="0.026">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following product information:......................................passed
 When I add a product into store.............................................passed
 Then the product should be persist in the datastore.........................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Create product" name="Create a product with error when store not exists" time="0.02">
+<testcase classname="Create product" name="Create a product with error when store not exists" time="0.017">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
-And the following product information's:....................................passed
+And the following product information:......................................passed
 Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated..passed
 When I try add a product into store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
 Then I get an error.........................................................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Delete category" name="Delete a category with success" time="0.08">
+<testcase classname="Delete category" name="Delete a category with success" time="0.022">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following category exists:..........................................passed
@@ -42,7 +97,7 @@ When I delete a category from store.........................................pass
 Then the category should be remove from datastore...........................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Delete category" name="Delete a category with error when store not exists" time="0.022">
+<testcase classname="Delete category" name="Delete a category with error when store not exists" time="0.019">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following category exists:..........................................passed
@@ -51,7 +106,39 @@ When I try remove a category from store with this id "92ddeebf-da50-402f-b850-19
 Then I get an error.........................................................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Delete product" name="Delete a product with success" time="0.067">
+<testcase classname="Delete offer" name="Delete a offer with success" time="0.079">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer exists:.............................................passed
+When I delete a offer with id "5034c1ac-75ac-4e72-a443-7266da86b911" from store with id "5034c1ac-75ac-4e72-a443-7266da86b911" and category id "5034c1ac-75ac-4e72-a443-7266da86b911".passed
+Then the offer should be remove from datastore..............................passed
+]]></system-out>
+</testcase>
+<testcase classname="Delete offer" name="Delete a offer with error when store not exists" time="0.034">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer exists:.............................................passed
+Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated..passed
+When I try delete a offer from store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
+Then I get an error.........................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Delete offer" name="Delete a offer with error when category not exists" time="0.028">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer exists:.............................................passed
+Given an id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated.passed
+When I try delete a offer from category with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
+Then I get an error.........................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Delete product" name="Delete a product with success" time="0.019">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following product exists:...........................................passed
@@ -59,7 +146,7 @@ When I delete a product from store..........................................pass
 Then the product should be remove from datastore............................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Delete product" name="Delete a product with error when store not exists" time="0.03">
+<testcase classname="Delete product" name="Delete a product with error when store not exists" time="0.061">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following product exists:...........................................passed
@@ -68,67 +155,84 @@ When I try remove a product from store with this id "92ddeebf-da50-402f-b850-19e
 Then I get an error.........................................................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Get category" name="Get a category with success" time="0.041">
-<system-out><![CDATA[
-Given the following store exists:...........................................passed
-And the following category exists:..........................................passed
-When I get a category with id "5034c1ac-75ac-4e72-a443-7266da86b911" from store with id "65888cdc-7cb6-48f0-972d-65d8b96b4a85".passed
-Then the category should have same information's............................passed
-]]></system-out>
-</testcase>
-<testcase classname="Get category" name="Get a category with error when store not exists" time="0.026">
-<system-out><![CDATA[
-Given the following store exists:...........................................passed
-And the following category exists:..........................................passed
-Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated..passed
-When I try get a category from store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
-Then I get an error.........................................................passed
-]]></system-out>
-</testcase>
-<testcase classname="Get category" name="Get a category with error when category not exists" time="0.027">
-<system-out><![CDATA[
-Given the following store exists:...........................................passed
-And the following category exists:..........................................passed
-Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no category associated.passed
-When I try get a category with this id "92ddeebf-da50-402f-b850-19e5fb093a0a" from store.passed
-Then I get an error.........................................................passed
-]]></system-out>
-</testcase>
 <testcase classname="Get category" name="Get a category with success" time="0.021">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following category exists:..........................................passed
 When I get a category with id "5034c1ac-75ac-4e72-a443-7266da86b911" from store with id "65888cdc-7cb6-48f0-972d-65d8b96b4a85".passed
-Then the category should have same information's............................passed
+Then the category should have same information..............................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Get category" name="Get a category with error when store not exists" time="0.023">
+<testcase classname="Get category" name="Get a category with error when store not exists" time="0.017">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following category exists:..........................................passed
-Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated..passed
+Given an id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated.passed
 When I try get a category from store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
 Then I get an error.........................................................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Get category" name="Get a category with error when category not exists" time="0.02">
+<testcase classname="Get category" name="Get a category with error when category not exists" time="0.019">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following category exists:..........................................passed
-Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no category associated.passed
+Given an id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no category associated.passed
 When I try get a category with this id "92ddeebf-da50-402f-b850-19e5fb093a0a" from store.passed
 Then I get an error.........................................................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Get product" name="Get a product with success" time="0.017">
+<testcase classname="Get offer" name="Get a offer with success" time="0.033">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer exists:.............................................passed
+When I get a offer with id "5034c1ac-75ac-4e72-a443-7266da86b911" from store with id "5034c1ac-75ac-4e72-a443-7266da86b911" and category id "5034c1ac-75ac-4e72-a443-7266da86b911".passed
+Then the offer should have same information.................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Get offer" name="Get a offer with error when store not exists" time="0.035">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer exists:.............................................passed
+Given an id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated.passed
+When I try get a offer from store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
+Then I get an error.........................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Get offer" name="Get a offer with error when offer not exists" time="0.03">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer exists:.............................................passed
+Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no offer associated..passed
+When I try get a offer with this id "92ddeebf-da50-402f-b850-19e5fb093a0a"..passed
+Then I get an error.........................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Get offer" name="Get a offer with error when category not exists" time="0.025">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer exists:.............................................passed
+Given an id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no category associated.passed
+When I try get a offer from category with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
+Then I get an error.........................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Get product" name="Get a product with success" time="0.018">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following product exists:...........................................passed
 When I get a product with id "5034c1ac-75ac-4e72-a443-7266da86b911" from store with id "65888cdc-7cb6-48f0-972d-65d8b96b4a85".passed
-Then the product should have same information's.............................passed
+Then the product should have same information...............................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Get product" name="Get a product with error when store not exists" time="0.055">
+<testcase classname="Get product" name="Get a product with error when store not exists" time="0.02">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following product exists:...........................................passed
@@ -146,38 +250,92 @@ When I try get a product with this id "92ddeebf-da50-402f-b850-19e5fb093a0a" fro
 Then I get an error.........................................................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Update category" name="Update a category with success" time="0.024">
+<testcase classname="Update category" name="Update a category with success" time="0.018">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following category exists:..........................................passed
 When I update category name to "New Category Name" into store...............passed
-Then the category with new information's should be persist in the datastore.passed
+Then the category with new information should be persist in the datastore...passed
 ]]></system-out>
 </testcase>
-<testcase classname="Update category" name="Update a category with error when store not exists" time="0.018">
+<testcase classname="Update category" name="Update a category with error when store not exists" time="0.014">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following category exists:..........................................passed
-Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated..passed
-When I try add a category into store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
+Given an id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated.passed
+When I try update a category into store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
 Then I get an error.........................................................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Update category" name="Update a category with error when category not exists" time="0.032">
+<testcase classname="Update category" name="Update a category with error when category not exists" time="0.015">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following category exists:..........................................passed
-Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no category associated.passed
+Given an id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no category associated.passed
 When I try update a category with this id "92ddeebf-da50-402f-b850-19e5fb093a0a" from store.passed
 Then I get an error.........................................................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Update product" name="Update a product with success" time="0.022">
+<testcase classname="Update offer" name="Update a offer with success" time="0.024">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer exists:.............................................passed
+When I update offer price to "50.00" into store.............................passed
+Then the offer with new information should be persist in the datastore......passed
+]]></system-out>
+</testcase>
+<testcase classname="Update offer" name="Update a offer with error when store not exists" time="0.025">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer exists:.............................................passed
+Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated..passed
+When I try update a offer into store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
+Then I get an error.........................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Update offer" name="Update a offer with error when offer not exists" time="0.027">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer exists:.............................................passed
+Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no offer associated..passed
+When I try update a offer with this id "92ddeebf-da50-402f-b850-19e5fb093a0a" from store.passed
+Then I get an error.........................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Update offer" name="Update a offer with error when category not exists" time="0.024">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer exists:.............................................passed
+Given an id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated.passed
+When I try update a offer into category with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
+Then I get an error.........................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Update offer" name="Update a offer with error when product not exists" time="0.021">
+<system-out><![CDATA[
+Given the following store exists:...........................................passed
+And the following category exists:..........................................passed
+And the following product exists:...........................................passed
+And the following offer exists:.............................................passed
+Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no product associated.passed
+When I try update a offer product to a product with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
+Then I get an error.........................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="Update product" name="Update a product with success" time="0.017">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following product exists:...........................................passed
 When I update product name to "New Product Name" into store.................passed
-Then the product with new information's should be persist in the datastore..passed
+Then the product with new information should be persist in the datastore....passed
 ]]></system-out>
 </testcase>
 <testcase classname="Update product" name="Update a product with error when store not exists" time="0.014">
@@ -185,11 +343,11 @@ Then the product with new information's should be persist in the datastore..pass
 Given the following store exists:...........................................passed
 And the following product exists:...........................................passed
 Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated..passed
-When I try add a product into store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
+When I try update a product into store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a".passed
 Then I get an error.........................................................passed
 ]]></system-out>
 </testcase>
-<testcase classname="Update product" name="Update a product with error when product not exists" time="0.019">
+<testcase classname="Update product" name="Update a product with error when product not exists" time="0.016">
 <system-out><![CDATA[
 Given the following store exists:...........................................passed
 And the following product exists:...........................................passed

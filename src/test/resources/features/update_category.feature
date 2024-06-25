@@ -11,14 +11,14 @@ Feature: Update category
 
   Scenario: Update a category with success
     When I update category name to "New Category Name" into store
-    Then the category with new information's should be persist in the datastore
+    Then the category with new information should be persist in the datastore
 
   Scenario: Update a category with error when store not exists
-    Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated
-    When I try add a category into store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a"
+    Given an id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated
+    When I try update a category into store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a"
     Then I get an error
 
   Scenario: Update a category with error when category not exists
-    Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no category associated
+    Given an id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no category associated
     When I try update a category with this id "92ddeebf-da50-402f-b850-19e5fb093a0a" from store
     Then I get an error

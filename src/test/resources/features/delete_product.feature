@@ -17,4 +17,3 @@ Feature: Delete product
     Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated
     When I try remove a product from store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a"
     Then I get an error
-

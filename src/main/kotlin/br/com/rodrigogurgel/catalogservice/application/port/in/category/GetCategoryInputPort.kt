@@ -14,6 +14,6 @@ class GetCategoryInputPort(
 ) : GetCategoryUseCase {
     override fun execute(storeId: Id, categoryId: Id): Category {
         if (!storeDatastoreOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
-        return categoryDatastoreOutputPort.findById(storeId, categoryId) ?: throw CategoryNotFoundException(storeId)
+        return categoryDatastoreOutputPort.findById(storeId, categoryId) ?: throw CategoryNotFoundException(categoryId)
     }
 }

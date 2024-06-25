@@ -1,4 +1,4 @@
-package br.com.rodrigogurgel.catalogservice.application.steps
+package br.com.rodrigogurgel.catalogservice.application.steps.product
 
 import br.com.rodrigogurgel.catalogservice.application.context.ProductContextStepDefs
 import br.com.rodrigogurgel.catalogservice.application.context.StoreContextStepDefs
@@ -7,7 +7,6 @@ import br.com.rodrigogurgel.catalogservice.application.port.`in`.product.CreateP
 import br.com.rodrigogurgel.catalogservice.application.usecase.product.CreateProductUseCase
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import io.cucumber.java.Before
-import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.kotest.assertions.throwables.shouldThrow
@@ -15,11 +14,11 @@ import io.mockk.every
 import io.mockk.verifySequence
 
 class CreateProductStepDefs(
-    private val storeContextStepDefs: StoreContextStepDefs,
+    private val storeContext: StoreContextStepDefs,
     private val productContext: ProductContextStepDefs,
 ) {
     private val createProductUseCase: CreateProductUseCase =
-        CreateProductInputPort(storeContextStepDefs.storeDatastoreOutputPort, productContext.productDatastoreOutputPort)
+        CreateProductInputPort(storeContext.storeDatastoreOutputPort, productContext.productDatastoreOutputPort)
 
     @Before
     fun setUp() {
@@ -28,20 +27,15 @@ class CreateProductStepDefs(
 
     @When("I add a product into store")
     fun iAddAProductIntoStore() {
-        createProductUseCase.execute(storeContextStepDefs.store.id, productContext.product)
+        createProductUseCase.execute(storeContext.store.id, productContext.product)
     }
 
     @Then("the product should be persist in the datastore")
     fun theProductShouldBePersistInTheStore() {
         verifySequence {
-            storeContextStepDefs.storeDatastoreOutputPort.exists(storeContextStepDefs.store.id)
-            productContext.productDatastoreOutputPort.create(storeContextStepDefs.store.id, productContext.product)
+            storeContext.storeDatastoreOutputPort.exists(storeContext.store.id)
+            productContext.productDatastoreOutputPort.create(storeContext.store.id, productContext.product)
         }
-    }
-
-    @Given("a id {string} with no store associated")
-    fun aIdWithNoStoreAssociated(id: String) {
-        every { storeContextStepDefs.storeDatastoreOutputPort.exists(Id(id)) } returns false
     }
 
     @When("I try add a product into store with this id {string}")

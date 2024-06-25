@@ -1,4 +1,4 @@
-package br.com.rodrigogurgel.catalogservice.application.steps
+package br.com.rodrigogurgel.catalogservice.application.steps.product
 
 import br.com.rodrigogurgel.catalogservice.application.context.ProductContextStepDefs
 import br.com.rodrigogurgel.catalogservice.application.context.StoreContextStepDefs
@@ -26,8 +26,8 @@ class GetProductStepDefs(
         productRetrieve = getProductUseCase.execute(Id(storeId), Id(productId))
     }
 
-    @Then("the product should have same information's")
-    fun theProductShouldHaveSameInformationS() {
+    @Then("the product should have same information")
+    fun theProductShouldHaveSameInformation() {
         productRetrieve shouldBe productContext.product
     }
 

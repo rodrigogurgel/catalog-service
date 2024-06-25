@@ -1,6 +1,10 @@
-package br.com.rodrigogurgel.catalogservice.domain.vo
+package br.com.rodrigogurgel.catalogservice.domain.entity
 
-import br.com.rodrigogurgel.catalogservice.domain.entity.Option
+import br.com.rodrigogurgel.catalogservice.domain.vo.Customization
+import br.com.rodrigogurgel.catalogservice.domain.vo.Id
+import br.com.rodrigogurgel.catalogservice.domain.vo.Price
+import br.com.rodrigogurgel.catalogservice.domain.vo.Quantity
+import br.com.rodrigogurgel.catalogservice.domain.vo.Status
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockProduct
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
@@ -24,6 +28,7 @@ class OptionTest {
             customizations,
         )
 
+        option.id shouldBe id
         option.product shouldBe product
         option.price shouldBe price
         option.status shouldBe status

@@ -1,4 +1,4 @@
-package br.com.rodrigogurgel.catalogservice.application.steps
+package br.com.rodrigogurgel.catalogservice.application.steps.category
 
 import br.com.rodrigogurgel.catalogservice.application.context.CategoryContextStepDefs
 import br.com.rodrigogurgel.catalogservice.application.context.StoreContextStepDefs
@@ -11,6 +11,7 @@ import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 
 class GetCategoryStepDefs(
     private val storeContext: StoreContextStepDefs,
@@ -26,8 +27,8 @@ class GetCategoryStepDefs(
         categoryRetrieve = getCategoryUseCase.execute(Id(storeId), Id(categoryId))
     }
 
-    @Then("the category should have same information's")
-    fun theCategoryShouldHaveSameInformationS() {
+    @Then("the category should have same information")
+    fun theCategoryShouldHaveSameInformation() {
         categoryRetrieve shouldBe categoryContext.category
     }
 
@@ -40,8 +41,10 @@ class GetCategoryStepDefs(
 
     @When("I try get a category with this id {string} from store")
     fun iTryGetACategoryWithThisIdFromStore(categoryId: String) {
-        shouldThrow<CategoryNotFoundException> {
+        val exception = shouldThrow<CategoryNotFoundException> {
             getCategoryUseCase.execute(storeContext.store.id, Id(categoryId))
         }
+
+        exception.message shouldContain categoryId
     }
 }

@@ -11,11 +11,11 @@ Feature: Update product
 
   Scenario: Update a product with success
     When I update product name to "New Product Name" into store
-    Then the product with new information's should be persist in the datastore
+    Then the product with new information should be persist in the datastore
 
   Scenario: Update a product with error when store not exists
     Given a id "92ddeebf-da50-402f-b850-19e5fb093a0a" with no store associated
-    When I try add a product into store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a"
+    When I try update a product into store with this id "92ddeebf-da50-402f-b850-19e5fb093a0a"
     Then I get an error
 
   Scenario: Update a product with error when product not exists

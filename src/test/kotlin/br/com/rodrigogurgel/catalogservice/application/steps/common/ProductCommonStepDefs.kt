@@ -9,7 +9,7 @@ import io.mockk.every
 
 class ProductCommonStepDefs(
     private val storeContext: StoreContextStepDefs,
-    private val productContext: ProductContextStepDefs
+    private val productContext: ProductContextStepDefs,
 ) {
     @Given("the following product exists:")
     fun theFollowingProductExists(product: Product) {
@@ -35,6 +35,13 @@ class ProductCommonStepDefs(
                 match { product.id == it.id }
             )
         } returns Unit
+
+        every {
+            productContext.productDatastoreOutputPort.getIfNotExists(
+                storeContext.store.id,
+                match { it == listOf(product.id) }
+            )
+        } returns emptyList()
     }
 
     @Given("a id {string} with no product associated")
@@ -47,8 +54,8 @@ class ProductCommonStepDefs(
         } returns null
     }
 
-    @Given("the following product information's:")
-    fun theFollowingProductInformationS(product: Product) {
+    @Given("the following product information:")
+    fun theFollowingProductInformation(product: Product) {
         productContext.product = product
     }
 }

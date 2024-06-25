@@ -10,7 +10,13 @@ data class Customization(
     val options: MutableList<Option>,
 ) {
     init {
-        require((options.isNotEmpty()) && (options.size >= quantity.maxPermitted))
+        require(options.isNotEmpty()) {
+            "The options should not be empty."
+        }
+
+        require(options.size >= quantity.maxPermitted) {
+            "The options must have more than quantity maximum permitted options."
+        }
     }
 
     fun minimalPrice(): Price {

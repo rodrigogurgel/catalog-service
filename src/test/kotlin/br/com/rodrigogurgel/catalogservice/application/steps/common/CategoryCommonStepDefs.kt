@@ -11,19 +11,26 @@ class CategoryCommonStepDefs(
     private val storeContext: StoreContextStepDefs,
     private val categoryContext: CategoryContextStepDefs,
 ) {
-    @Given("the following category information's:")
-    fun theFollowingCategoryInformationS(category: Category) {
+    @Given("the following category information:")
+    fun theFollowingCategoryInformation(category: Category) {
         categoryContext.category = category
     }
 
-    @Given("a id {string} with no category associated")
-    fun aIdWithNoCategoryAssociated(categoryId: String) {
+    @Given("an id {string} with no category associated")
+    fun anIdWithNoCategoryAssociated(categoryId: String) {
         every {
             categoryContext.categoryDatastoreOutputPort.findById(
                 storeContext.store.id,
                 Id(categoryId)
             )
         } returns null
+
+        every {
+            categoryContext.categoryDatastoreOutputPort.exists(
+                storeContext.store.id,
+                Id(categoryId)
+            )
+        } returns false
     }
 
     @Given("the following category exists:")

@@ -1,4 +1,4 @@
-package br.com.rodrigogurgel.catalogservice.application.steps
+package br.com.rodrigogurgel.catalogservice.application.steps.product
 
 import br.com.rodrigogurgel.catalogservice.application.context.ProductContextStepDefs
 import br.com.rodrigogurgel.catalogservice.application.context.StoreContextStepDefs

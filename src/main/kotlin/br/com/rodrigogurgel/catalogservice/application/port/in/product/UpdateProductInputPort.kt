@@ -14,7 +14,7 @@ class UpdateProductInputPort(
 ) : UpdateProductUseCase {
     override fun execute(storeId: Id, product: Product) {
         if (!storeDatastoreOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
-        if (!productDatastoreOutputPort.exists(storeId, product.id)) throw ProductNotFoundException(storeId)
+        if (!productDatastoreOutputPort.exists(storeId, product.id)) throw ProductNotFoundException(product.id)
         productDatastoreOutputPort.update(storeId, product)
     }
 }

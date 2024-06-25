@@ -5,6 +5,12 @@ data class Quantity(
     val maxPermitted: Int,
 ) {
     init {
-        require(minPermitted in 0..maxPermitted && maxPermitted > 0)
+        require(maxPermitted > 0) {
+            "The maximum permitted must be greater than zero."
+        }
+
+        require(minPermitted in 0..maxPermitted) {
+            "The minimum permitted need be greater than zero and less or equal than maximum permitted."
+        }
     }
 }
