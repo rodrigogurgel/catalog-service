@@ -5,6 +5,8 @@ plugins {
     id("io.spring.dependency-management") version "1.1.5"
     id("io.gitlab.arturbosch.detekt") version "1.23.6"
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
+    id("info.solidsoft.pitest") version "1.15.0"
+
     jacoco
 
     kotlin("jvm") version "1.9.24"
@@ -24,33 +26,59 @@ repositories {
     mavenCentral()
 }
 
+fun hasFile(filePath: String): Boolean {
+    val licenseFile = File(projectDir, filePath)
+    return licenseFile.exists()
+}
+
 dependencies {
     // Versions
     val detektVersion = properties["detektVersion"]
+    val springMockkVersion = properties["springMockkVersion"]
+    val cucumberVersion = properties["cucumberVersion"]
+    val kotestVersion = properties["kotestVersion"]
+    val pitestJUnit5Version = properties["pitestJUnit5Version"]
+    val gradlePitestPluginVersion = properties["pitestVersion"]
+    val arcmutatePitestKotlinPluginVersion = properties["arcmutatePitestKotlinPluginVersion"]
+    val arcmutateSpringVersion = properties["arcmutateSpringVersion"]
 
-    implementation("org.springframework.boot:spring-boot-starter")
+    // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    // Misc
+    // Spring
+    implementation("org.springframework.boot:spring-boot-starter")
+
+    // Detekt
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion")
 
-    // Cucumber
-    implementation("io.cucumber:cucumber-java:7.18.0")
-    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.18.0")
-
+    // Spring Test
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude("org.mockito", "mockito-junit-jupiter")
         exclude("org.mockito", "mockito-core")
     }
-    testImplementation("com.ninja-squad:springmockk:4.0.2")
+    testImplementation("com.ninja-squad:springmockk:$springMockkVersion")
 
+    // JUnit
     testImplementation("org.junit.platform:junit-platform-suite")
-    testImplementation("io.cucumber:cucumber-picocontainer:7.18.0")
-    testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
-    testImplementation("io.kotest:kotest-property:5.9.1")
-    testImplementation("io.kotest:kotest-assertions-core:5.9.1")
-
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // Cucumber
+    testImplementation("io.cucumber:cucumber-java:$cucumberVersion")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:$cucumberVersion")
+    testImplementation("io.cucumber:cucumber-picocontainer:$cucumberVersion")
+
+    // Kotest
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+    testImplementation("io.kotest:kotest-property:$kotestVersion")
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+
+    // Pitest
+    testImplementation("org.pitest:pitest-junit5-plugin:$pitestJUnit5Version")
+    pitest("info.solidsoft.gradle.pitest:gradle-pitest-plugin:$gradlePitestPluginVersion")
+    if (hasFile("arcmutate-licence.txt")) {
+        pitest("com.arcmutate:pitest-kotlin-plugin:$arcmutatePitestKotlinPluginVersion")
+        pitest("com.arcmutate:arcmutate-spring:$arcmutateSpringVersion")
+    }
 }
 
 kotlin {
@@ -87,6 +115,16 @@ configurations.all {
             useVersion(io.gitlab.arturbosch.detekt.getSupportedKotlinVersion())
         }
     }
+}
+
+pitest {
+    threads = 8
+    avoidCallsTo = setOf("kotlin.jvm.internal")
+    outputFormats = setOf("HTML")
+    jvmArgs = listOf("-Xmx1024m")
+    verbose = true
+    pitestVersion = "1.16.1"
+    junit5PluginVersion = "1.2.1"
 }
 
 jacoco {

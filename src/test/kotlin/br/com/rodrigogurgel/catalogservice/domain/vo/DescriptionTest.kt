@@ -33,6 +33,7 @@ class DescriptionTest {
         shouldThrow<IllegalArgumentException> {
             Description(random2Letters)
         }
+
         shouldThrow<IllegalArgumentException> {
             Description(random1001Letters)
         }

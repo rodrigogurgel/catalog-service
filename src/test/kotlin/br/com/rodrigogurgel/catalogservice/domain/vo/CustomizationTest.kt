@@ -84,7 +84,7 @@ class CustomizationTest {
         val status = Status.AVAILABLE
         val options = mutableListOf<Option>()
 
-        shouldThrow<IllegalArgumentException> {
+        val exception = shouldThrow<IllegalArgumentException> {
             Customization(
                 name,
                 description,
@@ -93,6 +93,8 @@ class CustomizationTest {
                 options
             )
         }
+
+        exception.message shouldBe "The options should not be empty."
     }
 
     @Test

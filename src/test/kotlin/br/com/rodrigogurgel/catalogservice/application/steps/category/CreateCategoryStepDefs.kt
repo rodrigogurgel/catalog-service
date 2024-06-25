@@ -10,6 +10,7 @@ import io.cucumber.java.Before
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.string.shouldContain
 import io.mockk.every
 import io.mockk.verifySequence
 
@@ -43,8 +44,10 @@ class CreateCategoryStepDefs(
 
     @When("I try add a category into store with this id {string}")
     fun iTryAddACategoryIntoStoreWithThisId(id: String) {
-        shouldThrow<StoreNotFoundException> {
+        val exception = shouldThrow<StoreNotFoundException> {
             createCategoryUseCase.execute(Id(id), categoryContext.category)
         }
+
+        exception.message shouldContain id
     }
 }
