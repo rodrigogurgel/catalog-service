@@ -9,7 +9,7 @@ Feature: Get product
       | id                                   | name         | description                  | image                   |
       | 5034c1ac-75ac-4e72-a443-7266da86b911 | Mock Product | A description used for tests | http://www.image.com.br |
 
-  Scenario: Get a product with success
+  Scenario: Get a product with successfully
     When I get a product with id "5034c1ac-75ac-4e72-a443-7266da86b911" from store with id "65888cdc-7cb6-48f0-972d-65d8b96b4a85"
     Then the product should have same information
 

@@ -3,7 +3,7 @@ package br.com.rodrigogurgel.catalogservice.application.steps.category
 import br.com.rodrigogurgel.catalogservice.application.context.CategoryContextStepDefs
 import br.com.rodrigogurgel.catalogservice.application.context.StoreContextStepDefs
 import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
-import br.com.rodrigogurgel.catalogservice.application.port.`in`.category.CreateCategoryInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.category.CreateCategoryInputPort
 import br.com.rodrigogurgel.catalogservice.application.usecase.category.CreateCategoryUseCase
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import io.cucumber.java.Before

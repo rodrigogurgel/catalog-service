@@ -4,7 +4,7 @@ import br.com.rodrigogurgel.catalogservice.application.context.CategoryContextSt
 import br.com.rodrigogurgel.catalogservice.application.context.StoreContextStepDefs
 import br.com.rodrigogurgel.catalogservice.application.exception.CategoryNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
-import br.com.rodrigogurgel.catalogservice.application.port.`in`.category.GetCategoryInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.category.GetCategoryInputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Category
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import io.cucumber.java.en.Then

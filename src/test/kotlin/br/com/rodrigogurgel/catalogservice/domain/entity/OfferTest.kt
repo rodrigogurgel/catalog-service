@@ -1,16 +1,26 @@
 package br.com.rodrigogurgel.catalogservice.domain.entity
 
+import br.com.rodrigogurgel.catalogservice.domain.exception.CustomizationAlreadyExistsException
+import br.com.rodrigogurgel.catalogservice.domain.exception.CustomizationNotFoundException
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Price
 import br.com.rodrigogurgel.catalogservice.domain.vo.Quantity
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
+import br.com.rodrigogurgel.catalogservice.fixture.mock.mockCustomization
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockCustomizationWith
+import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOffer
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOfferWith
+import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOption
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOptionWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockProduct
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 
 class OfferTest {
     @Test
@@ -28,7 +38,7 @@ class OfferTest {
                 )
             }
         )
-        val price = Price.ZERO
+        val price = Price(BigDecimal.TEN)
         val status = Status.AVAILABLE
 
         val offer = Offer(
@@ -44,7 +54,37 @@ class OfferTest {
         offer.price shouldBe price
         offer.status shouldBe status
         offer.customizations shouldBe customizations
-        offer.minimalPrice().normalizedValue() shouldBe Price(10.toBigDecimal()).normalizedValue()
+        offer.minimalPrice().normalizedValue() shouldBe Price(20.toBigDecimal()).normalizedValue()
+    }
+
+    @Test
+    fun `Should update mutable values with success`() {
+        val product = mockProduct()
+        val price = Price(20.toBigDecimal())
+        val status = Status.AVAILABLE
+
+        val offer = Offer(
+            Id(),
+            product,
+            price,
+            status,
+            emptyList()
+        )
+
+        offer.product shouldBe product
+        offer.price shouldBe price
+        offer.status shouldBe status
+
+        val updatedProduct = mockProduct()
+        val updatedPrice = Price(10.toBigDecimal())
+
+        offer.product = updatedProduct
+        offer.price = updatedPrice
+        offer.status = Status.UNAVAILABLE
+
+        offer.product shouldBe updatedProduct
+        offer.price shouldBe updatedPrice
+        offer.status shouldBe Status.UNAVAILABLE
     }
 
     @Test
@@ -275,5 +315,128 @@ class OfferTest {
         }
 
         item.minimalPrice().normalizedValue() shouldBe Price(9.5.toBigDecimal()).normalizedValue()
+    }
+
+    @Test
+    fun `Should add Customization with success when call addCustomization`() {
+        val customization = mockCustomization()
+        val offer = mockOffer()
+
+        offer.addCustomization(customization)
+
+        offer.customizations shouldContain customization
+    }
+
+    @Test
+    fun `Should add Customization with error when call addCustomization and customization already exists`() {
+        val customization = mockCustomization()
+        val offer = mockOfferWith {
+            customizations = listOf(customization)
+        }
+
+        shouldThrow<CustomizationAlreadyExistsException> {
+            offer.addCustomization(customization)
+        }
+
+        offer.customizations shouldContain customization
+    }
+
+    @Test
+    fun `Should update Customization with success when call updateCustomization`() {
+        val customization = mockCustomization()
+        val updatedCustomization = mockCustomizationWith { id = customization.id }
+        val offer = mockOfferWith { customizations = listOf(customization) }
+
+        offer.customizations shouldContain customization
+
+        offer.updateCustomization(updatedCustomization)
+
+        offer.customizations shouldContain updatedCustomization
+    }
+
+    @Test
+    fun `Should update Customization with error when call updateCustomization and customization not exists`() {
+        val customization = mockCustomization()
+        val newCustomization = mockCustomization()
+        val offer = mockOfferWith { customizations = listOf(customization) }
+
+        offer.customizations shouldContain customization
+
+        shouldThrow<CustomizationNotFoundException> {
+            offer.updateCustomization(newCustomization)
+        }
+
+        offer.customizations shouldNotContain newCustomization
+    }
+
+    @Test
+    fun `Should remove Customization with success when call updateCustomization`() {
+        val customization = mockCustomization()
+        val offer = mockOfferWith {
+            customizations = listOf(customization)
+        }
+
+        offer.customizations shouldContain customization
+
+        offer.removeCustomization(customization.id)
+
+        offer.customizations shouldNotContain customization
+    }
+
+    @Test
+    fun `Should remove Customization with error when call updateCustomization and customization not exists`() {
+        val customization = mockCustomization()
+        val offer = mockOffer()
+
+        offer.customizations shouldNotContain customization
+
+        shouldThrow<CustomizationNotFoundException> {
+            offer.removeCustomization(customization.id)
+        }
+    }
+
+    @Test
+    fun `Should return a Customization when call findCustomizationInChildrenById and Offer has the Customization`() {
+        val customization = mockCustomization()
+        val offer = mockOfferWith {
+            customizations = listOf(customization)
+        }
+
+        val result = offer.findCustomizationInChildrenById(customization.id)
+        result shouldNotBe null
+        result shouldBe customization
+    }
+
+    @Test
+    fun `Should return a Customization when call findCustomizationInChildrenById and some child has the Customization`() {
+        val childCustomization = mockCustomization()
+        val childOption = mockOptionWith {
+            customizations = listOf(childCustomization)
+        }
+        val customization = mockCustomizationWith {
+            options = listOf(childOption)
+        }
+        val offer = mockOfferWith {
+            customizations = listOf(customization)
+        }
+
+        val result = offer.findCustomizationInChildrenById(childCustomization.id)
+        result shouldNotBe null
+        result shouldBe childCustomization
+    }
+
+    @Test
+    fun `Should return a Option when call findOptionInChildrenById and some child has the Option`() {
+        val childOption = mockOption()
+        val customization = mockCustomizationWith {
+            options = listOf(childOption)
+        }
+        val offer = mockOfferWith {
+            customizations = listOf(customization)
+        }
+
+        val result = offer.findOptionInChildrenById(childOption.id)
+        result shouldNotBe null
+        result shouldBe childOption
     }
 }

@@ -17,7 +17,7 @@ Feature: Get offer
       | id                                   | price  | status    |
       | 5034c1ac-75ac-4e72-a443-7266da86b911 | 100.00 | AVAILABLE |
 
-  Scenario: Get a offer with success
+  Scenario: Get a offer with successfully
     When I get a offer with id "5034c1ac-75ac-4e72-a443-7266da86b911" from store with id "5034c1ac-75ac-4e72-a443-7266da86b911" and category id "5034c1ac-75ac-4e72-a443-7266da86b911"
     Then the offer should have same information
 

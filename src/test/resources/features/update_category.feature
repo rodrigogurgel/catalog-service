@@ -9,7 +9,7 @@ Feature: Update category
       | id                                   | name          | description                  | status    |
       | 5034c1ac-75ac-4e72-a443-7266da86b911 | Mock Category | A description used for tests | AVAILABLE |
 
-  Scenario: Update a category with success
+  Scenario: Update a category with successfully
     When I update category name to "New Category Name" into store
     Then the category with new information should be persist in the datastore
 

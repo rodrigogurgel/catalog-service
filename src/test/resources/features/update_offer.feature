@@ -17,7 +17,7 @@ Feature: Update offer
       | id                                   | price  | status    |
       | 5034c1ac-75ac-4e72-a443-7266da86b911 | 100.00 | AVAILABLE |
 
-  Scenario: Update a offer with success
+  Scenario: Update a offer with successfully
     When I update offer price to "50.00" into store
     Then the offer with new information should be persist in the datastore
 

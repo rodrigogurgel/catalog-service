@@ -26,6 +26,13 @@ class StoreCommonStepDefs(
         every { storeContext.storeDatastoreOutputPort.exists(store.id) } returns true
     }
 
+    @Given("the following store information:")
+    fun theFollowingStoreInformation(store: Store) {
+        storeContext.store = store
+        every { storeContext.storeDatastoreOutputPort.exists(store.id) } returns false
+        every { storeContext.storeDatastoreOutputPort.create(store) } returns Unit
+    }
+
     @Then("I get an error")
     fun iGetAnError() = Unit
 }

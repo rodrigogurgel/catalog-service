@@ -3,7 +3,7 @@ package br.com.rodrigogurgel.catalogservice.application.steps.product
 import br.com.rodrigogurgel.catalogservice.application.context.ProductContextStepDefs
 import br.com.rodrigogurgel.catalogservice.application.context.StoreContextStepDefs
 import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
-import br.com.rodrigogurgel.catalogservice.application.port.`in`.product.DeleteProductInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.product.DeleteProductInputPort
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import io.cucumber.java.Before
 import io.cucumber.java.en.Then

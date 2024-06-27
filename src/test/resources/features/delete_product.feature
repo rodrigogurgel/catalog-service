@@ -9,7 +9,7 @@ Feature: Delete product
       | id                                   | name         | description                  | image                   |
       | 5034c1ac-75ac-4e72-a443-7266da86b911 | Mock Product | A description used for tests | http://www.image.com.br |
 
-  Scenario: Delete a product with success
+  Scenario: Delete a product with successfully
     When I delete a product from store
     Then the product should be remove from datastore
 

@@ -2,7 +2,8 @@ package br.com.rodrigogurgel.catalogservice.domain.vo
 
 import java.net.URL
 
-data class Image(
+@JvmInline
+value class Image(
     val path: String,
 ) {
     init {

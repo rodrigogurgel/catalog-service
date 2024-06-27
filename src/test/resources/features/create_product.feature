@@ -9,7 +9,7 @@ Feature: Create product
       | name         | description                  | image                   |
       | Mock Product | A description used for tests | http://www.image.com.br |
 
-  Scenario: Create a product with success
+  Scenario: Create a product with successfully
     When I add a product into store
     Then the product should be persist in the datastore
 

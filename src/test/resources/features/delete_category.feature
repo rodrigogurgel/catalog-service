@@ -9,7 +9,7 @@ Feature: Delete category
       | id                                   | name          | description                  | status    |
       | 5034c1ac-75ac-4e72-a443-7266da86b911 | Mock Category | A description used for tests | AVAILABLE |
 
-  Scenario: Delete a category with success
+  Scenario: Delete a category with successfully
     When I delete a category from store
     Then the category should be remove from datastore
 

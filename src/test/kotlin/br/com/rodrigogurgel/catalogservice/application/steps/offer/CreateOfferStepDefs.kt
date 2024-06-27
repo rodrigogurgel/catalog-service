@@ -7,7 +7,7 @@ import br.com.rodrigogurgel.catalogservice.application.context.StoreContextStepD
 import br.com.rodrigogurgel.catalogservice.application.exception.CategoryNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.exception.ProductsNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
-import br.com.rodrigogurgel.catalogservice.application.port.`in`.offer.CreateOfferInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.offer.CreateOfferInputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name
@@ -81,7 +81,7 @@ class CreateOfferStepDefs(
     @When("I change product name to {string}")
     fun iChangeProductNameTo(newProductName: String) {
         val product = offerContext.offer.product.copy(name = Name(newProductName))
-        offerWithNewProductName = offerContext.offer.copy(product = product)
+        offerWithNewProductName = offerContext.offer.run { Offer(id, product, price, status, customizations) }
     }
 
     @Then("the offer with new product name should be persist in the datastore")

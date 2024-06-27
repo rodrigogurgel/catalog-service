@@ -6,7 +6,7 @@ import br.com.rodrigogurgel.catalogservice.application.context.StoreContextStepD
 import br.com.rodrigogurgel.catalogservice.application.exception.CategoryNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.exception.OfferNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
-import br.com.rodrigogurgel.catalogservice.application.port.`in`.offer.GetOfferInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.offer.GetOfferInputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import io.cucumber.java.en.Then

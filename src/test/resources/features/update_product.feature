@@ -9,7 +9,7 @@ Feature: Update product
       | id                                   | name         | description                  | image                   |
       | 5034c1ac-75ac-4e72-a443-7266da86b911 | Mock Product | A description used for tests | http://www.image.com.br |
 
-  Scenario: Update a product with success
+  Scenario: Update a product with successfully
     When I update product name to "New Product Name" into store
     Then the product with new information should be persist in the datastore
 

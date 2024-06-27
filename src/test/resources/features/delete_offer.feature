@@ -17,7 +17,7 @@ Feature: Delete offer
       | id                                   | price  | status    |
       | 5034c1ac-75ac-4e72-a443-7266da86b911 | 100.00 | AVAILABLE |
 
-  Scenario: Delete a offer with success
+  Scenario: Delete a offer with successfully
     When I delete a offer with id "5034c1ac-75ac-4e72-a443-7266da86b911" from store with id "5034c1ac-75ac-4e72-a443-7266da86b911" and category id "5034c1ac-75ac-4e72-a443-7266da86b911"
     Then the offer should be remove from datastore
 

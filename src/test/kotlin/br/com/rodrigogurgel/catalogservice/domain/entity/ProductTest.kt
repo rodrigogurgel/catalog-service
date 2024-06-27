@@ -24,9 +24,31 @@ class ProductTest {
         )
 
         product.id shouldBe id
-        product.id.id shouldBe id.id
+        product.id.value shouldBe id.value
         product.name shouldBe name
-        product.description shouldBe description
+        product.description?.value shouldBe description.value
         product.image shouldBe image
+        product.image?.path shouldBe image.path
+    }
+
+    @Test
+    fun `Should instantiate Product with success with optional values null`() {
+        val id = Id(UUID.randomUUID())
+        val name = Name(randomString(30))
+        val description = null
+        val image = null
+        val product = Product(
+            id = id,
+            name = name,
+            description = description,
+            image = image
+        )
+
+        product.id shouldBe id
+        product.id.value shouldBe id.value
+        product.name shouldBe name
+        product.description shouldBe null
+        product.image shouldBe image
+        product.image shouldBe null
     }
 }

@@ -14,7 +14,7 @@ data class MockOffer(
     var product: Product = mockProduct(),
     var price: Price = Price(BigDecimal.valueOf(Random.nextDouble(0.1, 100.0))),
     var status: Status = Status.AVAILABLE,
-    var customizations: MutableList<Customization> = mutableListOf(),
+    var customizations: List<Customization> = mutableListOf(),
 )
 
 fun mockOffer(): Offer = MockOffer().run {

@@ -17,7 +17,7 @@ Feature: Create offer
       | price  | status    |
       | 100.00 | AVAILABLE |
 
-  Scenario: Create a offer with success
+  Scenario: Create a offer with successfully
     When I create a offer into store
     Then the offer should be persist in the datastore
 

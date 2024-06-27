@@ -4,7 +4,7 @@ import br.com.rodrigogurgel.catalogservice.application.context.CategoryContextSt
 import br.com.rodrigogurgel.catalogservice.application.context.StoreContextStepDefs
 import br.com.rodrigogurgel.catalogservice.application.exception.CategoryNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
-import br.com.rodrigogurgel.catalogservice.application.port.`in`.category.UpdateCategoryInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.category.UpdateCategoryInputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Category
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name

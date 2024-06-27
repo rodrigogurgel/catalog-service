@@ -22,14 +22,10 @@ import org.junit.platform.suite.api.Suite
 class RunCucumberTest {
     @DataTableType
     fun storeEntry(entry: Map<String, String>): Store {
-        val storeId = Id(entry["id"]!!)
-        val storeName = Name(entry["name"]!!)
-        val storeDescription = Description(entry["description"]!!)
-
         return mockStoreWith {
-            id = storeId
-            name = storeName
-            description = storeDescription
+            id = entry["id"]?.let { Id(it) } ?: Id()
+            name = Name(entry["name"]!!)
+            description = Description(entry["description"]!!)
         }
     }
 

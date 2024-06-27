@@ -1,6 +1,9 @@
 package br.com.rodrigogurgel.catalogservice.domain.vo
 
-data class Name(
+import br.com.rodrigogurgel.catalogservice.domain.exception.NameLengthException
+
+@JvmInline
+value class Name(
     val value: String,
 ) {
     companion object {
@@ -9,8 +12,6 @@ data class Name(
     }
 
     init {
-        require(value.length in MIN_LENGTH..MAX_LENGTH) {
-            "The name need to be between $MIN_LENGTH and $MAX_LENGTH characters."
-        }
+        if (value.length !in MIN_LENGTH..MAX_LENGTH) throw NameLengthException(value, MIN_LENGTH, MAX_LENGTH)
     }
 }

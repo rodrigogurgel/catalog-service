@@ -9,7 +9,7 @@ Feature: Get category
       | id                                   | name          | description                  | status    |
       | 5034c1ac-75ac-4e72-a443-7266da86b911 | Mock Category | A description used for tests | AVAILABLE |
 
-  Scenario: Get a category with success
+  Scenario: Get a category with successfully
     When I get a category with id "5034c1ac-75ac-4e72-a443-7266da86b911" from store with id "65888cdc-7cb6-48f0-972d-65d8b96b4a85"
     Then the category should have same information
 

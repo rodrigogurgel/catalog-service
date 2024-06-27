@@ -1,6 +1,6 @@
 package br.com.rodrigogurgel.catalogservice.application.context
 
-import br.com.rodrigogurgel.catalogservice.application.port.out.persistence.CategoryDatastoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Category
 import io.mockk.mockk
 

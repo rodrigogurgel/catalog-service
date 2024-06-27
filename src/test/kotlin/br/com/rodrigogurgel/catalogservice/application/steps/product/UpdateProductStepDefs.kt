@@ -4,7 +4,7 @@ import br.com.rodrigogurgel.catalogservice.application.context.ProductContextSte
 import br.com.rodrigogurgel.catalogservice.application.context.StoreContextStepDefs
 import br.com.rodrigogurgel.catalogservice.application.exception.ProductNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
-import br.com.rodrigogurgel.catalogservice.application.port.`in`.product.UpdateProductInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.product.UpdateProductInputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Product
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name

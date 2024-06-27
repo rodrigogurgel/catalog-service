@@ -9,7 +9,7 @@ Feature: Create category
       | name          | description                  | status    |
       | Mock Category | A description used for tests | AVAILABLE |
 
-  Scenario: Create a category with success
+  Scenario: Create a category with successfully
     When I add a category into store
     Then the category should be persist in the datastore
 

@@ -1,6 +1,9 @@
 package br.com.rodrigogurgel.catalogservice.domain.vo
 
-data class Description(
+import br.com.rodrigogurgel.catalogservice.domain.exception.DescriptionLengthException
+
+@JvmInline
+value class Description(
     val value: String,
 ) {
     companion object {
@@ -9,8 +12,6 @@ data class Description(
     }
 
     init {
-        require(value.length in MIN_LENGTH..MAX_LENGTH) {
-            "The description need be between $MIN_LENGTH and $MAX_LENGTH characters."
-        }
+        if (value.length !in MIN_LENGTH..MAX_LENGTH) throw DescriptionLengthException(value, MIN_LENGTH, MAX_LENGTH)
     }
 }

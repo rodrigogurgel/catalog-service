@@ -8,7 +8,7 @@ import br.com.rodrigogurgel.catalogservice.application.exception.CategoryNotFoun
 import br.com.rodrigogurgel.catalogservice.application.exception.OfferNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.exception.ProductsNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
-import br.com.rodrigogurgel.catalogservice.application.port.`in`.offer.UpdateOfferInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.offer.UpdateOfferInputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Price
@@ -35,7 +35,8 @@ class UpdateOfferStepDefs(
 
     @When("I update offer price to {string} into store")
     fun iUpdateOfferPriceToIntoStore(newPrice: String) {
-        updatedOffer = offerContext.offer.copy(price = Price(newPrice.toBigDecimal()))
+        val price = Price(newPrice.toBigDecimal())
+        updatedOffer = offerContext.offer.run { Offer(id, product, price, status, customizations) }
         updateOfferUseCase.execute(
             storeContext.store.id,
             categoryContext.category.id,
@@ -73,11 +74,12 @@ class UpdateOfferStepDefs(
 
     @When("I try update a offer product to a product with this id {string}")
     fun iTryUpdateAOfferProductToAProductWithThisId(productId: String) {
+        val product = mockProductWith { id = Id(productId) }
         val exception = shouldThrow<ProductsNotFoundException> {
             updateOfferUseCase.execute(
                 storeContext.store.id,
                 categoryContext.category.id,
-                offerContext.offer.copy(product = mockProductWith { id = Id(productId) })
+                offerContext.offer.run { Offer(id, product, price, status, customizations) }
             )
         }
 
@@ -86,11 +88,12 @@ class UpdateOfferStepDefs(
 
     @When("I try update a offer with this id {string} from store")
     fun iTryUpdateAOfferWithThisIdFromStore(offerId: String) {
+        val id = Id(offerId)
         val exception = shouldThrow<OfferNotFoundException> {
             updateOfferUseCase.execute(
                 storeContext.store.id,
                 categoryContext.category.id,
-                offerContext.offer.copy(id = Id(offerId))
+                offerContext.offer.run { Offer(id, product, price, status, customizations) }
             )
         }
 
