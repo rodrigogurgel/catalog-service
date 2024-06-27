@@ -25,6 +25,8 @@ class Customization private constructor(
         private set
 
     private val optionById: MutableMap<Id, Option> = mutableMapOf()
+    private val availableOptions
+        get() = options.filter { option -> option.status == Status.AVAILABLE }
 
     constructor(
         id: Id,
@@ -48,7 +50,7 @@ class Customization private constructor(
     }
 
     private fun validateQuantity() {
-        if (quantity.maxPermitted > options.size) throw CustomizationMaxPermittedException(id)
+        if (quantity.maxPermitted > availableOptions.size) throw CustomizationMaxPermittedException(id)
     }
 
     /**
@@ -83,6 +85,10 @@ class Customization private constructor(
      */
     fun updateOption(option: Option) {
         optionById[option.id] ?: throw OptionNotFoundException(option.id)
+
+        validateOptions()
+        validateQuantity()
+
         optionById[option.id] = option
     }
 
@@ -94,10 +100,11 @@ class Customization private constructor(
      */
     fun removeOption(optionId: Id) {
         optionById[optionId] ?: throw OptionNotFoundException(optionId)
-        optionById.remove(optionId)
 
         validateOptions()
         validateQuantity()
+
+        optionById.remove(optionId)
     }
 
     /**

@@ -52,6 +52,38 @@ class CustomizationTest {
     }
 
     @Test
+    fun `Should instantiate with error when options size with status AVAILABLE is less than minPermitted`() {
+        val id = Id()
+        val name = Name(randomString(30))
+        val description = Description(randomString(1000))
+        val quantity = Quantity(1, 1)
+        val status = Status.AVAILABLE
+        val option = mockOption()
+
+        val customization = Customization(
+            id,
+            name,
+            description,
+            quantity,
+            status,
+            listOf(option)
+        )
+
+        customization.id shouldBe id
+        customization.name shouldBe name
+        customization.description shouldBe description
+        customization.quantity shouldBe quantity
+        customization.status shouldBe status
+        customization.options shouldContain option
+
+        option.status = Status.UNAVAILABLE
+
+        shouldThrow<CustomizationMaxPermittedException> {
+            customization.updateOption(option)
+        }
+    }
+
+    @Test
     fun `Should update mutable values with success`() {
         val id = Id()
         val name = Name(randomString(30))
