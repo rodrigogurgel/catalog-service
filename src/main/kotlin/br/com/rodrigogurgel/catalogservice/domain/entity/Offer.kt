@@ -90,10 +90,8 @@ class Offer private constructor(
      * Removes a customization from the Offer.
      *
      * @param customizationId the ID of the customization to be removed
-     * @throws CustomizationNotFoundException if the specified customization ID is not found in the Offer
      */
     fun removeCustomization(customizationId: Id) {
-        rootCustomizationsById[customizationId] ?: throw CustomizationNotFoundException(customizationId)
         customizationsById.entries.removeIf { (id, _) ->
             id in rootCustomizationsById[customizationId]!!.getCustomizationsInChildren()
                 .map { customization -> customization.id }

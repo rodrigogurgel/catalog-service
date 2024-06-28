@@ -4,5 +4,5 @@ import br.com.rodrigogurgel.catalogservice.domain.entity.Customization
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
 interface UpdateCustomizationUseCase {
-    fun execute(offerId: Id, customization: Customization)
+    fun execute(storeId: Id, offerId: Id, customization: Customization)
 }

@@ -202,16 +202,4 @@ class OptionTest {
 
         option.customizations shouldNotContain customization
     }
-
-    @Test
-    fun `Should remove Customization with error when call updateCustomization and customization not exists`() {
-        val customization = mockCustomization()
-        val option = mockOption()
-
-        option.customizations shouldNotContain customization
-
-        shouldThrow<CustomizationNotFoundException> {
-            option.removeCustomization(customization.id)
-        }
-    }
 }

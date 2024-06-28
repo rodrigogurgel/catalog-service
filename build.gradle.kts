@@ -95,6 +95,7 @@ tasks.withType<Test> {
 }
 
 detekt {
+    autoCorrect = true
     buildUponDefaultConfig = true
     allRules = false
     config.setFrom("$projectDir/config/detekt.yaml")

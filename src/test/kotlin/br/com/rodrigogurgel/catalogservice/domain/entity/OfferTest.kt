@@ -384,18 +384,6 @@ class OfferTest {
     }
 
     @Test
-    fun `Should remove Customization with error when call updateCustomization and customization not exists`() {
-        val customization = mockCustomization()
-        val offer = mockOffer()
-
-        offer.customizations shouldNotContain customization
-
-        shouldThrow<CustomizationNotFoundException> {
-            offer.removeCustomization(customization.id)
-        }
-    }
-
-    @Test
     fun `Should return a Customization when call findCustomizationInChildrenById and Offer has the Customization`() {
         val customization = mockCustomization()
         val offer = mockOfferWith {

@@ -5,8 +5,9 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
 interface OfferDatastoreOutputPort {
     fun create(storeId: Id, categoryId: Id, offer: Offer)
-    fun findById(storeId: Id, categoryId: Id, offerId: Id): Offer?
-    fun exists(storeId: Id, categoryId: Id, offerId: Id): Boolean
-    fun update(storeId: Id, categoryId: Id, offer: Offer)
-    fun delete(storeId: Id, categoryId: Id, offerId: Id)
+    fun findById(storeId: Id, offerId: Id): Offer?
+    fun exists(offerId: Id): Boolean
+    fun exists(storeId: Id, offerId: Id): Boolean
+    fun update(storeId: Id, offer: Offer)
+    fun delete(storeId: Id, offerId: Id)
 }

@@ -2,5 +2,6 @@ package br.com.rodrigogurgel.catalogservice.application.exception
 
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
-data class ProductNotFoundException(private val productId: Id) :
-    IllegalStateException("Product with id ${productId.value} not found")
+class ProductNotFoundException private constructor(override val message: String) : IllegalStateException(message) {
+    constructor(storeId: Id, productId: Id) : this("Product with id ${productId.value} and Store id $storeId not found")
+}

@@ -74,10 +74,8 @@ class Option private constructor(
      * Remove a customization with the given customization ID.
      *
      * @param customizationId The ID of the customization to be removed.
-     * @throws CustomizationNotFoundException if the customization with the specified ID is not found.
      */
     fun removeCustomization(customizationId: Id) {
-        customizationById[customizationId] ?: throw CustomizationNotFoundException(customizationId)
         customizationById.remove(customizationId)
     }
 
