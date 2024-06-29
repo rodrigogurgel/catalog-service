@@ -114,11 +114,11 @@ class OfferStepDefs(
         every { cucumberContext.offerDatastoreOutputPort.exists(offerId) } returns true
         every { cucumberContext.offerDatastoreOutputPort.exists(storeId, offerId) } returns true
         every { cucumberContext.offerDatastoreOutputPort.findById(storeId, offerId) } returns (
-                offers[offerId]
-                    ?: mockOfferWith {
-                        id = offerId
-                    }
-                )
+            offers[offerId]
+                ?: mockOfferWith {
+                    id = offerId
+                }
+            )
 
         justRun { cucumberContext.offerDatastoreOutputPort.update(storeId, match { offer -> offer.id == offerId }) }
         justRun {
@@ -303,19 +303,6 @@ class OfferStepDefs(
         offer.findCustomizationInChildrenById(customizationId)?.addOption(option)
     }
 
-//    @Given("the information of the Option to be added")
-//    fun theInformationOfTheOptionToBeAdded(optionToBeAdded: Option) {
-//        this.options[optionToBeAdded.id] = optionToBeAdded
-//    }
-//
-//    @When("I attempt to add a Customization with the Id {string}")
-//    fun iAttemptToAddACustomizationWithTheId(customizationIdString: String) {
-//        val customizationId = Id(UUID.fromString(customizationIdString))
-//        cucumberContext.result = runCatching {
-//            addCustomizationInputPort.execute(cucumberContext.storeId, offer.id, customizations[customizationId]!!)
-//        }
-//    }
-
     @And("the Customization with the Id {string} has the following Options")
     fun theCustomizationWithTheIdHasTheFollowingOptions(
         customizationIdString: String,
@@ -385,11 +372,15 @@ class OfferStepDefs(
         val customizationId = Id(UUID.fromString(customizationIdString))
 
         offers[offerId]?.let { offer ->
-            customizations[customizationId]?.let { customization -> offer.addCustomization(customization) }
+            customizations[customizationId]?.let { customization ->
+                offer.addCustomization(customization)
+            }
         }
     }
 
-    @When("I attempt to add a Customization with the Id {string} on children with the Id {string} in the Offer with the Id {string}")
+    @When(
+        "I attempt to add a Customization with the Id {string} on children with the Id {string} in the Offer with the Id {string}"
+    )
     fun iAttemptToAddACustomizationWithTheIdOnChildrenWithTheIdInTheOfferWithTheId(
         customizationIdString: String,
         optionIdString: String,
@@ -408,7 +399,9 @@ class OfferStepDefs(
         }
     }
 
-    @When("I attempt to add an Option with the Id {string} on children with the Id {string} in the Offer with the Id {string}")
+    @When(
+        "I attempt to add an Option with the Id {string} on children with the Id {string} in the Offer with the Id {string}"
+    )
     fun iAttemptToAddAnOptionWithTheIdOnChildrenWithTheIdInTheOfferWithTheId(
         optionIdString: String,
         customizationIdString: String,

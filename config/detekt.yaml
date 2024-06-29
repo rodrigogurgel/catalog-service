@@ -647,6 +647,7 @@ style:
     excludeRawStrings: true
     excludes:
       - "**Test.kt"
+      - "**StepDefs.kt"
   MayBeConst:
     active: true
   ModifierOrder:
