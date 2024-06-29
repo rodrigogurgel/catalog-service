@@ -11,21 +11,18 @@ import br.com.rodrigogurgel.catalogservice.domain.entity.Customization
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
 import br.com.rodrigogurgel.catalogservice.domain.service.OfferService
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
-import br.com.rodrigogurgel.catalogservice.fixture.mock.mockCategoryWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockCustomizationWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOfferWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOptionWith
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
-import io.cucumber.java.en.When
-import io.mockk.every
-import java.util.UUID
 import io.cucumber.java.en.Then
+import io.cucumber.java.en.When
 import io.kotest.matchers.shouldBe
+import io.mockk.every
 import io.mockk.justRun
-import io.mockk.verify
-import io.mockk.verifyOrder
 import io.mockk.verifySequence
+import java.util.UUID
 
 class OfferStepDefs(
     private val cucumberContext: CucumberContext,
@@ -75,53 +72,9 @@ class OfferStepDefs(
         offerToBeCreated = offer
     }
 
-    @And("that there is a Offer with the Id {string} in the Store with the Id {string}")
-    fun thatThereIsAOfferWithTheIdInTheStoreWithTheId(offerIdString: String, storeIdString: String) {
-        val offerId = Id(UUID.fromString(offerIdString))
-        val storeId = Id(UUID.fromString(storeIdString))
-
-        every { cucumberContext.offerDatastoreOutputPort.exists(offerId) } returns true
-        every { cucumberContext.offerDatastoreOutputPort.exists(storeId, offerId) } returns true
-        every { cucumberContext.offerDatastoreOutputPort.findById(storeId, offerId) } returns mockOfferWith {
-            id = offerId
-        }
-
-        justRun {
-            cucumberContext.offerDatastoreOutputPort.delete(storeId, offerId)
-        }
-    }
-
-    @And("that there isn't a Offer with the Id {string}")
-    fun thatThereIsnTAOfferWithTheId(offerIdString: String) {
-        val offerId = Id(UUID.fromString(offerIdString))
-
-        every { cucumberContext.offerDatastoreOutputPort.exists(offerId) } returns false
-        every { cucumberContext.offerDatastoreOutputPort.findById(any(), offerId) } returns null
-
-        justRun {
-            cucumberContext.offerDatastoreOutputPort.create(
-                any(),
-                any(),
-                match { offer -> offer.id == offerId })
-        }
-
-        justRun {
-            cucumberContext.offerDatastoreOutputPort.update(
-                any(),
-                match { offer -> offer.id == offerId })
-        }
-    }
-
     @And("the Id of the Category is {string}")
     fun theIdOfTheCategoryIs(categoryIdString: String) {
         categoryId = Id(UUID.fromString(categoryIdString))
-    }
-
-    @When("I attempt to create a Offer")
-    fun iAttemptToCreateAOffer() {
-        cucumberContext.result = runCatching {
-            createOfferInputPort.execute(cucumberContext.storeId, categoryId, offerToBeCreated)
-        }
     }
 
     @Then("the Offer should be stored in the database")
@@ -143,32 +96,21 @@ class OfferStepDefs(
         }
     }
 
-    @When("I attempt to create a Offer using the Id {string}")
-    fun iAttemptToCreateAOfferUsingTheId(offerIdString: String) {
-        val offer = offerToBeCreated.run {
-            Offer(
-                id = Id(UUID.fromString(offerIdString)),
-                product,
-                price,
-                status,
-                customizations
-            )
-        }
-        cucumberContext.result = runCatching {
-            createOfferInputPort.execute(cucumberContext.storeId, categoryId, offer)
-        }
-    }
-
     @And("that there is an Offer with the Id {string} in the Store with the Id {string}")
     fun thatThereIsAnOfferWithTheIdInTheStoreWithTheId(offerIdString: String, storeIdString: String) {
         val offerId = Id(UUID.fromString(offerIdString))
-
         val storeId = Id(UUID.fromString(storeIdString))
 
         every { cucumberContext.offerDatastoreOutputPort.exists(offerId) } returns true
         every { cucumberContext.offerDatastoreOutputPort.exists(storeId, offerId) } returns true
+        every { cucumberContext.offerDatastoreOutputPort.findById(storeId, offerId) } returns mockOfferWith {
+            id = offerId
+        }
 
         justRun { cucumberContext.offerDatastoreOutputPort.update(storeId, match { offer -> offer.id == offerId }) }
+        justRun {
+            cucumberContext.offerDatastoreOutputPort.delete(storeId, offerId)
+        }
     }
 
     @And("that there isn't an Offer with the Id {string}")
@@ -177,12 +119,21 @@ class OfferStepDefs(
 
         every { cucumberContext.offerDatastoreOutputPort.exists(offerId) } returns false
         every { cucumberContext.offerDatastoreOutputPort.exists(any(), offerId) } returns false
+        every { cucumberContext.offerDatastoreOutputPort.findById(any(), offerId) } returns null
 
         justRun {
             cucumberContext.offerDatastoreOutputPort.create(
                 any(),
                 any(),
-                match { offer -> offer.id == offerId })
+                match { offer -> offer.id == offerId }
+            )
+        }
+
+        justRun {
+            cucumberContext.offerDatastoreOutputPort.update(
+                any(),
+                match { offer -> offer.id == offerId }
+            )
         }
     }
 
@@ -210,10 +161,16 @@ class OfferStepDefs(
     }
 
     @Given("the information of the Offer to be updated")
-    fun theInformationOfTheOfferToBeUpdated(offer: Offer) {
-        offerToBeUpdated = offer
+    fun theInformationOfTheOfferToBeUpdated(offerToBeUpdated: Offer) {
+        this.offerToBeUpdated = offerToBeUpdated
 
-        every { cucumberContext.offerDatastoreOutputPort.findById(any(), offer.id) } returns offer
+        every { cucumberContext.offerDatastoreOutputPort.findById(any(), offerToBeUpdated.id) } returns offerToBeUpdated
+        justRun {
+            cucumberContext.offerDatastoreOutputPort.update(
+                any(),
+                match { offer -> offer.id == offerToBeUpdated.id }
+            )
+        }
     }
 
     @When("I attempt to update an Offer")
@@ -258,8 +215,8 @@ class OfferStepDefs(
         }
     }
 
-    @When("I attempt to get a Offer with the Id {string}")
-    fun iAttemptToGetAOfferWithTheId(offerIdString: String) {
+    @When("I attempt to get an Offer with the Id {string}")
+    fun iAttemptToGetAnOfferWithTheId(offerIdString: String) {
         cucumberContext.result = runCatching {
             getOfferInputPort.execute(cucumberContext.storeId, Id(UUID.fromString(offerIdString)))
         }
@@ -280,8 +237,8 @@ class OfferStepDefs(
         }
     }
 
-    @When("I attempt to delete a Offer with the Id {string}")
-    fun iAttemptToDeleteAOfferWithTheId(offerIdString: String) {
+    @When("I attempt to delete an Offer with the Id {string}")
+    fun iAttemptToDeleteAnOfferWithTheId(offerIdString: String) {
         cucumberContext.result = runCatching {
             deleteOfferInputPort.execute(cucumberContext.storeId, Id(UUID.fromString(offerIdString)))
         }

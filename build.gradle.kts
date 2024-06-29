@@ -154,11 +154,26 @@ tasks.jacocoTestReport {
 tasks.jacocoTestCoverageVerification {
     violationRules {
         rule {
+            element = "CLASS"
+
+            // Excluding values class because jacoco can't check
+            val excludeValueClasses = arrayOf(
+                "br.com.rodrigogurgel.catalogservice.domain.vo.Name*",
+                "br.com.rodrigogurgel.catalogservice.domain.vo.Description*",
+                "br.com.rodrigogurgel.catalogservice.domain.vo.Image*",
+            )
+
+            excludes = listOf(
+                "br.com.rodrigogurgel.catalogservice.CatalogApplication*",
+                *excludeValueClasses
+            )
+
             limit {
                 counter = "LINE"
                 value = "COVEREDRATIO"
                 minimum = "0.98".toBigDecimal()
             }
+
             limit {
                 counter = "METHOD"
                 value = "COVEREDRATIO"
@@ -170,12 +185,12 @@ tasks.jacocoTestCoverageVerification {
                 value = "COVEREDRATIO"
                 minimum = "0.98".toBigDecimal()
             }
+
             limit {
                 counter = "COMPLEXITY"
                 value = "COVEREDRATIO"
                 minimum = "0.98".toBigDecimal()
             }
-            includes = listOf("br.com.rodrigogurgel.*")
         }
     }
 }

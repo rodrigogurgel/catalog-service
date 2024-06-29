@@ -71,7 +71,8 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
     fun iAttemptToCreateACategoryUsingTheId(categoryIdString: String) {
         cucumberContext.result = runCatching {
             createCategoryInputPort.execute(
-                cucumberContext.storeId, categoryToBeCreated.copy(
+                cucumberContext.storeId,
+                categoryToBeCreated.copy(
                     id = Id(UUID.fromString(categoryIdString))
                 )
             )
@@ -94,7 +95,8 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
 
             cucumberContext.categoryDatastoreOutputPort.delete(
                 cucumberContext.storeId,
-                match { id -> id == Id(UUID.fromString(categoryIdString)) })
+                match { id -> id == Id(UUID.fromString(categoryIdString)) }
+            )
         }
     }
 

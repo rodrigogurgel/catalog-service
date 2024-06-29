@@ -8,4 +8,3 @@ class DuplicatedOptionException(duplicatedOptionIds: List<Id>) :
 Duplicated Option IDs: [$duplicatedOptionIds]
         """.trimMargin()
     )
-

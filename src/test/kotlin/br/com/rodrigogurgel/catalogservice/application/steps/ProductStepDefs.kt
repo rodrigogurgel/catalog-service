@@ -8,10 +8,10 @@ import br.com.rodrigogurgel.catalogservice.application.port.input.product.Update
 import br.com.rodrigogurgel.catalogservice.domain.entity.Product
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockProductWith
-import io.cucumber.java.en.Given
 import io.cucumber.java.en.And
-import io.cucumber.java.en.When
+import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
+import io.cucumber.java.en.When
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.justRun
@@ -71,7 +71,8 @@ class ProductStepDefs(
     fun iAttemptToCreateAProductUsingTheId(productIdString: String) {
         cucumberContext.result = runCatching {
             createProductInputPort.execute(
-                cucumberContext.storeId, productToBeCreated.copy(
+                cucumberContext.storeId,
+                productToBeCreated.copy(
                     id = Id(UUID.fromString(productIdString))
                 )
             )
@@ -117,7 +118,8 @@ class ProductStepDefs(
         justRun {
             cucumberContext.productDatastoreOutputPort.update(
                 storeId,
-                match { product -> product.id == productId })
+                match { product -> product.id == productId }
+            )
         }
 
         every { cucumberContext.productDatastoreOutputPort.findById(storeId, productId) } returns product
@@ -128,7 +130,6 @@ class ProductStepDefs(
             )
         } returns emptyList()
     }
-
 
     @Then("the Product with the Id {string} should be deleted from database")
     fun theProductWithTheIdShouldBeDeletedFromDatabase(productIdString: String) {

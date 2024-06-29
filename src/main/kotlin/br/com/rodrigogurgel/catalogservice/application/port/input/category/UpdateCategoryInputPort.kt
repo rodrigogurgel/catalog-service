@@ -14,10 +14,12 @@ class UpdateCategoryInputPort(
 ) : UpdateCategoryUseCase {
     override fun execute(storeId: Id, category: Category) {
         if (!storeRestOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
-        if (!categoryDatastoreOutputPort.exists(storeId, category.id)) throw CategoryNotFoundException(
-            storeId,
-            category.id
-        )
+        if (!categoryDatastoreOutputPort.exists(storeId, category.id)) {
+            throw CategoryNotFoundException(
+                storeId,
+                category.id
+            )
+        }
 
         categoryDatastoreOutputPort.update(storeId, category)
     }
