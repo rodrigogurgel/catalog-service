@@ -14,12 +14,12 @@ class StoreStepDefs(
 ) {
     @And("that there is a Store with the Id {string}")
     fun thatThereIsAStoreWithTheId(storeId: String) {
-        every { cucumberContext.storeRestOutputPort.exists(Id(UUID.fromString(storeId))) } returns true
+        every { cucumberContext.storeDatastoreOutputPort.exists(Id(UUID.fromString(storeId))) } returns true
     }
 
     @And("that there isn't a Store with the Id {string}")
     fun thatThereIsnTAStoreWithTheId(storeId: String) {
-        every { cucumberContext.storeRestOutputPort.exists(Id(UUID.fromString(storeId))) } returns false
+        every { cucumberContext.storeDatastoreOutputPort.exists(Id(UUID.fromString(storeId))) } returns false
     }
 
     @And("the Id of the Store is {string}")

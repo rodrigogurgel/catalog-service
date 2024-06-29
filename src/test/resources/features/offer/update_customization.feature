@@ -5,7 +5,7 @@ Feature: Update Customization
       | id                                   | name              | description          | status    | image                     |
       | 4bb8b866-2137-4f10-8604-c7acb850d686 | Produto de teste  | Produto para testes  | AVAILABLE | https://www.image.com.br  |
       | 55847dfc-93cb-4fa8-b164-5ae66bdb60d1 | Produto1 de teste | Produto1 para testes | AVAILABLE | https://www.image1.com.br |
-    And the the following Customizations
+    And the following Customizations
       | id                                   | name                   | description               | status    |
       | 693038f4-85d9-4e01-b8c8-ee503d7cadcc | Customization de teste | Customization para testes | AVAILABLE |
     And the Customization with the Id "693038f4-85d9-4e01-b8c8-ee503d7cadcc" has the following Options
@@ -23,7 +23,7 @@ Feature: Update Customization
 
   Scenario: Updating a Customization successfully
     Given the Id of the Store is "259f3a2d-12d2-4b4d-9e10-0e59efb378a9"
-    And the the following Customizations
+    And the following Customizations
       | id                                   | name                    | description               | status    |
       | 693038f4-85d9-4e01-b8c8-ee503d7cadcc | Customization2 de teste | Customization para testes | AVAILABLE |
     And the Customization with the Id "693038f4-85d9-4e01-b8c8-ee503d7cadcc" has the following Options
@@ -34,7 +34,7 @@ Feature: Update Customization
 
   Scenario: Failure in updating a Customization from the Offer when the Store doesn't exist
     Given the Id of the Store is "2c371f9f-ea24-421b-803d-5e477caf8e34"
-    And the the following Customizations
+    And the following Customizations
       | id                                   | name                    | description               | status    |
       | 693038f4-85d9-4e01-b8c8-ee503d7cadcc | Customization2 de teste | Customization para testes | AVAILABLE |
     And the Customization with the Id "693038f4-85d9-4e01-b8c8-ee503d7cadcc" has the following Options
@@ -45,7 +45,7 @@ Feature: Update Customization
 
   Scenario: Failure in updating a Customization from the Offer when the Offer doesn't exist
     Given the Id of the Store is "259f3a2d-12d2-4b4d-9e10-0e59efb378a9"
-    And the the following Customizations
+    And the following Customizations
       | id                                   | name                    | description               | status    |
       | 693038f4-85d9-4e01-b8c8-ee503d7cadcc | Customization2 de teste | Customization para testes | AVAILABLE |
     And the Customization with the Id "693038f4-85d9-4e01-b8c8-ee503d7cadcc" has the following Options
@@ -56,7 +56,7 @@ Feature: Update Customization
 
   Scenario: Failure in updating a Customization from the Offer when the Product doesn't exist
     Given the Id of the Store is "259f3a2d-12d2-4b4d-9e10-0e59efb378a9"
-    And the the following Customizations
+    And the following Customizations
       | id                                   | name                    | description               | status    |
       | 693038f4-85d9-4e01-b8c8-ee503d7cadcc | Customization2 de teste | Customization para testes | AVAILABLE |
     And the Customization with the Id "693038f4-85d9-4e01-b8c8-ee503d7cadcc" has the following Options

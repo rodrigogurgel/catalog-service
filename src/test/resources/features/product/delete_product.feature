@@ -14,3 +14,12 @@ Feature: Delete Product
     Given the Id of the Store is "2c371f9f-ea24-421b-803d-5e477caf8e34"
     When I attempt to delete a Product with the Id "4bb8b866-2137-4f10-8604-c7acb850d686"
     Then I should encounter a "StoreNotFoundException" error
+
+  Scenario: Failure in deleting a Product when the Product is in use
+    Given the Id of the Store is "259f3a2d-12d2-4b4d-9e10-0e59efb378a9"
+    And the information of the Offer
+      | id                                   | product_id                           | price | status    |
+      | 4bb8b866-2137-4f10-8604-c7acb850d686 | 4bb8b866-2137-4f10-8604-c7acb850d686 | 26.50 | AVAILABLE |
+    And that there is an Offer with the Id "4bb8b866-2137-4f10-8604-c7acb850d686" in the Store with the Id "259f3a2d-12d2-4b4d-9e10-0e59efb378a9"
+    When I attempt to delete a Product with the Id "4bb8b866-2137-4f10-8604-c7acb850d686"
+    Then I should encounter a "ProductIsInUseException" error

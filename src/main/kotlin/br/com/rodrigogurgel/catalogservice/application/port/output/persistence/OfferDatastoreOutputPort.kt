@@ -10,4 +10,5 @@ interface OfferDatastoreOutputPort {
     fun exists(storeId: Id, offerId: Id): Boolean
     fun update(storeId: Id, offer: Offer)
     fun delete(storeId: Id, offerId: Id)
+    fun getOffersByProductIdIncludingChildren(productId: Id): List<Id>
 }

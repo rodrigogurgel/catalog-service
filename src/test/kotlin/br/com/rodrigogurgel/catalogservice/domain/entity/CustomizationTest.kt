@@ -1,6 +1,6 @@
 package br.com.rodrigogurgel.catalogservice.domain.entity
 
-import br.com.rodrigogurgel.catalogservice.domain.exception.CustomizationMaxPermittedException
+import br.com.rodrigogurgel.catalogservice.domain.exception.CustomizationMinPermittedException
 import br.com.rodrigogurgel.catalogservice.domain.exception.CustomizationOptionsIsEmptyException
 import br.com.rodrigogurgel.catalogservice.domain.exception.OptionAlreadyExistsException
 import br.com.rodrigogurgel.catalogservice.domain.exception.OptionNotFoundException
@@ -78,7 +78,7 @@ class CustomizationTest {
 
         option.status = Status.UNAVAILABLE
 
-        shouldThrow<CustomizationMaxPermittedException> {
+        shouldThrow<CustomizationMinPermittedException> {
             customization.updateOption(option)
         }
     }
@@ -149,27 +149,6 @@ class CustomizationTest {
         customization.status shouldBe status
         customization.options shouldBe options
         customization.quantity.minPermitted shouldBe options.size
-    }
-
-    @Test
-    fun `Should instantiate with error when maxPermitted is greater than options size and options is not empty`() {
-        val id = Id()
-        val name = Name(randomString(30))
-        val description = Description(randomString(1000))
-        val quantity = Quantity(1, 2)
-        val status = Status.AVAILABLE
-        val options = mutableListOf(mockOption())
-
-        shouldThrow<CustomizationMaxPermittedException> {
-            Customization(
-                id,
-                name,
-                description,
-                quantity,
-                status,
-                options
-            )
-        }
     }
 
     @Test
@@ -347,5 +326,30 @@ class CustomizationTest {
         }
 
         customization.options shouldNotContain newOption
+    }
+
+    @Test
+    fun `Should throw exception CustomizationMaxPermittedException when minimum quantity is greater than the quantity of available options`() {
+        val option = mockOptionWith {
+            status = Status.UNAVAILABLE
+        }
+        val id = Id()
+        val name = Name(randomString(30))
+        val description = Description(randomString(1000))
+        val quantity = Quantity(0, 1)
+        val status = Status.AVAILABLE
+
+        val customization = Customization(
+            id,
+            name,
+            description,
+            quantity,
+            status,
+            options = listOf(option)
+        )
+
+        shouldThrow<CustomizationMinPermittedException> {
+            customization.setQuantity(Quantity(1, 1))
+        }
     }
 }

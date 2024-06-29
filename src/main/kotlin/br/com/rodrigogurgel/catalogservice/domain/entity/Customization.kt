@@ -1,6 +1,6 @@
 package br.com.rodrigogurgel.catalogservice.domain.entity
 
-import br.com.rodrigogurgel.catalogservice.domain.exception.CustomizationMaxPermittedException
+import br.com.rodrigogurgel.catalogservice.domain.exception.CustomizationMinPermittedException
 import br.com.rodrigogurgel.catalogservice.domain.exception.CustomizationOptionsIsEmptyException
 import br.com.rodrigogurgel.catalogservice.domain.exception.OptionAlreadyExistsException
 import br.com.rodrigogurgel.catalogservice.domain.exception.OptionNotFoundException
@@ -50,7 +50,7 @@ class Customization private constructor(
     }
 
     private fun validateQuantity() {
-        if (quantity.maxPermitted > availableOptions.size) throw CustomizationMaxPermittedException(id)
+        if (quantity.minPermitted > availableOptions.size) throw CustomizationMinPermittedException(id)
     }
 
     /**
@@ -58,11 +58,10 @@ class Customization private constructor(
      *
      * @param quantity The quantity to be set.
      * @throws CustomizationOptionsIsEmptyException if the options list is empty.
-     * @throws CustomizationMaxPermittedException if the maxPermitted value of the quantity is greater than the size of the options list.
+     * @throws CustomizationMinPermittedException if the maxPermitted value of the quantity is greater than the size of the available options list.
      */
     fun setQuantity(quantity: Quantity) {
         this.quantity = quantity
-        validateOptions()
         validateQuantity()
     }
 

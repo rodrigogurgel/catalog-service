@@ -38,7 +38,7 @@ dependencies {
     val cucumberVersion = properties["cucumberVersion"]
     val kotestVersion = properties["kotestVersion"]
     val pitestJUnit5Version = properties["pitestJUnit5Version"]
-    val gradlePitestPluginVersion = properties["pitestVersion"]
+    val gradlePitestPluginVersion = properties["gradlePitestPluginVersion"]
     val arcmutatePitestKotlinPluginVersion = properties["arcmutatePitestKotlinPluginVersion"]
     val arcmutateSpringVersion = properties["arcmutateSpringVersion"]
 

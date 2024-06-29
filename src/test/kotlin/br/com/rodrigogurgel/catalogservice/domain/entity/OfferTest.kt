@@ -414,7 +414,7 @@ class OfferTest {
     }
 
     @Test
-    fun `Should return a Option when call findOptionInChildrenById and some child has the Option`() {
+    fun `Should return an Option when call findOptionInChildrenById and some child has the Option`() {
         val childOption = mockOption()
         val customization = mockCustomizationWith {
             options = listOf(childOption)

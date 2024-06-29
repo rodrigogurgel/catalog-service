@@ -24,22 +24,23 @@ class ProductStepDefs(
     private lateinit var product: Product
 
     private val createProductInputPort = CreateProductInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort
     )
 
     private val deleteProductInputPort = DeleteProductInputPort(
-        cucumberContext.storeRestOutputPort,
-        cucumberContext.productDatastoreOutputPort
+        cucumberContext.storeDatastoreOutputPort,
+        cucumberContext.productDatastoreOutputPort,
+        cucumberContext.offerDatastoreOutputPort
     )
 
     private val getProductInputPort = GetProductInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort
     )
 
     private val updateProductInputPort = UpdateProductInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort
     )
 
@@ -60,7 +61,7 @@ class ProductStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
             cucumberContext.productDatastoreOutputPort.exists(product.id)
             cucumberContext.productDatastoreOutputPort.create(cucumberContext.storeId, product)
         }
@@ -82,7 +83,7 @@ class ProductStepDefs(
     fun iAttemptToDeleteAProductWithTheId(productIdString: String) {
         cucumberContext.result = runCatching {
             deleteProductInputPort.execute(cucumberContext.storeId, Id(UUID.fromString(productIdString)))
-        }
+        }.onFailure { it.printStackTrace() }
     }
 
     @And("that there isn't a Product with the Id {string}")
@@ -135,7 +136,7 @@ class ProductStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
             cucumberContext.productDatastoreOutputPort.delete(
                 cucumberContext.storeId,
                 Id(UUID.fromString(productIdString))
@@ -153,7 +154,7 @@ class ProductStepDefs(
     @Then("the Product with the Id {string} should be retrieved from database")
     fun theProductWithTheIdShouldBeRetrievedFromDatabase(productIdString: String) {
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
             cucumberContext.productDatastoreOutputPort.findById(
                 cucumberContext.storeId,
                 Id(UUID.fromString(productIdString))

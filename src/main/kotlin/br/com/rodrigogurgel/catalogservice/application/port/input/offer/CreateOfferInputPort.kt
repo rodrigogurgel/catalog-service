@@ -7,20 +7,20 @@ import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundEx
 import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.OfferDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.ProductDatastoreOutputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.rest.StoreRestOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.StoreDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.application.usecase.offer.CreateOfferUseCase
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
 import br.com.rodrigogurgel.catalogservice.domain.service.OfferService
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
 class CreateOfferInputPort(
-    private val storeRestOutputPort: StoreRestOutputPort,
+    private val storeDatastoreOutputPort: StoreDatastoreOutputPort,
     private val categoryDatastoreOutputPort: CategoryDatastoreOutputPort,
     private val productDatastoreOutputPort: ProductDatastoreOutputPort,
     private val offerDatastoreOutputPort: OfferDatastoreOutputPort,
 ) : CreateOfferUseCase {
     override fun execute(storeId: Id, categoryId: Id, offer: Offer) {
-        if (!storeRestOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
+        if (!storeDatastoreOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
         if (!categoryDatastoreOutputPort.exists(storeId, categoryId)) {
             throw CategoryNotFoundException(
                 storeId,

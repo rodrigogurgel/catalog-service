@@ -42,75 +42,75 @@ class OfferStepDefs(
     private val options: MutableMap<Id, Option> = mutableMapOf()
 
     private val createOfferInputPort = CreateOfferInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.categoryDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort
     )
 
     private val updateOfferInputPort = UpdateOfferInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort
     )
 
     private val getOfferInputPort = GetOfferInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort
     )
 
     private val deleteOfferInputPort = DeleteOfferInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort
     )
 
     private val addCustomizationInputPort = AddCustomizationInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort
     )
 
     private val addCustomizationOnChildrenInputPort = AddCustomizationOnChildrenInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort
     )
 
     private val addOptionOnChildrenInputPort = AddOptionOnChildrenInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort
     )
 
     private val removeCustomizationInputPort = RemoveCustomizationInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort,
     )
 
     private val removeCustomizationOnChildrenInputPort = RemoveCustomizationOnChildrenInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort
     )
 
     private val removeOptionOnChildrenInputPort = RemoveOptionOnChildrenInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort
     )
 
     private val updateCustomizationInputPort = UpdateCustomizationInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort,
     )
 
     private val updateCustomizationOnChildrenInputPort = UpdateCustomizationOnChildrenInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort,
     )
 
     private val updateOptionOnChildrenInputPort = UpdateOptionOnChildrenInputPort(
-        cucumberContext.storeRestOutputPort,
+        cucumberContext.storeDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort,
     )
@@ -132,7 +132,7 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
             cucumberContext.categoryDatastoreOutputPort.exists(cucumberContext.storeId, categoryId)
             cucumberContext.offerDatastoreOutputPort.exists(offer.id)
 
@@ -242,7 +242,7 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
             cucumberContext.offerDatastoreOutputPort.exists(cucumberContext.storeId, offer.id)
 
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
@@ -267,7 +267,7 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
 
             cucumberContext.offerDatastoreOutputPort.findById(
                 cucumberContext.storeId,
@@ -289,7 +289,7 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
 
             cucumberContext.offerDatastoreOutputPort.delete(
                 cucumberContext.storeId,
@@ -329,8 +329,8 @@ class OfferStepDefs(
         offer.addCustomization(customization)
     }
 
-    @And("the Offer to be updated has a Option with the Id {string} in the Customization with the Id {string}")
-    fun theOfferToBeUpdatedHasAOptionWithTheIdInTheCustomizationWithTheId(
+    @And("the Offer to be updated has an Option with the Id {string} in the Customization with the Id {string}")
+    fun theOfferToBeUpdatedHasAnOptionWithTheIdInTheCustomizationWithTheId(
         optionIdString: String,
         customizationIdString: String,
     ) {
@@ -371,7 +371,7 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
 
             cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
 
@@ -387,8 +387,8 @@ class OfferStepDefs(
         }
     }
 
-    @And("the the following Customizations")
-    fun theTheFollowingCustomizations(customizations: List<Customization>) {
+    @And("the following Customizations")
+    fun theFollowingCustomizations(customizations: List<Customization>) {
         this.customizations.putAll(customizations.associateBy { customization -> customization.id })
     }
 
@@ -474,7 +474,7 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
 
             cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
 
@@ -510,7 +510,7 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
 
             cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
 
@@ -547,7 +547,7 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
 
             cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
 
@@ -570,9 +570,9 @@ class OfferStepDefs(
     }
 
     @When(
-        "I attempt to remove a Option with the Id {string} from child with the Id {string} in the Offer with the Id {string}"
+        "I attempt to remove an Option with the Id {string} from child with the Id {string} in the Offer with the Id {string}"
     )
-    fun iAttemptToRemoveAOptionWithTheIdFromChildWithTheIdInTheOfferWithTheId(
+    fun iAttemptToRemoveAnOptionWithTheIdFromChildWithTheIdInTheOfferWithTheId(
         optionIdString: String,
         customizationIdString: String,
         offerIdString: String,
@@ -593,7 +593,7 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
 
             cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
 
@@ -626,7 +626,7 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
 
             cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
 
@@ -666,7 +666,7 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
 
             cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
 
@@ -681,9 +681,9 @@ class OfferStepDefs(
     }
 
     @When(
-        "I attempt to update a Option with the Id {string} from parent Customization with the Id {string} in the Offer with the Id {string}"
+        "I attempt to update an Option with the Id {string} from parent Customization with the Id {string} in the Offer with the Id {string}"
     )
-    fun iAttemptToUpdateAOptionWithTheIdFromParentCustomizationWithTheIdInTheOfferWithTheId(
+    fun iAttemptToUpdateAnOptionWithTheIdFromParentCustomizationWithTheIdInTheOfferWithTheId(
         optionIdString: String,
         customizationIdString: String,
         offerIdString: String
@@ -704,7 +704,7 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
 
             cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
 
