@@ -7,6 +7,7 @@ import br.com.rodrigogurgel.catalogservice.application.port.input.offer.AddOptio
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.CreateOfferInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.DeleteOfferInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.GetOfferInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.offer.RemoveCustomizationInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.UpdateOfferInputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Customization
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
@@ -74,6 +75,11 @@ class OfferStepDefs(
         cucumberContext.storeRestOutputPort,
         cucumberContext.offerDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort
+    )
+
+    private val removeCustomizationInputPort = RemoveCustomizationInputPort(
+        cucumberContext.storeRestOutputPort,
+        cucumberContext.offerDatastoreOutputPort,
     )
 
     @Given("the information of the Offer")
@@ -446,6 +452,39 @@ class OfferStepDefs(
             cucumberContext.offerDatastoreOutputPort.update(
                 cucumberContext.storeId,
                 match { offer -> offer.findOptionInChildrenById(optionId) != null }
+            )
+        }
+    }
+
+    @When("I attempt to remove a Customization with the Id {string} from the Offer with the Id {string}")
+    fun iAttemptToRemoveACustomizationWithTheIdFromTheOfferWithTheId(
+        customizationIdString: String,
+        offerIdString: String
+    ) {
+        val customizationId = Id(UUID.fromString(customizationIdString))
+        val offerId = Id(UUID.fromString(offerIdString))
+
+        cucumberContext.result = runCatching {
+            removeCustomizationInputPort.execute(cucumberContext.storeId, offerId, customizationId)
+        }
+    }
+
+    @Then("the Customization with the Id {string} should be removed from the offer")
+    fun theCustomizationWithTheIdShouldBeRemovedFromTheOffer(customizationIdString: String) {
+        val customizationId = Id(UUID.fromString(customizationIdString))
+        cucumberContext.result.exceptionOrNull()?.printStackTrace()
+        cucumberContext.result.isSuccess shouldBe true
+
+        verifySequence {
+            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+
+            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+
+            cucumberContext.offerDatastoreOutputPort.update(
+                cucumberContext.storeId,
+                match { offer ->
+                    offer.findCustomizationInChildrenById(customizationId) == null
+                }
             )
         }
     }
