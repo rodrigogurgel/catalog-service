@@ -9,6 +9,7 @@ import br.com.rodrigogurgel.catalogservice.application.port.input.offer.DeleteOf
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.GetOfferInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.RemoveCustomizationInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.RemoveCustomizationOnChildrenInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.offer.RemoveOptionOnChildrenInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.UpdateOfferInputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Customization
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
@@ -84,6 +85,11 @@ class OfferStepDefs(
     )
 
     private val removeCustomizationOnChildrenInputPort = RemoveCustomizationOnChildrenInputPort(
+        cucumberContext.storeRestOutputPort,
+        cucumberContext.offerDatastoreOutputPort
+    )
+
+    private val removeOptionOnChildrenInputPort = RemoveOptionOnChildrenInputPort(
         cucumberContext.storeRestOutputPort,
         cucumberContext.offerDatastoreOutputPort
     )
@@ -536,6 +542,41 @@ class OfferStepDefs(
         val customizationId = Id(UUID.fromString(customizationIdString))
         options[optionId]?.let { option ->
             customizations[customizationId]?.let { customization -> option.addCustomization(customization) }
+        }
+    }
+
+    @When("I attempt to remove a Option with the Id {string} from child with the Id {string} in the Offer with the Id {string}")
+    fun iAttemptToRemoveAOptionWithTheIdFromChildWithTheIdInTheOfferWithTheId(
+        optionIdString: String,
+        customizationIdString: String,
+        offerIdString: String,
+    ) {
+        val customizationId = Id(UUID.fromString(customizationIdString))
+        val optionId = Id(UUID.fromString(optionIdString))
+        val offerId = Id(UUID.fromString(offerIdString))
+
+        cucumberContext.result = runCatching {
+            removeOptionOnChildrenInputPort.execute(cucumberContext.storeId, offerId, customizationId, optionId)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then("the Option with the Id {string} should be removed from Offer's children")
+    fun theOptionWithTheIdShouldBeRemovedFromOfferSChildren(optionIdString: String) {
+        val optionId = Id(UUID.fromString(optionIdString))
+        cucumberContext.result.exceptionOrNull()?.printStackTrace()
+        cucumberContext.result.isSuccess shouldBe true
+
+        verifySequence {
+            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+
+            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+
+            cucumberContext.offerDatastoreOutputPort.update(
+                cucumberContext.storeId,
+                match { offer ->
+                    offer.findOptionInChildrenById(optionId) == null
+                }
+            )
         }
     }
 }
