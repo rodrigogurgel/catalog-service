@@ -21,8 +21,7 @@ import java.util.UUID
 class ProductStepDefs(
     private val cucumberContext: CucumberContext,
 ) {
-    private lateinit var productToBeCreated: Product
-    private lateinit var productToBeUpdated: Product
+    private lateinit var product: Product
 
     private val createProductInputPort = CreateProductInputPort(
         cucumberContext.storeRestOutputPort,
@@ -44,15 +43,15 @@ class ProductStepDefs(
         cucumberContext.productDatastoreOutputPort
     )
 
-    @Given("the information of the Product to be created")
-    fun theInformationOfTheProductToBeCreated(product: Product) {
-        productToBeCreated = product
+    @Given("the information of the Product")
+    fun theInformationOfTheProduct(product: Product) {
+        this.product = product
     }
 
     @When("I attempt to create a Product")
     fun iAttemptToCreateAProduct() {
         cucumberContext.result = runCatching {
-            createProductInputPort.execute(cucumberContext.storeId, productToBeCreated)
+            createProductInputPort.execute(cucumberContext.storeId, product)
         }
     }
 
@@ -62,8 +61,8 @@ class ProductStepDefs(
 
         verifySequence {
             cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
-            cucumberContext.productDatastoreOutputPort.exists(productToBeCreated.id)
-            cucumberContext.productDatastoreOutputPort.create(cucumberContext.storeId, productToBeCreated)
+            cucumberContext.productDatastoreOutputPort.exists(product.id)
+            cucumberContext.productDatastoreOutputPort.create(cucumberContext.storeId, product)
         }
     }
 
@@ -72,7 +71,7 @@ class ProductStepDefs(
         cucumberContext.result = runCatching {
             createProductInputPort.execute(
                 cucumberContext.storeId,
-                productToBeCreated.copy(
+                product.copy(
                     id = Id(UUID.fromString(productIdString))
                 )
             )
@@ -126,7 +125,7 @@ class ProductStepDefs(
         every {
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
                 storeId,
-                match { ids -> productId in ids }
+                listOf(productId)
             )
         } returns emptyList()
     }
@@ -162,19 +161,13 @@ class ProductStepDefs(
         }
     }
 
-    @Given("the information of the Product to be updated")
-    fun theInformationOfTheProductToBeUpdated(product: Product) {
-        productToBeUpdated = product
-    }
-
-    @When("I attempt to update a Product using the Id {string}")
     fun iAttemptToUpdateAProductUsingTheId(productIdString: String) {
         val productId = Id(UUID.fromString(productIdString))
 
         cucumberContext.result = runCatching {
             updateProductInputPort.execute(
                 cucumberContext.storeId,
-                productToBeUpdated.copy(id = productId)
+                product.copy(id = productId)
             )
         }
     }
@@ -187,12 +180,12 @@ class ProductStepDefs(
 
             cucumberContext.productDatastoreOutputPort.exists(
                 cucumberContext.storeId,
-                productToBeUpdated.id
+                product.id
             )
 
             cucumberContext.productDatastoreOutputPort.update(
                 cucumberContext.storeId,
-                productToBeUpdated
+                product
             )
         }
     }
@@ -202,7 +195,7 @@ class ProductStepDefs(
         cucumberContext.result = runCatching {
             updateProductInputPort.execute(
                 cucumberContext.storeId,
-                productToBeUpdated
+                product
             )
         }
     }
@@ -212,8 +205,38 @@ class ProductStepDefs(
         cucumberContext.result = runCatching {
             updateProductInputPort.execute(
                 cucumberContext.storeId,
-                productToBeUpdated.copy(id = Id(UUID.fromString(productIdString))),
+                product.copy(id = Id(UUID.fromString(productIdString))),
             )
         }
+    }
+
+    @And("that there is the following Products in the Store with the Id {string}")
+    fun thatThereIsTheFollowingProductsInTheStoreWithTheId(storeIdString: String, products: List<Product>) {
+        val storeId = Id(UUID.fromString(storeIdString))
+
+        products.forEach { product ->
+            every { cucumberContext.productDatastoreOutputPort.exists(product.id) } returns true
+            every { cucumberContext.productDatastoreOutputPort.exists(storeId, product.id) } returns true
+
+            justRun { cucumberContext.productDatastoreOutputPort.delete(storeId, product.id) }
+            justRun {
+                cucumberContext.productDatastoreOutputPort.update(
+                    storeId,
+                    product
+                )
+            }
+            every { cucumberContext.productDatastoreOutputPort.findById(storeId, product.id) } returns product
+        }
+
+        every {
+            cucumberContext.productDatastoreOutputPort.getIfNotExists(
+                storeId,
+                match { ids ->
+                    ids.toSet() == products.map { product -> product.id }.toSet()
+                }
+            )
+        } returns emptyList()
+
+        cucumberContext.storeProducts.putAll(products.associateBy { it.id })
     }
 }

@@ -1,7 +1,7 @@
 Feature: Create Category
 
   Background:
-    Given the information of the Category to be created
+    Given the information of the Category
       | id                                   | name               | description           | status    |
       | 693038f4-85d9-4e01-b8c8-ee503d7cadcc | Categoria de teste | Categoria para testes | AVAILABLE |
     And that there is a Store with the Id "259f3a2d-12d2-4b4d-9e10-0e59efb378a9"

@@ -1,7 +1,7 @@
 Feature: Update Product
 
   Background:
-    Given the information of the Product to be updated
+    Given the information of the Product
       | id                                   | name                 | description             | status      | image                    |
       | 4bb8b866-2137-4f10-8604-c7acb850d686 | Categoria de teste 2 | Categoria para testes 2 | UNAVAILABLE | https://www.image.com.br |
     And that there is a Product with the Id "4bb8b866-2137-4f10-8604-c7acb850d686" in the Store with the Id "259f3a2d-12d2-4b4d-9e10-0e59efb378a9"

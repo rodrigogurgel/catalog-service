@@ -1,7 +1,7 @@
 Feature: Create Offer
 
   Background:
-    Given the information of the Offer to be created
+    Given the information of the Offer
       | id                                   | product_id                           | price | status    |
       | 693038f4-85d9-4e01-b8c8-ee503d7cadcc | 4bb8b866-2137-4f10-8604-c7acb850d686 | 26.50 | AVAILABLE |
     And that there is a Store with the Id "259f3a2d-12d2-4b4d-9e10-0e59efb378a9"
@@ -38,7 +38,7 @@ Feature: Create Offer
     Then I should encounter a "CategoryNotFoundException" error
 
   Scenario: Failure in creating an Offer when the Product doesn't exist
-    Given the information of the Offer to be created
+    Given the information of the Offer
       | id                                   | product_id                           | price | status    |
       | 693038f4-85d9-4e01-b8c8-ee503d7cadcc | 693038f4-85d9-4e01-b8c8-ee503d7cadcc | 26.50 | AVAILABLE |
     And the Id of the Store is "259f3a2d-12d2-4b4d-9e10-0e59efb378a9"

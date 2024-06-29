@@ -29,6 +29,7 @@ class StoreStepDefs(
 
     @Then("I should encounter a {string} error")
     fun iShouldEncounterAError(exceptionClassName: String) {
+        cucumberContext.result.isFailure shouldBe true
         cucumberContext.result.exceptionOrNull() shouldNotBe null
         cucumberContext.result.exceptionOrNull()!!::class.simpleName shouldBe exceptionClassName
     }

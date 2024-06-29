@@ -19,8 +19,7 @@ import io.mockk.verifySequence
 import java.util.UUID
 
 class CategoryStepDefs(private val cucumberContext: CucumberContext) {
-    private lateinit var categoryToBeCreated: Category
-    private lateinit var categoryToBeUpdated: Category
+    private lateinit var category: Category
 
     private val createCategoryInputPort = CreateCategoryInputPort(
         cucumberContext.storeRestOutputPort,
@@ -42,15 +41,15 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
         cucumberContext.categoryDatastoreOutputPort
     )
 
-    @Given("the information of the Category to be created")
-    fun theInformationOfTheCategoryToBeCreated(category: Category) {
-        this.categoryToBeCreated = category
+    @Given("the information of the Category")
+    fun theInformationOfTheCategory(category: Category) {
+        this.category = category
     }
 
     @When("I attempt to create a Category")
     fun iAttemptToCreateACategory() {
         cucumberContext.result = runCatching {
-            createCategoryInputPort.execute(cucumberContext.storeId, categoryToBeCreated)
+            createCategoryInputPort.execute(cucumberContext.storeId, category)
         }
     }
 
@@ -61,9 +60,9 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
         verifySequence {
             cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
             cucumberContext.categoryDatastoreOutputPort.exists(
-                categoryToBeCreated.id
+                category.id
             )
-            cucumberContext.categoryDatastoreOutputPort.create(cucumberContext.storeId, categoryToBeCreated)
+            cucumberContext.categoryDatastoreOutputPort.create(cucumberContext.storeId, category)
         }
     }
 
@@ -72,7 +71,7 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
         cucumberContext.result = runCatching {
             createCategoryInputPort.execute(
                 cucumberContext.storeId,
-                categoryToBeCreated.copy(
+                category.copy(
                     id = Id(UUID.fromString(categoryIdString))
                 )
             )
@@ -144,14 +143,9 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
         cucumberContext.result = runCatching {
             updateCategoryInputPort.execute(
                 cucumberContext.storeId,
-                categoryToBeUpdated.copy(id = Id(UUID.fromString(categoryIdString)))
+                category.copy(id = Id(UUID.fromString(categoryIdString)))
             )
         }
-    }
-
-    @Given("the information of the Category to be updated")
-    fun theInformationOfTheCategoryToBeUpdated(category: Category) {
-        categoryToBeUpdated = category
     }
 
     @Then("the Category with the Id {string} should be retrieved from database")
@@ -177,12 +171,12 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
 
             cucumberContext.categoryDatastoreOutputPort.exists(
                 cucumberContext.storeId,
-                categoryToBeUpdated.id
+                category.id
             )
 
             cucumberContext.categoryDatastoreOutputPort.update(
                 cucumberContext.storeId,
-                categoryToBeUpdated
+                category
             )
         }
     }
@@ -228,7 +222,7 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
         cucumberContext.result = runCatching {
             updateCategoryInputPort.execute(
                 cucumberContext.storeId,
-                categoryToBeUpdated
+                category
             )
         }
     }
@@ -238,7 +232,7 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
         cucumberContext.result = runCatching {
             updateCategoryInputPort.execute(
                 cucumberContext.storeId,
-                categoryToBeUpdated.copy(id = Id(UUID.fromString(categoryIdString)))
+                category.copy(id = Id(UUID.fromString(categoryIdString)))
             )
         }
     }

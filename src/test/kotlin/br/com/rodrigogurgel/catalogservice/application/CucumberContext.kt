@@ -4,6 +4,7 @@ import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.C
 import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.OfferDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.ProductDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.application.port.output.rest.StoreRestOutputPort
+import br.com.rodrigogurgel.catalogservice.domain.entity.Product
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import io.mockk.mockk
 
@@ -14,4 +15,5 @@ class CucumberContext {
     val productDatastoreOutputPort: ProductDatastoreOutputPort = mockk()
     val categoryDatastoreOutputPort: CategoryDatastoreOutputPort = mockk()
     val offerDatastoreOutputPort: OfferDatastoreOutputPort = mockk()
+    val storeProducts: MutableMap<Id, Product> = mutableMapOf()
 }

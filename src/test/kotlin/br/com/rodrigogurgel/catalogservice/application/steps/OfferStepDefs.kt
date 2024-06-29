@@ -3,12 +3,14 @@ package br.com.rodrigogurgel.catalogservice.application.steps
 import br.com.rodrigogurgel.catalogservice.application.CucumberContext
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.AddCustomizationInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.AddCustomizationOnChildrenInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.offer.AddOptionOnChildrenInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.CreateOfferInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.DeleteOfferInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.GetOfferInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.UpdateOfferInputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Customization
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
+import br.com.rodrigogurgel.catalogservice.domain.entity.Option
 import br.com.rodrigogurgel.catalogservice.domain.service.OfferService
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockCustomizationWith
@@ -27,10 +29,11 @@ import java.util.UUID
 class OfferStepDefs(
     private val cucumberContext: CucumberContext,
 ) {
-    private lateinit var offerToBeCreated: Offer
-    private lateinit var offerToBeUpdated: Offer
-    private lateinit var customizationToBeAdded: Customization
     private lateinit var categoryId: Id
+    private lateinit var offer: Offer
+    private val offers: MutableMap<Id, Offer> = mutableMapOf()
+    private val customizations: MutableMap<Id, Customization> = mutableMapOf()
+    private val options: MutableMap<Id, Option> = mutableMapOf()
 
     private val createOfferInputPort = CreateOfferInputPort(
         cucumberContext.storeRestOutputPort,
@@ -67,9 +70,16 @@ class OfferStepDefs(
         cucumberContext.productDatastoreOutputPort
     )
 
-    @Given("the information of the Offer to be created")
-    fun theInformationOfTheOfferToBeCreated(offer: Offer) {
-        offerToBeCreated = offer
+    private val addOptionOnChildrenInputPort = AddOptionOnChildrenInputPort(
+        cucumberContext.storeRestOutputPort,
+        cucumberContext.offerDatastoreOutputPort,
+        cucumberContext.productDatastoreOutputPort
+    )
+
+    @Given("the information of the Offer")
+    fun theInformationOfTheOffer(offer: Offer) {
+        this.offer = offer
+        offers[offer.id] = offer
     }
 
     @And("the Id of the Category is {string}")
@@ -85,14 +95,14 @@ class OfferStepDefs(
         verifySequence {
             cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
             cucumberContext.categoryDatastoreOutputPort.exists(cucumberContext.storeId, categoryId)
-            cucumberContext.offerDatastoreOutputPort.exists(offerToBeCreated.id)
+            cucumberContext.offerDatastoreOutputPort.exists(offer.id)
 
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
                 cucumberContext.storeId,
-                OfferService.getAllProducts(offerToBeCreated).map { product -> product.id }
+                OfferService.getAllProducts(offer).map { product -> product.id }
             )
 
-            cucumberContext.offerDatastoreOutputPort.create(cucumberContext.storeId, categoryId, offerToBeCreated)
+            cucumberContext.offerDatastoreOutputPort.create(cucumberContext.storeId, categoryId, offer)
         }
     }
 
@@ -103,9 +113,12 @@ class OfferStepDefs(
 
         every { cucumberContext.offerDatastoreOutputPort.exists(offerId) } returns true
         every { cucumberContext.offerDatastoreOutputPort.exists(storeId, offerId) } returns true
-        every { cucumberContext.offerDatastoreOutputPort.findById(storeId, offerId) } returns mockOfferWith {
-            id = offerId
-        }
+        every { cucumberContext.offerDatastoreOutputPort.findById(storeId, offerId) } returns (
+                offers[offerId]
+                    ?: mockOfferWith {
+                        id = offerId
+                    }
+                )
 
         justRun { cucumberContext.offerDatastoreOutputPort.update(storeId, match { offer -> offer.id == offerId }) }
         justRun {
@@ -140,13 +153,13 @@ class OfferStepDefs(
     @When("I attempt to create an Offer")
     fun iAttemptToCreateAnOffer() {
         cucumberContext.result = runCatching {
-            createOfferInputPort.execute(cucumberContext.storeId, categoryId, offerToBeCreated)
+            createOfferInputPort.execute(cucumberContext.storeId, categoryId, offer)
         }
     }
 
     @When("I attempt to create an Offer using the Id {string}")
     fun iAttemptToCreateAnOfferUsingTheId(offerIdString: String) {
-        val offer = offerToBeCreated.run {
+        val offer = offer.run {
             Offer(
                 id = Id(UUID.fromString(offerIdString)),
                 product,
@@ -160,29 +173,16 @@ class OfferStepDefs(
         }
     }
 
-    @Given("the information of the Offer to be updated")
-    fun theInformationOfTheOfferToBeUpdated(offerToBeUpdated: Offer) {
-        this.offerToBeUpdated = offerToBeUpdated
-
-        every { cucumberContext.offerDatastoreOutputPort.findById(any(), offerToBeUpdated.id) } returns offerToBeUpdated
-        justRun {
-            cucumberContext.offerDatastoreOutputPort.update(
-                any(),
-                match { offer -> offer.id == offerToBeUpdated.id }
-            )
-        }
-    }
-
     @When("I attempt to update an Offer")
     fun iAttemptToUpdateAnOffer() {
         cucumberContext.result = runCatching {
-            updateOfferInputPort.execute(cucumberContext.storeId, offerToBeUpdated)
+            updateOfferInputPort.execute(cucumberContext.storeId, offer)
         }
     }
 
     @When("I attempt to update an Offer using the Id {string}")
     fun iAttemptToUpdateAnOfferUsingTheId(offerIdString: String) {
-        val offer = offerToBeUpdated.run {
+        val offer = offer.run {
             Offer(
                 id = Id(UUID.fromString(offerIdString)),
                 product,
@@ -204,14 +204,14 @@ class OfferStepDefs(
 
         verifySequence {
             cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
-            cucumberContext.offerDatastoreOutputPort.exists(cucumberContext.storeId, offerToBeUpdated.id)
+            cucumberContext.offerDatastoreOutputPort.exists(cucumberContext.storeId, offer.id)
 
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
                 cucumberContext.storeId,
-                OfferService.getAllProducts(offerToBeUpdated).map { product -> product.id }
+                OfferService.getAllProducts(offer).map { product -> product.id }
             )
 
-            cucumberContext.offerDatastoreOutputPort.update(cucumberContext.storeId, offerToBeUpdated)
+            cucumberContext.offerDatastoreOutputPort.update(cucumberContext.storeId, offer)
         }
     }
 
@@ -259,39 +259,27 @@ class OfferStepDefs(
         }
     }
 
-    @Given("the information of the Customization to be added")
-    fun theInformationOfTheCustomizationToBeAdded(customization: Customization) {
-        customizationToBeAdded = customization
-    }
-
-    @When("I attempt to add a Customization")
-    fun iAttemptToAddACustomization() {
-        cucumberContext.result = runCatching {
-            addCustomizationInputPort.execute(cucumberContext.storeId, offerToBeUpdated.id, customizationToBeAdded)
-        }
-    }
-
-    @And("the Customization should be added in the offer")
-    fun theCustomizationShouldBeAddedInTheOffer() {
-        cucumberContext.result.exceptionOrNull()?.printStackTrace()
-        cucumberContext.result.isSuccess shouldBe true
-
-        verifySequence {
-            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
-
-            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offerToBeUpdated.id)
-
-            cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                cucumberContext.storeId,
-                OfferService.getAllProducts(offerToBeUpdated).map { product -> product.id }
-            )
-
-            cucumberContext.offerDatastoreOutputPort.update(
-                cucumberContext.storeId,
-                match { offer -> offer.findCustomizationInChildrenById(customizationToBeAdded.id) != null }
-            )
-        }
-    }
+//    @And("the Customization should be added in the offer")
+//    fun theCustomizationShouldBeAddedInTheOffer() {
+//        cucumberContext.result.exceptionOrNull()?.printStackTrace()
+//        cucumberContext.result.isSuccess shouldBe true
+//
+//        verifySequence {
+//            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+//
+//            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+//
+//            cucumberContext.productDatastoreOutputPort.getIfNotExists(
+//                cucumberContext.storeId,
+//                OfferService.getAllProducts(offer).map { product -> product.id }
+//            )
+//
+//            cucumberContext.offerDatastoreOutputPort.update(
+//                cucumberContext.storeId,
+//                match { offer -> offer.findCustomizationInChildrenById(customization.id) != null }
+//            )
+//        }
+//    }
 
     @And("the Offer to be updated has a Customization with the Id {string}")
     fun theOfferToBeUpdatedHasACustomizationWithTheId(customizationIdString: String) {
@@ -299,7 +287,7 @@ class OfferStepDefs(
             id = Id(UUID.fromString(customizationIdString))
         }
 
-        offerToBeUpdated.addCustomization(customization)
+        offer.addCustomization(customization)
     }
 
     @And("the Offer to be updated has a Option with the Id {string} in the Customization with the Id {string}")
@@ -312,29 +300,160 @@ class OfferStepDefs(
             id = Id(UUID.fromString(optionIdString))
         }
 
-        offerToBeUpdated.findCustomizationInChildrenById(customizationId)?.addOption(option)
+        offer.findCustomizationInChildrenById(customizationId)?.addOption(option)
     }
 
-    @When("I attempt to add a Customization on children with the Id {string}")
-    fun iAttemptToAddACustomizationOnChildrenWithTheId(optionIdString: String) {
-        cucumberContext.result = runCatching {
-            addCustomizationOnChildrenInputPort.execute(
-                cucumberContext.storeId,
-                offerToBeUpdated.id,
-                Id(UUID.fromString(optionIdString)),
-                customizationToBeAdded
+//    @Given("the information of the Option to be added")
+//    fun theInformationOfTheOptionToBeAdded(optionToBeAdded: Option) {
+//        this.options[optionToBeAdded.id] = optionToBeAdded
+//    }
+//
+//    @When("I attempt to add a Customization with the Id {string}")
+//    fun iAttemptToAddACustomizationWithTheId(customizationIdString: String) {
+//        val customizationId = Id(UUID.fromString(customizationIdString))
+//        cucumberContext.result = runCatching {
+//            addCustomizationInputPort.execute(cucumberContext.storeId, offer.id, customizations[customizationId]!!)
+//        }
+//    }
+
+    @And("the Customization with the Id {string} has the following Options")
+    fun theCustomizationWithTheIdHasTheFollowingOptions(
+        customizationIdString: String,
+        options: List<Option>,
+    ) {
+        val customizationId = Id(UUID.fromString(customizationIdString))
+        customizations[customizationId]?.run {
+            Customization(
+                id,
+                name,
+                description,
+                quantity,
+                status,
+                options
             )
-        }.onFailure { it.printStackTrace() }
+        }?.let { customization ->
+            customizations[customizationId] = customization
+        }
     }
 
-    @When("I attempt to add a Customization in the Offer with the Id {string}")
-    fun iAttemptToAddACustomizationInTheOfferWithTheId(offerIdString: String) {
+    @Then("the Customization with the Id {string} should be added in the offer")
+    fun theCustomizationWithTheIdShouldBeAddedInTheOffer(customizationIdString: String) {
+        val customizationId = Id(UUID.fromString(customizationIdString))
+
+        cucumberContext.result.exceptionOrNull()?.printStackTrace()
+        cucumberContext.result.isSuccess shouldBe true
+
+        verifySequence {
+            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+
+            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+
+            cucumberContext.productDatastoreOutputPort.getIfNotExists(
+                cucumberContext.storeId,
+                match { ids -> ids.toSet() == OfferService.getAllProducts(offer).map { product -> product.id }.toSet() }
+            )
+
+            cucumberContext.offerDatastoreOutputPort.update(
+                cucumberContext.storeId,
+                match { offer -> offer.findCustomizationInChildrenById(customizationId) != null }
+            )
+        }
+    }
+
+    @And("the the following Customizations")
+    fun theTheFollowingCustomizations(customizations: List<Customization>) {
+        this.customizations.putAll(customizations.associateBy { customization -> customization.id })
+    }
+
+    @When("I attempt to add a Customization with the Id {string} in the Offer with the Id {string}")
+    fun iAttemptToAddACustomizationWithTheIdInTheOfferWithTheId(customizationIdString: String, offerIdString: String) {
+        val offerId = Id(UUID.fromString(offerIdString))
+        val customizationId = Id(UUID.fromString(customizationIdString))
+
         cucumberContext.result = runCatching {
             addCustomizationInputPort.execute(
                 cucumberContext.storeId,
-                Id(UUID.fromString(offerIdString)),
-                customizationToBeAdded
+                offerId,
+                customizations[customizationId]!!
             )
         }.onFailure { it.printStackTrace() }
+    }
+
+    @And("that the Offer with the Id {string} has the Customization with the Id {string}")
+    fun thatTheOfferWithTheIdHasTheCustomizationWithTheId(offerIdString: String, customizationIdString: String) {
+        val offerId = Id(UUID.fromString(offerIdString))
+        val customizationId = Id(UUID.fromString(customizationIdString))
+
+        offers[offerId]?.let { offer ->
+            customizations[customizationId]?.let { customization -> offer.addCustomization(customization) }
+        }
+    }
+
+    @When("I attempt to add a Customization with the Id {string} on children with the Id {string} in the Offer with the Id {string}")
+    fun iAttemptToAddACustomizationWithTheIdOnChildrenWithTheIdInTheOfferWithTheId(
+        customizationIdString: String,
+        optionIdString: String,
+        offerIdString: String,
+    ) {
+        val customizationId = Id(UUID.fromString(customizationIdString))
+        val offerId = Id(UUID.fromString(offerIdString))
+        val optionId = Id(UUID.fromString(optionIdString))
+        cucumberContext.result = runCatching {
+            addCustomizationOnChildrenInputPort.execute(
+                cucumberContext.storeId,
+                offerId,
+                optionId,
+                customizations[customizationId]!!
+            )
+        }
+    }
+
+    @When("I attempt to add an Option with the Id {string} on children with the Id {string} in the Offer with the Id {string}")
+    fun iAttemptToAddAnOptionWithTheIdOnChildrenWithTheIdInTheOfferWithTheId(
+        optionIdString: String,
+        customizationIdString: String,
+        offerIdString: String,
+    ) {
+        val optionId = Id(UUID.fromString(optionIdString))
+        val customizationId = Id(UUID.fromString(customizationIdString))
+        val offerId = Id(UUID.fromString(offerIdString))
+
+        cucumberContext.result = runCatching {
+            addOptionOnChildrenInputPort.execute(
+                cucumberContext.storeId,
+                offerId,
+                customizationId,
+                options[optionId]!!
+            )
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @And("the following Options")
+    fun theFollowingOptions(options: List<Option>) {
+        this.options.putAll(options.associateBy { option -> option.id })
+    }
+
+    @Then("the Option with the Id {string} should be added in the Offer")
+    fun theOptionWithTheIdShouldBeAddedInTheOffer(optionIdString: String) {
+        val optionId = Id(UUID.fromString(optionIdString))
+
+        cucumberContext.result.exceptionOrNull()?.printStackTrace()
+        cucumberContext.result.isSuccess shouldBe true
+
+        verifySequence {
+            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+
+            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+
+            cucumberContext.productDatastoreOutputPort.getIfNotExists(
+                cucumberContext.storeId,
+                OfferService.getAllProducts(offer).map { product -> product.id }
+            )
+
+            cucumberContext.offerDatastoreOutputPort.update(
+                cucumberContext.storeId,
+                match { offer -> offer.findOptionInChildrenById(optionId) != null }
+            )
+        }
     }
 }
