@@ -10,6 +10,7 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
 class GetProductInputPort(
     private val storeRestOutputPort: StoreRestOutputPort,
+
     private val productDatastoreOutputPort: ProductDatastoreOutputPort,
 ) : GetProductUseCase {
     override fun execute(storeId: Id, productId: Id): Product {

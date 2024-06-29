@@ -21,12 +21,19 @@ class CreateOfferInputPort(
 ) : CreateOfferUseCase {
     override fun execute(storeId: Id, categoryId: Id, offer: Offer) {
         if (!storeRestOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
-        if (!categoryDatastoreOutputPort.exists(storeId, categoryId)) throw CategoryNotFoundException(categoryId)
+        if (!categoryDatastoreOutputPort.exists(storeId, categoryId)) {
+            throw CategoryNotFoundException(
+                storeId,
+                categoryId
+            )
+        }
         if (offerDatastoreOutputPort.exists(offer.id)) throw OfferAlreadyExistsException(offer.id)
 
         val productIds = OfferService.getAllProducts(offer).map { it.id }
         val nonexistentProducts = productDatastoreOutputPort.getIfNotExists(storeId, productIds)
         if (nonexistentProducts.isNotEmpty()) throw ProductsNotFoundException(nonexistentProducts)
+
+        OfferService.validateDuplications(offer)
 
         offerDatastoreOutputPort.create(storeId, categoryId, offer)
     }

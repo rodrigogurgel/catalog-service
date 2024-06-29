@@ -8,6 +8,7 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
 class DeleteProductInputPort(
     private val storeRestOutputPort: StoreRestOutputPort,
+
     private val productDatastoreOutputPort: ProductDatastoreOutputPort,
 ) : DeleteProductUseCase {
     override fun execute(storeId: Id, productId: Id) {

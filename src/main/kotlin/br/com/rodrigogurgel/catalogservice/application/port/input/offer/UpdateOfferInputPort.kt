@@ -24,6 +24,8 @@ class UpdateOfferInputPort(
         val nonexistentProducts = productDatastoreOutputPort.getIfNotExists(storeId, productIds)
         if (nonexistentProducts.isNotEmpty()) throw ProductsNotFoundException(nonexistentProducts)
 
+        OfferService.validateDuplications(offer)
+
         offerDatastoreOutputPort.update(storeId, offer)
     }
 }

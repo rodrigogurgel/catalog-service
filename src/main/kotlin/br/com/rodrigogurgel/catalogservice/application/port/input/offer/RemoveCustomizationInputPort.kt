@@ -1,19 +1,24 @@
 package br.com.rodrigogurgel.catalogservice.application.port.input.offer
 
-import br.com.rodrigogurgel.catalogservice.application.usecase.offer.GetOfferUseCase
+import br.com.rodrigogurgel.catalogservice.application.exception.OfferNotFoundException
+import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.OfferDatastoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.rest.StoreRestOutputPort
 import br.com.rodrigogurgel.catalogservice.application.usecase.offer.RemoveCustomizationUseCase
-import br.com.rodrigogurgel.catalogservice.application.usecase.offer.UpdateOfferUseCase
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
 class RemoveCustomizationInputPort(
-    private val getOfferUseCase: GetOfferUseCase,
-    private val updateOfferUseCase: UpdateOfferUseCase,
+    private val storeRestOutputPort: StoreRestOutputPort,
+    private val offerDatastoreOutputPort: OfferDatastoreOutputPort,
 ) : RemoveCustomizationUseCase {
     override fun execute(storeId: Id, offerId: Id, customizationId: Id) {
-        val offer = getOfferUseCase.execute(storeId, offerId)
+        if (!storeRestOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
+
+        val offer = offerDatastoreOutputPort
+            .findById(storeId, offerId) ?: throw OfferNotFoundException(storeId, offerId)
 
         offer.removeCustomization(customizationId)
 
-        updateOfferUseCase.execute(storeId, offer)
+        offerDatastoreOutputPort.update(storeId, offer)
     }
 }

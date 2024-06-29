@@ -13,8 +13,16 @@ class Offer private constructor(
     var status: Status,
 ) {
     private val rootCustomizationsById: MutableMap<Id, Customization> = mutableMapOf()
-    private val customizationsById: MutableMap<Id, Customization> = mutableMapOf()
-    private val optionsById: MutableMap<Id, Option> = mutableMapOf()
+
+    private val customizationsById
+        get() = customizations
+            .flatMap { customization -> customization.getCustomizationsInChildren() }
+            .associateBy { customization -> customization.id }
+
+    private val optionsById
+        get() = customizations
+            .flatMap { customization -> customization.getOptionsInChildren() }
+            .associateBy { option -> option.id }
 
     val customizations
         get() = rootCustomizationsById.values.toList()
@@ -39,17 +47,6 @@ class Offer private constructor(
         validatePrice()
 
         this.rootCustomizationsById.putAll(customizations.associateBy { customization -> customization.id })
-        this.customizationsById.putAll(
-            customizations
-                .flatMap { customization -> customization.getCustomizationsInChildren() }
-                .associateBy { customization -> customization.id }
-        )
-
-        this.optionsById.putAll(
-            customizations
-                .flatMap { customization -> customization.getOptionsInChildren() }
-                .associateBy { option -> option.id }
-        )
     }
 
     private fun validatePrice() {
@@ -68,10 +65,6 @@ class Offer private constructor(
         }
 
         rootCustomizationsById[customization.id] = customization
-        customizationsById.putAll(
-            customization.getCustomizationsInChildren()
-                .associateBy { customizationInChildren -> customizationInChildren.id }
-        )
     }
 
     /**
@@ -83,7 +76,6 @@ class Offer private constructor(
     fun updateCustomization(customization: Customization) {
         rootCustomizationsById[customization.id] ?: throw CustomizationNotFoundException(customization.id)
         rootCustomizationsById[customization.id] = customization
-        customizationsById[customization.id] = customization
     }
 
     /**
@@ -92,10 +84,6 @@ class Offer private constructor(
      * @param customizationId the ID of the customization to be removed
      */
     fun removeCustomization(customizationId: Id) {
-        customizationsById.entries.removeIf { (id, _) ->
-            id in rootCustomizationsById[customizationId]!!.getCustomizationsInChildren()
-                .map { customization -> customization.id }
-        }
         rootCustomizationsById.remove(customizationId)
     }
 

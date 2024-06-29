@@ -1,5 +1,6 @@
 package br.com.rodrigogurgel.catalogservice.application.port.input.product
 
+import br.com.rodrigogurgel.catalogservice.application.exception.ProductAlreadyExistsException
 import br.com.rodrigogurgel.catalogservice.application.exception.ProductNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.ProductDatastoreOutputPort
