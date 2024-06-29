@@ -10,7 +10,10 @@ import br.com.rodrigogurgel.catalogservice.application.port.input.offer.GetOffer
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.RemoveCustomizationInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.RemoveCustomizationOnChildrenInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.RemoveOptionOnChildrenInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.offer.UpdateCustomizationInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.offer.UpdateCustomizationOnChildrenInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.UpdateOfferInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.offer.UpdateOptionOnChildrenInputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Customization
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
 import br.com.rodrigogurgel.catalogservice.domain.entity.Option
@@ -92,6 +95,24 @@ class OfferStepDefs(
     private val removeOptionOnChildrenInputPort = RemoveOptionOnChildrenInputPort(
         cucumberContext.storeRestOutputPort,
         cucumberContext.offerDatastoreOutputPort
+    )
+
+    private val updateCustomizationInputPort = UpdateCustomizationInputPort(
+        cucumberContext.storeRestOutputPort,
+        cucumberContext.offerDatastoreOutputPort,
+        cucumberContext.productDatastoreOutputPort,
+    )
+
+    private val updateCustomizationOnChildrenInputPort = UpdateCustomizationOnChildrenInputPort(
+        cucumberContext.storeRestOutputPort,
+        cucumberContext.offerDatastoreOutputPort,
+        cucumberContext.productDatastoreOutputPort,
+    )
+
+    private val updateOptionOnChildrenInputPort = UpdateOptionOnChildrenInputPort(
+        cucumberContext.storeRestOutputPort,
+        cucumberContext.productDatastoreOutputPort,
+        cucumberContext.offerDatastoreOutputPort,
     )
 
     @Given("the information of the Offer")
@@ -338,6 +359,7 @@ class OfferStepDefs(
             )
         }?.let { customization ->
             customizations[customizationId] = customization
+            this.options.putAll(options.associateBy { it.id })
         }
     }
 
@@ -579,6 +601,117 @@ class OfferStepDefs(
                 cucumberContext.storeId,
                 match { offer ->
                     offer.findOptionInChildrenById(optionId) == null
+                }
+            )
+        }
+    }
+
+    @When("I attempt to update a Customization with the Id {string} from the Offer with the Id {string}")
+    fun iAttemptToUpdateACustomizationWithTheIdFromTheOfferWithTheId(
+        customizationIdString: String,
+        offerIdString: String
+    ) {
+        val customizationId = Id(UUID.fromString(customizationIdString))
+        val offerId = Id(UUID.fromString(offerIdString))
+
+        cucumberContext.result = runCatching {
+            updateCustomizationInputPort.execute(cucumberContext.storeId, offerId, customizations[customizationId]!!)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then("the Customization with the Id {string} should be updated from the Offer")
+    fun theCustomizationWithTheIdShouldBeUpdatedFromTheOffer(customizationIdString: String) {
+        val customizationId = Id(UUID.fromString(customizationIdString))
+        cucumberContext.result.exceptionOrNull()?.printStackTrace()
+        cucumberContext.result.isSuccess shouldBe true
+
+        verifySequence {
+            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+
+            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+
+            cucumberContext.offerDatastoreOutputPort.update(
+                cucumberContext.storeId,
+                match { offer ->
+                    offer.customizations
+                        .any { customization ->
+                            customizations[customizationId]!!.name == customization.name
+                        }
+                }
+            )
+        }
+    }
+
+    @When(
+        "I attempt to update a Customization with the Id {string} on children with the Id {string} in the Offer with the Id {string}"
+    )
+    fun iAttemptToUpdateACustomizationWithTheIdOnChildrenWithTheIdInTheOfferWithTheId(
+        customizationIdString: String,
+        optionIdString: String,
+        offerIdString: String
+    ) {
+        val customizationId = Id(UUID.fromString(customizationIdString))
+        val optionId = Id(UUID.fromString(optionIdString))
+        val offerId = Id(UUID.fromString(offerIdString))
+
+        cucumberContext.result = runCatching {
+            updateCustomizationOnChildrenInputPort.execute(cucumberContext.storeId, offerId, optionId, customizations[customizationId]!!)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then("the Customization with the Id {string} should be updated in the offer")
+    fun theCustomizationWithTheIdShouldBeUpdatedInTheOffer(customizationIdString: String) {
+        val customizationId = Id(UUID.fromString(customizationIdString))
+        cucumberContext.result.exceptionOrNull()?.printStackTrace()
+        cucumberContext.result.isSuccess shouldBe true
+
+        verifySequence {
+            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+
+            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+
+            cucumberContext.offerDatastoreOutputPort.update(
+                cucumberContext.storeId,
+                match { offer ->
+                    offer.findCustomizationInChildrenById(customizationId)?.id == customizations[customizationId]?.id &&
+                        offer.findCustomizationInChildrenById(customizationId)?.options?.toSet() == customizations[customizationId]?.options?.toSet()
+                }
+            )
+        }
+    }
+
+    @When(
+        "I attempt to update a Option with the Id {string} from parent Customization with the Id {string} in the Offer with the Id {string}"
+    )
+    fun iAttemptToUpdateAOptionWithTheIdFromParentCustomizationWithTheIdInTheOfferWithTheId(
+        optionIdString: String,
+        customizationIdString: String,
+        offerIdString: String
+    ) {
+        val optionId = Id(UUID.fromString(optionIdString))
+        val customizationId = Id(UUID.fromString(customizationIdString))
+        val offerId = Id(UUID.fromString(offerIdString))
+
+        cucumberContext.result = runCatching {
+            updateOptionOnChildrenInputPort.execute(cucumberContext.storeId, offerId, customizationId, options[optionId]!!)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then("the Option with the Id {string} should be updated in the offer")
+    fun theOptionWithTheIdShouldBeUpdatedInTheOffer(optionIdString: String) {
+        val optionId = Id(UUID.fromString(optionIdString))
+        cucumberContext.result.exceptionOrNull()?.printStackTrace()
+        cucumberContext.result.isSuccess shouldBe true
+
+        verifySequence {
+            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
+
+            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+
+            cucumberContext.offerDatastoreOutputPort.update(
+                cucumberContext.storeId,
+                match { offer ->
+                    offer.findOptionInChildrenById(optionId) == options[optionId]
                 }
             )
         }

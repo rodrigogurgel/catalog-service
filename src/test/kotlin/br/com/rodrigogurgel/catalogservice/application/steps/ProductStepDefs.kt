@@ -232,7 +232,7 @@ class ProductStepDefs(
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
                 storeId,
                 match { ids ->
-                    ids.toSet() == products.map { product -> product.id }.toSet()
+                    products.map { product -> product.id }.containsAll(ids)
                 }
             )
         } returns emptyList()
