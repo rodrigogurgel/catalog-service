@@ -14,7 +14,6 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 class RemoveCustomizationOnChildrenInputPort(
     private val storeRestOutputPort: StoreRestOutputPort,
     private val offerDatastoreOutputPort: OfferDatastoreOutputPort,
-    private val productDatastoreOutputPort: ProductDatastoreOutputPort,
 ) : RemoveCustomizationOnChildrenUseCase {
     override fun execute(storeId: Id, offerId: Id, optionId: Id, customizationId: Id) {
         if (!storeRestOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
@@ -25,12 +24,6 @@ class RemoveCustomizationOnChildrenInputPort(
         val option = offer.findOptionInChildrenById(optionId) ?: throw OptionNotFoundException(offerId)
 
         option.removeCustomization(customizationId)
-
-        val productIds = OfferService.getAllProducts(offer).map { it.id }
-        val nonexistentProducts = productDatastoreOutputPort.getIfNotExists(storeId, productIds)
-        if (nonexistentProducts.isNotEmpty()) throw ProductsNotFoundException(nonexistentProducts)
-
-        OfferService.validateDuplications(offer)
 
         offerDatastoreOutputPort.update(storeId, offer)
     }

@@ -14,7 +14,6 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 class RemoveOptionOnChildrenInputPort(
     private val storeRestOutputPort: StoreRestOutputPort,
     private val offerDatastoreOutputPort: OfferDatastoreOutputPort,
-    private val productDatastoreOutputPort: ProductDatastoreOutputPort,
 ) : RemoveOptionOnChildrenUseCase {
     override fun execute(storeId: Id, offerId: Id, customizationId: Id, optionId: Id) {
         if (!storeRestOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
@@ -28,12 +27,6 @@ class RemoveOptionOnChildrenInputPort(
             )
 
         customization.removeOption(optionId)
-
-        val productIds = OfferService.getAllProducts(offer).map { it.id }
-        val nonexistentProducts = productDatastoreOutputPort.getIfNotExists(storeId, productIds)
-        if (nonexistentProducts.isNotEmpty()) throw ProductsNotFoundException(nonexistentProducts)
-
-        OfferService.validateDuplications(offer)
 
         offerDatastoreOutputPort.update(storeId, offer)
     }
