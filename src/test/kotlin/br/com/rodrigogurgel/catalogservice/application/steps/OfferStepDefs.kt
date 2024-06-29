@@ -132,11 +132,11 @@ class OfferStepDefs(
         every { cucumberContext.offerDatastoreOutputPort.exists(offerId) } returns true
         every { cucumberContext.offerDatastoreOutputPort.exists(storeId, offerId) } returns true
         every { cucumberContext.offerDatastoreOutputPort.findById(storeId, offerId) } returns (
-                offers[offerId]
-                    ?: mockOfferWith {
-                        id = offerId
-                    }
-                )
+            offers[offerId]
+                ?: mockOfferWith {
+                    id = offerId
+                }
+            )
 
         justRun { cucumberContext.offerDatastoreOutputPort.update(storeId, match { offer -> offer.id == offerId }) }
         justRun {
@@ -501,7 +501,9 @@ class OfferStepDefs(
         }
     }
 
-    @When("I attempt to remove a Customization with the Id {string} from child with the Id {string} in the Offer with the Id {string}")
+    @When(
+        "I attempt to remove a Customization with the Id {string} from child with the Id {string} in the Offer with the Id {string}"
+    )
     fun iAttemptToRemoveACustomizationWithTheIdOnChildWithTheIdInTheOfferWithTheId(
         customizationIdString: String,
         optionIdString: String,
@@ -545,7 +547,9 @@ class OfferStepDefs(
         }
     }
 
-    @When("I attempt to remove a Option with the Id {string} from child with the Id {string} in the Offer with the Id {string}")
+    @When(
+        "I attempt to remove a Option with the Id {string} from child with the Id {string} in the Offer with the Id {string}"
+    )
     fun iAttemptToRemoveAOptionWithTheIdFromChildWithTheIdInTheOfferWithTheId(
         optionIdString: String,
         customizationIdString: String,

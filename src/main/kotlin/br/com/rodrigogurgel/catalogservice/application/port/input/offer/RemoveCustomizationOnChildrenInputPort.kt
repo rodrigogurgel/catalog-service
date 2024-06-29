@@ -1,14 +1,11 @@
 package br.com.rodrigogurgel.catalogservice.application.port.input.offer
 
 import br.com.rodrigogurgel.catalogservice.application.exception.OfferNotFoundException
-import br.com.rodrigogurgel.catalogservice.application.exception.ProductsNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.OfferDatastoreOutputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.ProductDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.application.port.output.rest.StoreRestOutputPort
 import br.com.rodrigogurgel.catalogservice.application.usecase.offer.RemoveCustomizationOnChildrenUseCase
 import br.com.rodrigogurgel.catalogservice.domain.exception.OptionNotFoundException
-import br.com.rodrigogurgel.catalogservice.domain.service.OfferService
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
 class RemoveCustomizationOnChildrenInputPort(
