@@ -1,12 +1,15 @@
 package br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.controller
 
+import br.com.rodrigogurgel.catalogservice.application.usecase.product.CountProductsUseCase
 import br.com.rodrigogurgel.catalogservice.application.usecase.product.CreateProductUseCase
 import br.com.rodrigogurgel.catalogservice.application.usecase.product.DeleteProductUseCase
 import br.com.rodrigogurgel.catalogservice.application.usecase.product.GetProductUseCase
+import br.com.rodrigogurgel.catalogservice.application.usecase.product.GetProductsUseCase
 import br.com.rodrigogurgel.catalogservice.application.usecase.product.UpdateProductUseCase
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.CreateProductRequestDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.UpdateProductRequestDTO
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.PageResponseDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.ProductResponseDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.mapper.toDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.mapper.toDomain
@@ -28,7 +31,28 @@ class ProductController(
     private val updateProductUseCase: UpdateProductUseCase,
     private val getProductUseCase: GetProductUseCase,
     private val deleteProductUseCase: DeleteProductUseCase,
+    private val getProductsUseCase: GetProductsUseCase,
+    private val countProductsUseCase: CountProductsUseCase,
 ) {
+    @GetMapping
+    fun getProducts(
+        @RequestParam storeId: UUID,
+        @RequestParam(defaultValue = "20", required = false) limit: Int,
+        @RequestParam(defaultValue = "0", required = false) offset: Int,
+        @RequestParam(required = false) beginsWith: String?,
+    ): PageResponseDTO<ProductResponseDTO> {
+        val total = countProductsUseCase.execute(Id(storeId), limit, offset, beginsWith)
+        val products = getProductsUseCase.execute(Id(storeId), limit, offset, beginsWith)
+
+        return PageResponseDTO(
+            limit,
+            offset,
+            beginsWith,
+            total,
+            products.map { product -> product.toDTO() }
+        )
+    }
+
     @PostMapping
     fun create(
         @RequestParam storeId: UUID,

@@ -10,16 +10,27 @@ import io.mockk.every
 import java.util.UUID
 
 class StoreStepDefs(
-    private val cucumberContext: CucumberContext
+    private val cucumberContext: CucumberContext,
 ) {
     @And("that there is a Store with the Id {string}")
-    fun thatThereIsAStoreWithTheId(storeId: String) {
-        every { cucumberContext.storeDatastoreOutputPort.exists(Id(UUID.fromString(storeId))) } returns true
+    fun thatThereIsAStoreWithTheId(storeIdString: String) {
+        val storeId = Id(UUID.fromString(storeIdString))
+        every { cucumberContext.storeDatastoreOutputPort.exists(storeId) } returns true
+
+        every {
+            cucumberContext.productDatastoreOutputPort.getProducts(storeId, any(), any(), any())
+        } returns emptyList()
+
+        every {
+            cucumberContext.productDatastoreOutputPort.countProducts(storeId, any(), any(), any())
+        } returns 0
     }
 
     @And("that there isn't a Store with the Id {string}")
-    fun thatThereIsnTAStoreWithTheId(storeId: String) {
-        every { cucumberContext.storeDatastoreOutputPort.exists(Id(UUID.fromString(storeId))) } returns false
+    fun thatThereIsnTAStoreWithTheId(storeIdString: String) {
+        val storeId = Id(UUID.fromString(storeIdString))
+
+        every { cucumberContext.storeDatastoreOutputPort.exists(storeId) } returns false
     }
 
     @And("the Id of the Store is {string}")

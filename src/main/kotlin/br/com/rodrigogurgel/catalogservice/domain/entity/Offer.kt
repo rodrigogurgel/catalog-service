@@ -4,11 +4,13 @@ import br.com.rodrigogurgel.catalogservice.domain.exception.CustomizationAlready
 import br.com.rodrigogurgel.catalogservice.domain.exception.CustomizationNotFoundException
 import br.com.rodrigogurgel.catalogservice.domain.exception.OfferPriceZeroException
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
+import br.com.rodrigogurgel.catalogservice.domain.vo.Name
 import br.com.rodrigogurgel.catalogservice.domain.vo.Price
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
 
 class Offer private constructor(
     val id: Id,
+    var name: Name,
     var product: Product,
     var status: Status,
 ) {
@@ -34,11 +36,12 @@ class Offer private constructor(
 
     constructor(
         id: Id,
+        name: Name,
         product: Product,
         price: Price,
         status: Status,
         customizations: List<Customization>,
-    ) : this(id, product, status) {
+    ) : this(id, name, product, status) {
 
         this.product = product
         this.price = price

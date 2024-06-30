@@ -51,6 +51,22 @@ class ProductDatastorePostgres(
             where id = :id
               and store_id = :store_id;
         """.trimIndent()
+
+        private val GET_PRODUCTS = """
+            select *
+            from product
+            where store_id = :store_id
+              and name ilike (:begins_with)||'%'
+            order by name
+            limit :limit offset :offset;
+        """.trimIndent()
+
+        private val COUNT_PRODUCTS = """
+            select count(1)
+            from product
+            where store_id = :store_id
+              and name ilike (:begins_with)||'%'
+        """.trimIndent()
     }
 
     private fun buildParams(storeId: Id, product: Product): Map<String, Any?> {
@@ -110,5 +126,31 @@ class ProductDatastorePostgres(
             DELETE_PRODUCT,
             mapOf("store_id" to storeId.value, "id" to productId.value),
         )
+    }
+
+    override fun getProducts(storeId: Id, limit: Int, offset: Int, beginsWith: String?): List<Product> {
+        return namedParameterJdbcTemplate.query(
+            GET_PRODUCTS,
+            mapOf(
+                "store_id" to storeId.value,
+                "limit" to limit,
+                "offset" to offset,
+                "begins_with" to beginsWith.orEmpty()
+            ),
+            ProductMapper()
+        )
+    }
+
+    override fun countProducts(storeId: Id, limit: Int, offset: Int, beginsWith: String?): Int {
+        return namedParameterJdbcTemplate.queryForObject(
+            COUNT_PRODUCTS,
+            mapOf(
+                "store_id" to storeId.value,
+                "limit" to limit,
+                "offset" to offset,
+                "begins_with" to beginsWith.orEmpty()
+            ),
+            Int::class.java
+        )!!
     }
 }

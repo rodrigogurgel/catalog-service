@@ -166,7 +166,10 @@ tasks.jacocoTestReport {
 
     classDirectories.setFrom(
         sourceSets.main.get().output.asFileTree.matching {
-            exclude("br/com/rodrigogurgel/catalogservice/CatalogApplication*")
+            exclude(
+                "**/CatalogApplication*",
+                "**/config/*"
+            )
         }
     )
 

@@ -11,4 +11,6 @@ interface ProductDatastoreOutputPort {
     fun getIfNotExists(storeId: Id, productIds: List<Id>): List<Id>
     fun update(storeId: Id, product: Product)
     fun delete(storeId: Id, productId: Id)
+    fun getProducts(storeId: Id, limit: Int, offset: Int, beginsWith: String?): List<Product>
+    fun countProducts(storeId: Id, limit: Int, offset: Int, beginsWith: String?): Int
 }

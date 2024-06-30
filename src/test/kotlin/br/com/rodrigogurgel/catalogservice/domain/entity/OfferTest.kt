@@ -2,7 +2,9 @@ package br.com.rodrigogurgel.catalogservice.domain.entity
 
 import br.com.rodrigogurgel.catalogservice.domain.exception.CustomizationAlreadyExistsException
 import br.com.rodrigogurgel.catalogservice.domain.exception.CustomizationNotFoundException
+import br.com.rodrigogurgel.catalogservice.domain.exception.OfferPriceZeroException
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
+import br.com.rodrigogurgel.catalogservice.domain.vo.Name
 import br.com.rodrigogurgel.catalogservice.domain.vo.Price
 import br.com.rodrigogurgel.catalogservice.domain.vo.Quantity
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
@@ -13,12 +15,12 @@ import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOfferWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOption
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOptionWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockProduct
+import br.com.rodrigogurgel.catalogservice.fixture.randomString
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
@@ -26,6 +28,7 @@ class OfferTest {
     @Test
     fun `Should instantiate Offer with success when price is greater than 0`() {
         val id = Id()
+        val name = Name(randomString(30))
         val product = mockProduct()
         val customizations = mutableListOf(
             mockCustomizationWith {
@@ -43,6 +46,7 @@ class OfferTest {
 
         val offer = Offer(
             id,
+            name,
             product,
             price,
             status,
@@ -50,6 +54,7 @@ class OfferTest {
         )
 
         offer.id shouldBe id
+        offer.name shouldBe name
         offer.product shouldBe product
         offer.price shouldBe price
         offer.status shouldBe status
@@ -59,12 +64,14 @@ class OfferTest {
 
     @Test
     fun `Should update mutable values with success`() {
+        val name = Name(randomString(30))
         val product = mockProduct()
         val price = Price(20.toBigDecimal())
         val status = Status.AVAILABLE
 
         val offer = Offer(
             Id(),
+            name,
             product,
             price,
             status,
@@ -77,11 +84,14 @@ class OfferTest {
 
         val updatedProduct = mockProduct()
         val updatedPrice = Price(10.toBigDecimal())
+        val updatedName = Name(randomString(30))
 
+        offer.name = updatedName
         offer.product = updatedProduct
         offer.price = updatedPrice
         offer.status = Status.UNAVAILABLE
 
+        offer.name shouldBe updatedName
         offer.product shouldBe updatedProduct
         offer.price shouldBe updatedPrice
         offer.status shouldBe Status.UNAVAILABLE
@@ -90,12 +100,13 @@ class OfferTest {
     @Test
     fun `Should instantiate Offer with error when price is equals to 0`() {
         val id = Id()
+        val name = Name(randomString(30))
         val product = mockProduct()
 
         val status = Status.AVAILABLE
 
-        shouldThrow<IllegalStateException> {
-            Offer(id, product, Price.ZERO, status, mutableListOf())
+        shouldThrow<OfferPriceZeroException> {
+            Offer(id, name, product, Price.ZERO, status, mutableListOf())
         }
         val customizations = mutableListOf(
             mockCustomizationWith {
@@ -109,8 +120,8 @@ class OfferTest {
             }
         )
 
-        shouldThrow<IllegalStateException> {
-            Offer(id, product, Price.ZERO, status, customizations)
+        shouldThrow<OfferPriceZeroException> {
+            Offer(id, name, product, Price.ZERO, status, customizations)
         }
     }
 

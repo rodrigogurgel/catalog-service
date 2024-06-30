@@ -1,9 +1,11 @@
 package br.com.rodrigogurgel.catalogservice.application.steps
 
 import br.com.rodrigogurgel.catalogservice.application.CucumberContext
+import br.com.rodrigogurgel.catalogservice.application.port.input.product.CountProductsInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.product.CreateProductInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.product.DeleteProductInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.product.GetProductInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.product.GetProductsInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.product.UpdateProductInputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Product
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
@@ -40,6 +42,16 @@ class ProductStepDefs(
     )
 
     private val updateProductInputPort = UpdateProductInputPort(
+        cucumberContext.storeDatastoreOutputPort,
+        cucumberContext.productDatastoreOutputPort
+    )
+
+    private val getProductsInputPort = GetProductsInputPort(
+        cucumberContext.storeDatastoreOutputPort,
+        cucumberContext.productDatastoreOutputPort
+    )
+
+    private val countProductsInputPort = CountProductsInputPort(
         cucumberContext.storeDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort
     )
@@ -239,5 +251,63 @@ class ProductStepDefs(
         } returns emptyList()
 
         cucumberContext.storeProducts.putAll(products.associateBy { it.id })
+    }
+
+    @When("I attempt to get a Products with the limit as {string}, offset as {string} and begins with as {string}")
+    fun iAttemptToGetAProductsWithTheLimitAsOffsetAsAndBeginsWithAs(limit: String, offset: String, beginsWith: String) {
+        cucumberContext.result = runCatching {
+            getProductsInputPort.execute(cucumberContext.storeId, limit.toInt(), offset.toInt(), beginsWith)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then(
+        "the Products should be retrieved from database with the limit as {string}, offset as {string} and begins with as {string}"
+    )
+    fun theProductsShouldBeRetrievedFromDatabaseWithTheLimitAsOffsetAsAndBeginsWithAs(
+        limit: String,
+        offset: String,
+        beginsWith: String
+    ) {
+        cucumberContext.result.isSuccess shouldBe true
+        verifySequence {
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.productDatastoreOutputPort.getProducts(
+                cucumberContext.storeId,
+                limit.toInt(),
+                offset.toInt(),
+                beginsWith
+            )
+        }
+    }
+
+    @Then(
+        "the Products should be counted in the database with the limit as {string}, offset as {string} and begins with as {string}"
+    )
+    fun theProductsShouldBeCountedInTheDatabaseWithTheLimitAsOffsetAsAndBeginsWithAs(
+        limit: String,
+        offset: String,
+        beginsWith: String
+    ) {
+        cucumberContext.result.isSuccess shouldBe true
+        verifySequence {
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.productDatastoreOutputPort.countProducts(
+                cucumberContext.storeId,
+                limit.toInt(),
+                offset.toInt(),
+                beginsWith
+            )
+        }
+    }
+
+    @When("I attempt to count the Products with the limit as {string}, offset as {string} and begins with as {string}")
+    fun iAttemptToCountTheProductsWithTheLimitAsOffsetAsAndBeginsWithAs(
+        limit: String,
+        offset: String,
+        beginsWith: String
+    ) {
+        cucumberContext.result = runCatching {
+            countProductsInputPort.execute(cucumberContext.storeId, limit.toInt(), offset.toInt(), beginsWith)
+        }.onFailure { it.printStackTrace() }
     }
 }

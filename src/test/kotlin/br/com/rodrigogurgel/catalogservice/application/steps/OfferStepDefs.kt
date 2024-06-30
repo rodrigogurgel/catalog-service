@@ -200,7 +200,8 @@ class OfferStepDefs(
     fun iAttemptToCreateAnOfferUsingTheId(offerIdString: String) {
         val offer = offer.run {
             Offer(
-                id = Id(UUID.fromString(offerIdString)),
+                Id(UUID.fromString(offerIdString)),
+                name,
                 product,
                 price,
                 status,
@@ -224,6 +225,7 @@ class OfferStepDefs(
         val offer = offer.run {
             Offer(
                 id = Id(UUID.fromString(offerIdString)),
+                name,
                 product,
                 price,
                 status,
@@ -609,7 +611,7 @@ class OfferStepDefs(
     @When("I attempt to update a Customization with the Id {string} from the Offer with the Id {string}")
     fun iAttemptToUpdateACustomizationWithTheIdFromTheOfferWithTheId(
         customizationIdString: String,
-        offerIdString: String
+        offerIdString: String,
     ) {
         val customizationId = Id(UUID.fromString(customizationIdString))
         val offerId = Id(UUID.fromString(offerIdString))
@@ -648,7 +650,7 @@ class OfferStepDefs(
     fun iAttemptToUpdateACustomizationWithTheIdOnChildrenWithTheIdInTheOfferWithTheId(
         customizationIdString: String,
         optionIdString: String,
-        offerIdString: String
+        offerIdString: String,
     ) {
         val customizationId = Id(UUID.fromString(customizationIdString))
         val optionId = Id(UUID.fromString(optionIdString))
@@ -686,7 +688,7 @@ class OfferStepDefs(
     fun iAttemptToUpdateAnOptionWithTheIdFromParentCustomizationWithTheIdInTheOfferWithTheId(
         optionIdString: String,
         customizationIdString: String,
-        offerIdString: String
+        offerIdString: String,
     ) {
         val optionId = Id(UUID.fromString(optionIdString))
         val customizationId = Id(UUID.fromString(customizationIdString))
