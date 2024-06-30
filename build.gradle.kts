@@ -49,6 +49,22 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
+    // Jackson
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    // Swagger
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+    implementation("org.springdoc:springdoc-openapi-starter-common:2.5.0")
+
+    // JDBC
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+
+    // HikariCP
+    implementation("com.zaxxer:HikariCP:5.1.0")
+
+    // Postgresql Driver
+    implementation("org.postgresql:postgresql:42.7.3")
+
     // Detekt
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion")
 
@@ -57,7 +73,13 @@ dependencies {
         exclude("org.mockito", "mockito-junit-jupiter")
         exclude("org.mockito", "mockito-core")
     }
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+
+    // Mockk
     testImplementation("com.ninja-squad:springmockk:$springMockkVersion")
+
+    // Postgres Test Container
+    testImplementation("org.testcontainers:postgresql:1.19.8")
 
     // JUnit
     testImplementation("org.junit.platform:junit-platform-suite")
