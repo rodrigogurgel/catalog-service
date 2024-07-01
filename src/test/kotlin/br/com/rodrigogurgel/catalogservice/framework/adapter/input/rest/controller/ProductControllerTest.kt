@@ -5,6 +5,7 @@ import br.com.rodrigogurgel.catalogservice.framework.adapter.config.DatabaseTest
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.product.CreateProductRequestDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.product.UpdateProductRequestDTO
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.hamcrest.Matchers.`is`
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +18,6 @@ import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import java.util.UUID
@@ -59,15 +59,15 @@ class ProductControllerTest {
             .andDo { print() }
             .andExpect {
                 status { isOk() }
-            }.andExpect {
-                MockMvcResultMatchers.jsonPath("$.id").value(body.id)
-                MockMvcResultMatchers.jsonPath("$.name").value(body.name)
-                MockMvcResultMatchers.jsonPath("$.description").value(body.description)
-                MockMvcResultMatchers.jsonPath("$.image").value(body.image)
+            }.andExpectAll {
+                jsonPath("$.id", `is`(body.id.toString()))
+                jsonPath("$.name", `is`(body.name))
+                jsonPath("$.description", `is`(body.description))
+                jsonPath("$.image", `is`(body.image))
             }
 
         // when
-        val result = mockMvc.get("/products/{id}", body.id) {
+        val result = mockMvc.get("/products/{id}", body.id.toString()) {
             queryParam("storeId", storeId.toString())
         }
             .andDo { print() }
@@ -77,10 +77,10 @@ class ProductControllerTest {
                 status { isOk() }
             }
             .andExpect {
-                MockMvcResultMatchers.jsonPath("$.id").value(body.id)
-                MockMvcResultMatchers.jsonPath("$.name").value(body.name)
-                MockMvcResultMatchers.jsonPath("$.description").value(body.description)
-                MockMvcResultMatchers.jsonPath("$.image").value(body.image)
+                jsonPath("$.id", `is`(body.id.toString()))
+                jsonPath("$.name", `is`(body.name))
+                jsonPath("$.description", `is`(body.description))
+                jsonPath("$.image", `is`(body.image))
             }
     }
 
@@ -107,24 +107,24 @@ class ProductControllerTest {
             .andDo { print() }
             .andExpect {
                 status { isOk() }
-            }.andExpect {
-                MockMvcResultMatchers.jsonPath("$.id").value(body.id)
-                MockMvcResultMatchers.jsonPath("$.name").value(body.name)
-                MockMvcResultMatchers.jsonPath("$.description").value(body.description)
-                MockMvcResultMatchers.jsonPath("$.image").value(body.image)
+            }.andExpectAll {
+                jsonPath("$.id", `is`(body.id.toString()))
+                jsonPath("$.name", `is`(body.name))
+                jsonPath("$.description", `is`(body.description))
+                jsonPath("$.image", `is`(body.image))
             }
 
         // then
-        mockMvc.get("/products/{id}", body.id) {
+        mockMvc.get("/products/{id}", body.id.toString()) {
             queryParam("storeId", storeId.toString())
             accept = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isOk() }
-        }.andExpect {
-            MockMvcResultMatchers.jsonPath("$.id").value(body.id)
-            MockMvcResultMatchers.jsonPath("$.name").value(body.name)
-            MockMvcResultMatchers.jsonPath("$.description").value(body.description)
-            MockMvcResultMatchers.jsonPath("$.image").value(body.image)
+        }.andExpectAll {
+            jsonPath("$.id", `is`(body.id.toString()))
+            jsonPath("$.name", `is`(body.name))
+            jsonPath("$.description", `is`(body.description))
+            jsonPath("$.image", `is`(body.image))
         }
     }
 
@@ -151,11 +151,11 @@ class ProductControllerTest {
             .andDo { print() }
             .andExpect {
                 status { isOk() }
-            }.andExpect {
-                MockMvcResultMatchers.jsonPath("$.id").value(body.id)
-                MockMvcResultMatchers.jsonPath("$.name").value(body.name)
-                MockMvcResultMatchers.jsonPath("$.description").value(body.description)
-                MockMvcResultMatchers.jsonPath("$.image").value(body.image)
+            }.andExpectAll {
+                jsonPath("$.id", `is`(body.id.toString()))
+                jsonPath("$.name", `is`(body.name))
+                jsonPath("$.description", `is`(body.description))
+                jsonPath("$.image", `is`(body.image))
             }
 
         // when
@@ -164,7 +164,7 @@ class ProductControllerTest {
         }
         mockMvc.put(
             "/products/{id}",
-            body.id
+            body.id.toString()
         ) {
             queryParam("storeId", storeId.toString())
             accept = MediaType.APPLICATION_JSON
@@ -177,14 +177,14 @@ class ProductControllerTest {
             }
 
         // then
-        mockMvc.get("/products/{id}", body.id) {
+        mockMvc.get("/products/{id}", body.id.toString()) {
             queryParam("storeId", storeId.toString())
             accept = MediaType.APPLICATION_JSON
-        }.andExpect {
-            MockMvcResultMatchers.jsonPath("$.id").value(body.id)
-            MockMvcResultMatchers.jsonPath("$.name").value(updatedBody.name)
-            MockMvcResultMatchers.jsonPath("$.description").value(updatedBody.description)
-            MockMvcResultMatchers.jsonPath("$.image").value(updatedBody.image)
+        }.andExpectAll {
+            jsonPath("$.id", `is`(body.id.toString()))
+            jsonPath("$.name", `is`(updatedBody.name))
+            jsonPath("$.description", `is`(updatedBody.description))
+            jsonPath("$.image", `is`(updatedBody.image))
         }
     }
 
@@ -211,11 +211,11 @@ class ProductControllerTest {
             .andDo { print() }
             .andExpect {
                 status { isOk() }
-            }.andExpect {
-                MockMvcResultMatchers.jsonPath("$.id").value(body.id)
-                MockMvcResultMatchers.jsonPath("$.name").value(body.name)
-                MockMvcResultMatchers.jsonPath("$.description").value(body.description)
-                MockMvcResultMatchers.jsonPath("$.image").value(body.image)
+            }.andExpectAll {
+                jsonPath("$.id", `is`(body.id.toString()))
+                jsonPath("$.name", `is`(body.name))
+                jsonPath("$.description", `is`(body.description))
+                jsonPath("$.image", `is`(body.image))
             }
 
         // when
@@ -224,7 +224,7 @@ class ProductControllerTest {
         }
         mockMvc.put(
             "/products/{id}",
-            body.id
+            body.id.toString()
         ) {
             queryParam("storeId", storeId.toString())
             accept = MediaType.APPLICATION_JSON
@@ -237,14 +237,14 @@ class ProductControllerTest {
             }
 
         // then
-        mockMvc.get("/products/{id}", body.id) {
+        mockMvc.get("/products/{id}", body.id.toString()) {
             queryParam("storeId", storeId.toString())
             accept = MediaType.APPLICATION_JSON
-        }.andExpect {
-            MockMvcResultMatchers.jsonPath("$.id").value(body.id)
-            MockMvcResultMatchers.jsonPath("$.name").value(updatedBody.name)
-            MockMvcResultMatchers.jsonPath("$.description").value(updatedBody.description)
-            MockMvcResultMatchers.jsonPath("$.image").value(updatedBody.image)
+        }.andExpectAll {
+            jsonPath("$.id", `is`(body.id.toString()))
+            jsonPath("$.name", `is`(updatedBody.name))
+            jsonPath("$.description", `is`(updatedBody.description))
+            jsonPath("$.image", `is`(updatedBody.image))
         }
     }
 
@@ -271,17 +271,17 @@ class ProductControllerTest {
             .andDo { print() }
             .andExpect {
                 status { isOk() }
-            }.andExpect {
-                MockMvcResultMatchers.jsonPath("$.id").value(body.id)
-                MockMvcResultMatchers.jsonPath("$.name").value(body.name)
-                MockMvcResultMatchers.jsonPath("$.description").value(body.description)
-                MockMvcResultMatchers.jsonPath("$.image").value(body.image)
+            }.andExpectAll {
+                jsonPath("$.id", `is`(body.id.toString()))
+                jsonPath("$.name", `is`(body.name))
+                jsonPath("$.description", `is`(body.description))
+                jsonPath("$.image", `is`(body.image))
             }
 
         // when
         mockMvc.delete(
             "/products/{id}",
-            body.id
+            body.id.toString()
         ) {
             queryParam("storeId", storeId.toString())
             accept = MediaType.APPLICATION_JSON
@@ -294,18 +294,12 @@ class ProductControllerTest {
             }
 
         // then
-        mockMvc.get("/products/{id}", body.id) {
+        mockMvc.get("/products/{id}", body.id.toString()) {
             queryParam("storeId", storeId.toString())
         }
             .andDo { print() }
             .andExpect {
                 status { isNotFound() }
-            }
-            .andExpect {
-                MockMvcResultMatchers.jsonPath("$.id").value(body.id)
-                MockMvcResultMatchers.jsonPath("$.name").value(body.name)
-                MockMvcResultMatchers.jsonPath("$.description").value(body.description)
-                MockMvcResultMatchers.jsonPath("$.image").value(body.image)
             }
     }
 
@@ -322,7 +316,7 @@ class ProductControllerTest {
             .andExpect {
                 status { isOk() }
             }.andExpect {
-                MockMvcResultMatchers.jsonPath("$.total").value(0)
+                jsonPath("$.total", `is`(0))
             }
     }
 
@@ -352,11 +346,11 @@ class ProductControllerTest {
                 .andDo { print() }
                 .andExpect {
                     status { isOk() }
-                }.andExpect {
-                    MockMvcResultMatchers.jsonPath("$.id").value(body.id)
-                    MockMvcResultMatchers.jsonPath("$.name").value(body.name)
-                    MockMvcResultMatchers.jsonPath("$.description").value(body.description)
-                    MockMvcResultMatchers.jsonPath("$.image").value(body.image)
+                }.andExpectAll {
+                    jsonPath("$.id", `is`(body.id.toString()))
+                    jsonPath("$.name", `is`(body.name))
+                    jsonPath("$.description", `is`(body.description))
+                    jsonPath("$.image", `is`(body.image))
                 }
         }
 
@@ -369,12 +363,12 @@ class ProductControllerTest {
             .andDo { print() }
             .andExpect {
                 status { isOk() }
-            }.andExpect {
+            }.andExpectAll {
                 requests.forEachIndexed { index, body ->
-                    MockMvcResultMatchers.jsonPath("$.data.$index.id").value(body.id)
-                    MockMvcResultMatchers.jsonPath("$.data.$index.name").value(body.name)
-                    MockMvcResultMatchers.jsonPath("$.data.$index.description").value(body.description)
-                    MockMvcResultMatchers.jsonPath("$.data.$index.image").value(body.image)
+                    jsonPath("$.data[$index].id", `is`(body.id.toString()))
+                    jsonPath("$.data[$index].name", `is`(body.name))
+                    jsonPath("$.data[$index].description", `is`(body.description))
+                    jsonPath("$.data[$index].image", `is`(body.image))
                 }
             }
     }
@@ -415,11 +409,11 @@ class ProductControllerTest {
                 .andDo { print() }
                 .andExpect {
                     status { isOk() }
-                }.andExpect {
-                    MockMvcResultMatchers.jsonPath("$.id").value(body.id)
-                    MockMvcResultMatchers.jsonPath("$.name").value(body.name)
-                    MockMvcResultMatchers.jsonPath("$.description").value(body.description)
-                    MockMvcResultMatchers.jsonPath("$.image").value(body.image)
+                }.andExpectAll {
+                    jsonPath("$.id", `is`(body.id.toString()))
+                    jsonPath("$.name", `is`(body.name))
+                    jsonPath("$.description", `is`(body.description))
+                    jsonPath("$.image", `is`(body.image))
                 }
         }
 
@@ -433,12 +427,12 @@ class ProductControllerTest {
             .andDo { print() }
             .andExpect {
                 status { isOk() }
-            }.andExpect {
-                yesProducts.forEachIndexed { index, body ->
-                    MockMvcResultMatchers.jsonPath("$.data.$index.id").value(body.id)
-                    MockMvcResultMatchers.jsonPath("$.data.$index.name").value(body.name)
-                    MockMvcResultMatchers.jsonPath("$.data.$index.description").value(body.description)
-                    MockMvcResultMatchers.jsonPath("$.data.$index.image").value(body.image)
+            }.andExpectAll {
+                yesProducts.sortedBy { body -> body.name }.forEachIndexed { index, body ->
+                    jsonPath("$.data[$index].id", `is`(body.id.toString()))
+                    jsonPath("$.data[$index].name", `is`(body.name))
+                    jsonPath("$.data[$index].description", `is`(body.description))
+                    jsonPath("$.data[$index].image", `is`(body.image))
                 }
             }
     }
