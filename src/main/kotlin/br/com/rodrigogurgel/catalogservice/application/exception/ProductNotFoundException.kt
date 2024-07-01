@@ -6,5 +6,5 @@ class ProductNotFoundException private constructor(override val message: String)
     constructor(
         storeId: Id,
         productId: Id
-    ) : this("Product with the id ${productId.value} and Store with the id $storeId not found")
+    ) : this("Product with the ${productId.value} and Store with the $storeId not found")
 }

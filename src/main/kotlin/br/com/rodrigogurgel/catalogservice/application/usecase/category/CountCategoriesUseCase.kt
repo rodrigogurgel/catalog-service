@@ -1,7 +1,7 @@
-package br.com.rodrigogurgel.catalogservice.application.usecase.product
+package br.com.rodrigogurgel.catalogservice.application.usecase.category
 
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
-interface CountProductsUseCase {
+interface CountCategoriesUseCase {
     fun execute(storeId: Id, beginsWith: String?): Int
 }

@@ -175,7 +175,7 @@ complexity:
     ignoreDeprecated: false
     ignorePrivate: false
     ignoreOverridden: false
-    ignoreAnnotatedFunctions: [ExceptionHandler]
+    ignoreAnnotatedFunctions: [ExceptionHandler, Bean]
 
 coroutines:
   active: true

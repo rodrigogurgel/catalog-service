@@ -12,5 +12,5 @@ interface ProductDatastoreOutputPort {
     fun update(storeId: Id, product: Product)
     fun delete(storeId: Id, productId: Id)
     fun getProducts(storeId: Id, limit: Int, offset: Int, beginsWith: String?): List<Product>
-    fun countProducts(storeId: Id, limit: Int, offset: Int, beginsWith: String?): Int
+    fun countProducts(storeId: Id, beginsWith: String?): Int
 }

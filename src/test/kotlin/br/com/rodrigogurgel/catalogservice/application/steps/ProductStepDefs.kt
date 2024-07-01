@@ -266,7 +266,7 @@ class ProductStepDefs(
     fun theProductsShouldBeRetrievedFromDatabaseWithTheLimitAsOffsetAsAndBeginsWithAs(
         limit: String,
         offset: String,
-        beginsWith: String
+        beginsWith: String,
     ) {
         cucumberContext.result.isSuccess shouldBe true
         verifySequence {
@@ -281,33 +281,27 @@ class ProductStepDefs(
     }
 
     @Then(
-        "the Products should be counted in the database with the limit as {string}, offset as {string} and begins with as {string}"
+        "the Products should be counted in the database with the begins with as {string}"
     )
     fun theProductsShouldBeCountedInTheDatabaseWithTheLimitAsOffsetAsAndBeginsWithAs(
-        limit: String,
-        offset: String,
-        beginsWith: String
+        beginsWith: String,
     ) {
         cucumberContext.result.isSuccess shouldBe true
         verifySequence {
             cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
             cucumberContext.productDatastoreOutputPort.countProducts(
                 cucumberContext.storeId,
-                limit.toInt(),
-                offset.toInt(),
                 beginsWith
             )
         }
     }
 
-    @When("I attempt to count the Products with the limit as {string}, offset as {string} and begins with as {string}")
+    @When("I attempt to count the Products with the begins with as {string}")
     fun iAttemptToCountTheProductsWithTheLimitAsOffsetAsAndBeginsWithAs(
-        limit: String,
-        offset: String,
-        beginsWith: String
+        beginsWith: String,
     ) {
         cucumberContext.result = runCatching {
-            countProductsInputPort.execute(cucumberContext.storeId, limit.toInt(), offset.toInt(), beginsWith)
+            countProductsInputPort.execute(cucumberContext.storeId, beginsWith)
         }.onFailure { it.printStackTrace() }
     }
 }

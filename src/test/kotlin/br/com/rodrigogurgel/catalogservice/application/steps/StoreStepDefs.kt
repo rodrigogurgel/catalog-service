@@ -22,7 +22,15 @@ class StoreStepDefs(
         } returns emptyList()
 
         every {
-            cucumberContext.productDatastoreOutputPort.countProducts(storeId, any(), any(), any())
+            cucumberContext.productDatastoreOutputPort.countProducts(storeId, any())
+        } returns 0
+
+        every {
+            cucumberContext.categoryDatastoreOutputPort.getCategories(storeId, any(), any(), any())
+        } returns emptyList()
+
+        every {
+            cucumberContext.categoryDatastoreOutputPort.countCategories(storeId, any())
         } returns 0
     }
 

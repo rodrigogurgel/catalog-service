@@ -2,8 +2,8 @@ package br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.control
 
 import br.com.rodrigogurgel.catalogservice.fixture.randomString
 import br.com.rodrigogurgel.catalogservice.framework.adapter.config.DatabaseTestConfig
-import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.CreateProductRequestDTO
-import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.UpdateProductRequestDTO
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.product.CreateProductRequestDTO
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.product.UpdateProductRequestDTO
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -33,7 +33,6 @@ class ProductControllerTest {
     private lateinit var webApplicationContext: WebApplicationContext
 
     @BeforeEach
-    @Throws(Exception::class)
     fun setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build()
     }
@@ -43,10 +42,9 @@ class ProductControllerTest {
         // given
         val storeId = UUID.randomUUID()
         val body = CreateProductRequestDTO(
-            id = UUID.randomUUID(),
             name = randomString(30),
-            description = randomString(1000),
-            image = "https://www.image.com.br"
+            description = null,
+            image = null
         )
 
         // and
@@ -132,6 +130,66 @@ class ProductControllerTest {
 
     @Test
     fun `Should update a Product successfully`() {
+        // given
+        val storeId = UUID.randomUUID()
+        val body = CreateProductRequestDTO(
+            id = UUID.randomUUID(),
+            name = randomString(30),
+            description = randomString(1000),
+            image = "https://www.image.com.br"
+        )
+
+        // and
+        mockMvc.post(
+            "/products",
+        ) {
+            queryParam("storeId", storeId.toString())
+            accept = MediaType.APPLICATION_JSON
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(body)
+        }
+            .andDo { print() }
+            .andExpect {
+                status { isOk() }
+            }.andExpect {
+                MockMvcResultMatchers.jsonPath("$.id").value(body.id)
+                MockMvcResultMatchers.jsonPath("$.name").value(body.name)
+                MockMvcResultMatchers.jsonPath("$.description").value(body.description)
+                MockMvcResultMatchers.jsonPath("$.image").value(body.image)
+            }
+
+        // when
+        val updatedBody = body.run {
+            UpdateProductRequestDTO(name, randomString(1000), "https://www.String")
+        }
+        mockMvc.put(
+            "/products/{id}",
+            body.id
+        ) {
+            queryParam("storeId", storeId.toString())
+            accept = MediaType.APPLICATION_JSON
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(updatedBody)
+        }
+            .andDo { print() }
+            .andExpect {
+                status { isOk() }
+            }
+
+        // then
+        mockMvc.get("/products/{id}", body.id) {
+            queryParam("storeId", storeId.toString())
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            MockMvcResultMatchers.jsonPath("$.id").value(body.id)
+            MockMvcResultMatchers.jsonPath("$.name").value(updatedBody.name)
+            MockMvcResultMatchers.jsonPath("$.description").value(updatedBody.description)
+            MockMvcResultMatchers.jsonPath("$.image").value(updatedBody.image)
+        }
+    }
+
+    @Test
+    fun `Should update a Product optional values successfully`() {
         // given
         val storeId = UUID.randomUUID()
         val body = CreateProductRequestDTO(

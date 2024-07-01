@@ -168,7 +168,8 @@ tasks.jacocoTestReport {
         sourceSets.main.get().output.asFileTree.matching {
             exclude(
                 "**/CatalogApplication*",
-                "**/config/*"
+                "**/config/*",
+                "**/GlobalExceptionHandler*"
             )
         }
     )

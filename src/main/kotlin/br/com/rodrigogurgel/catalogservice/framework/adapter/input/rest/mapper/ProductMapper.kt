@@ -5,8 +5,8 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Description
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Image
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name
-import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.CreateProductRequestDTO
-import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.UpdateProductRequestDTO
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.product.CreateProductRequestDTO
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.product.UpdateProductRequestDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.ProductResponseDTO
 import java.util.UUID
 

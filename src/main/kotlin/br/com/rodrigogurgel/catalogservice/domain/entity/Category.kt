@@ -8,7 +8,6 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Status
 data class Category(
     val id: Id,
     val name: Name,
-    val description: Description,
+    val description: Description?,
     val status: Status,
-    val offers: MutableMap<Id, Offer>,
 )

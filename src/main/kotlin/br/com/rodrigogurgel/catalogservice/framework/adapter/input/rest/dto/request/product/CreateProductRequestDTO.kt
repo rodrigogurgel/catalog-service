@@ -1,4 +1,4 @@
-package br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request
+package br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.product
 
 import java.util.UUID
 

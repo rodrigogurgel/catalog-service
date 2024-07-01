@@ -4,6 +4,7 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Description
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Image
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name
+import br.com.rodrigogurgel.catalogservice.domain.vo.Status
 import java.sql.ResultSet
 import java.util.UUID
 
@@ -21,4 +22,8 @@ fun ResultSet.description(): Description? {
 
 fun ResultSet.image(): Image? {
     return getString("image_path")?.let { Image(it) }
+}
+
+fun ResultSet.status(): Status {
+    return Status.valueOf(getString("status"))
 }

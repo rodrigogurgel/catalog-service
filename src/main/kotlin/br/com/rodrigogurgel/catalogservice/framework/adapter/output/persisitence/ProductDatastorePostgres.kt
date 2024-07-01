@@ -90,9 +90,11 @@ class ProductDatastorePostgres(
     }
 
     override fun findById(storeId: Id, productId: Id): Product? {
+        val params = mapOf("id" to productId.value, "store_id" to storeId.value)
+
         return namedParameterJdbcTemplate.query(
             GET_PRODUCT,
-            mapOf("id" to productId.value, "store_id" to storeId.value),
+            params,
             ProductMapper()
         ).firstOrNull()
     }
@@ -106,9 +108,11 @@ class ProductDatastorePostgres(
     }
 
     override fun exists(storeId: Id, productId: Id): Boolean {
+        val params = mapOf("store_id" to storeId.value, "id" to productId.value)
+
         return namedParameterJdbcTemplate.queryForObject(
             EXISTS_PRODUCT_BY_STORE_ID_AND_PRODUCT_ID,
-            mapOf("store_id" to storeId.value, "id" to productId.value),
+            params,
             Boolean::class.java
         )!!
     }
@@ -122,34 +126,31 @@ class ProductDatastorePostgres(
     }
 
     override fun delete(storeId: Id, productId: Id) {
+        val params = mapOf("store_id" to storeId.value, "id" to productId.value)
         namedParameterJdbcTemplate.update(
             DELETE_PRODUCT,
-            mapOf("store_id" to storeId.value, "id" to productId.value),
+            params
         )
     }
 
     override fun getProducts(storeId: Id, limit: Int, offset: Int, beginsWith: String?): List<Product> {
-        return namedParameterJdbcTemplate.query(
-            GET_PRODUCTS,
-            mapOf(
-                "store_id" to storeId.value,
-                "limit" to limit,
-                "offset" to offset,
-                "begins_with" to beginsWith.orEmpty()
-            ),
-            ProductMapper()
+        val params = mapOf(
+            "store_id" to storeId.value,
+            "limit" to limit,
+            "offset" to offset,
+            "begins_with" to beginsWith.orEmpty()
         )
+        return namedParameterJdbcTemplate.query(GET_PRODUCTS, params, ProductMapper())
     }
 
-    override fun countProducts(storeId: Id, limit: Int, offset: Int, beginsWith: String?): Int {
+    override fun countProducts(storeId: Id, beginsWith: String?): Int {
+        val params = mapOf(
+            "store_id" to storeId.value,
+            "begins_with" to beginsWith.orEmpty()
+        )
         return namedParameterJdbcTemplate.queryForObject(
             COUNT_PRODUCTS,
-            mapOf(
-                "store_id" to storeId.value,
-                "limit" to limit,
-                "offset" to offset,
-                "begins_with" to beginsWith.orEmpty()
-            ),
+            params,
             Int::class.java
         )!!
     }

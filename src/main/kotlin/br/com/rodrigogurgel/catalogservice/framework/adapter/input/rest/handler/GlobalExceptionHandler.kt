@@ -38,7 +38,7 @@ import java.time.Instant
 class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(Exception::class)
     fun defaultExceptionHandler(e: Exception): ResponseEntity<ProblemDetail> {
-        logger.info("An unexpected error occurred", e)
+        logger.error("An unexpected error occurred", e)
 
         val problemDetail =
             ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred")

@@ -10,4 +10,6 @@ interface CategoryDatastoreOutputPort {
     fun exists(storeId: Id, categoryId: Id): Boolean
     fun delete(storeId: Id, categoryId: Id)
     fun update(storeId: Id, category: Category)
+    fun getCategories(storeId: Id, limit: Int, offset: Int, beginsWith: String?): List<Category>
+    fun countCategories(storeId: Id, beginsWith: String?): Int
 }

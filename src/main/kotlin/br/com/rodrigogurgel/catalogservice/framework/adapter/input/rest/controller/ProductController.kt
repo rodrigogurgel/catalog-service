@@ -7,8 +7,8 @@ import br.com.rodrigogurgel.catalogservice.application.usecase.product.GetProduc
 import br.com.rodrigogurgel.catalogservice.application.usecase.product.GetProductsUseCase
 import br.com.rodrigogurgel.catalogservice.application.usecase.product.UpdateProductUseCase
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
-import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.CreateProductRequestDTO
-import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.UpdateProductRequestDTO
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.product.CreateProductRequestDTO
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.product.UpdateProductRequestDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.PageResponseDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.ProductResponseDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.mapper.toDTO
@@ -41,7 +41,7 @@ class ProductController(
         @RequestParam(defaultValue = "0", required = false) offset: Int,
         @RequestParam(required = false) beginsWith: String?,
     ): PageResponseDTO<ProductResponseDTO> {
-        val total = countProductsUseCase.execute(Id(storeId), limit, offset, beginsWith)
+        val total = countProductsUseCase.execute(Id(storeId), beginsWith)
         val products = getProductsUseCase.execute(Id(storeId), limit, offset, beginsWith)
 
         return PageResponseDTO(
@@ -54,7 +54,7 @@ class ProductController(
     }
 
     @PostMapping
-    fun create(
+    fun createProduct(
         @RequestParam storeId: UUID,
         @RequestBody createProductRequestDTO: CreateProductRequestDTO,
     ): ProductResponseDTO {
@@ -64,22 +64,22 @@ class ProductController(
     }
 
     @PutMapping("/{id}")
-    fun update(
+    fun updateProduct(
         @RequestParam storeId: UUID,
-        @PathVariable id: UUID,
+        @PathVariable(value = "id") productId: UUID,
         @RequestBody updateProductRequestDTO: UpdateProductRequestDTO,
     ) {
-        val product = updateProductRequestDTO.toDomain(id)
+        val product = updateProductRequestDTO.toDomain(productId)
         updateProductUseCase.execute(Id(storeId), product)
     }
 
     @GetMapping("/{id}")
-    fun getProductById(@RequestParam storeId: UUID, @PathVariable id: UUID): ProductResponseDTO {
-        return getProductUseCase.execute(Id(storeId), Id(id)).toDTO()
+    fun getProductById(@RequestParam storeId: UUID, @PathVariable(value = "id") productId: UUID): ProductResponseDTO {
+        return getProductUseCase.execute(Id(storeId), Id(productId)).toDTO()
     }
 
     @DeleteMapping("/{id}")
-    fun deleteProductById(@RequestParam storeId: UUID, @PathVariable id: UUID) {
-        return deleteProductUseCase.execute(Id(storeId), Id(id))
+    fun deleteProductById(@RequestParam storeId: UUID, @PathVariable(value = "id") productId: UUID) {
+        return deleteProductUseCase.execute(Id(storeId), Id(productId))
     }
 }

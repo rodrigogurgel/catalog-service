@@ -6,5 +6,5 @@ class CategoryNotFoundException private constructor(override val message: String
     constructor(
         storeId: Id,
         categoryId: Id,
-    ) : this("Category with the id $categoryId and Store with the id $storeId not found")
+    ) : this("Category with the $categoryId and Store with the $storeId not found")
 }
