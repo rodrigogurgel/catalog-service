@@ -293,6 +293,58 @@ class CategoryControllerTest {
     }
 
     @Test
+    fun `Should get a Page of Categories when begins with parameter is empty successfully`() {
+        // given
+        val storeId = UUID.randomUUID()
+        val requests = List(10) {
+            CreateCategoryRequestDTO(
+                name = randomString(30),
+                description = null,
+                status = Status.AVAILABLE
+            )
+        }
+
+        requests.forEach { body ->
+            mockMvc.post("/categories") {
+                queryParam("storeId", storeId.toString())
+                accept = MediaType.APPLICATION_JSON
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(body)
+            }.andDo { print() }
+                .andExpect {
+                    status { isOk() }
+                }.andExpectAll {
+                    jsonPath("$.id", `is`(body.id.toString()))
+                    jsonPath("$.name", `is`(body.name))
+                    jsonPath("$.description", `is`(body.description))
+                    jsonPath("$.status", `is`(body.status.name))
+                }
+        }
+
+        // when
+        mockMvc.get("/categories") {
+            queryParam("storeId", storeId.toString())
+            queryParam("beginsWith", "")
+            accept = MediaType.APPLICATION_JSON
+            contentType = MediaType.APPLICATION_JSON
+        }
+            .andExpect {
+                status { isOk() }
+            }
+            .andExpectAll {
+                jsonPath("$.limit", `is`(20))
+                jsonPath("$.offset", `is`(0))
+                jsonPath("$.total", `is`(10))
+                requests.sortedBy { body -> body.name }.forEachIndexed { index, body ->
+                    jsonPath("$.data[$index].id", `is`(body.id.toString()))
+                    jsonPath("$.data[$index].name", `is`(body.name))
+                    jsonPath("$.data[$index].description", `is`(body.description))
+                    jsonPath("$.data[$index].status", `is`(body.status.name))
+                }
+            }
+    }
+
+    @Test
     fun `Should get a Page of Categories with name begins with YES successfully`() {
         // given
         val storeId = UUID.randomUUID()
