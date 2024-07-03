@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal
 
-class CustomizationTest {
+class CustomizationRepositoryTest {
     @Test
     fun `Should instantiate with success when minPermitted is equal to 0 and options is not empty`() {
         val id = Id()

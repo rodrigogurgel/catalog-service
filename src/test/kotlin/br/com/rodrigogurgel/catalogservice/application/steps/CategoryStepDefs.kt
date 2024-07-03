@@ -24,33 +24,33 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
     private lateinit var category: Category
 
     private val createCategoryInputPort = CreateCategoryInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.categoryDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.categoryOutputPort
     )
 
     private val deleteCategoryInputPort = DeleteCategoryInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.categoryDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.categoryOutputPort
     )
 
     private val getCategoryInputPort = GetCategoryInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.categoryDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.categoryOutputPort
     )
 
     private val updateCategoryInputPort = UpdateCategoryInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.categoryDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.categoryOutputPort
     )
 
     private val getCategoriesInputPort = GetCategoriesInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.categoryDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.categoryOutputPort
     )
 
     private val countCategoriesInputPort = CountCategoriesInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.categoryDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.categoryOutputPort
     )
 
     @Given("the information of the Category")
@@ -70,11 +70,11 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
-            cucumberContext.categoryDatastoreOutputPort.exists(
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.categoryOutputPort.exists(
                 category.id
             )
-            cucumberContext.categoryDatastoreOutputPort.create(cucumberContext.storeId, category)
+            cucumberContext.categoryOutputPort.create(cucumberContext.storeId, category)
         }
     }
 
@@ -102,9 +102,9 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
 
-            cucumberContext.categoryDatastoreOutputPort.delete(
+            cucumberContext.categoryOutputPort.delete(
                 cucumberContext.storeId,
                 match { id -> id == Id(UUID.fromString(categoryIdString)) }
             )
@@ -123,27 +123,27 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
         val id = Id(UUID.fromString(categoryIdString))
 
         every {
-            cucumberContext.categoryDatastoreOutputPort.exists(
+            cucumberContext.categoryOutputPort.exists(
                 id
             )
         } returns false
 
         every {
-            cucumberContext.categoryDatastoreOutputPort.exists(
+            cucumberContext.categoryOutputPort.exists(
                 any(),
                 id
             )
         } returns false
 
         justRun {
-            cucumberContext.categoryDatastoreOutputPort.create(
+            cucumberContext.categoryOutputPort.create(
                 any(),
                 match { category -> category.id == id }
             )
         }
 
         every {
-            cucumberContext.categoryDatastoreOutputPort.findById(
+            cucumberContext.categoryOutputPort.findById(
                 any(),
                 id
             )
@@ -165,9 +165,9 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
 
-            cucumberContext.categoryDatastoreOutputPort.findById(
+            cucumberContext.categoryOutputPort.findById(
                 cucumberContext.storeId,
                 match { id -> id == Id(UUID.fromString(categoryIdString)) }
             )
@@ -179,14 +179,14 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
 
-            cucumberContext.categoryDatastoreOutputPort.exists(
+            cucumberContext.categoryOutputPort.exists(
                 cucumberContext.storeId,
                 category.id
             )
 
-            cucumberContext.categoryDatastoreOutputPort.update(
+            cucumberContext.categoryOutputPort.update(
                 cucumberContext.storeId,
                 category
             )
@@ -198,31 +198,31 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
         val storeId = Id(UUID.fromString(storeIdString))
         val categoryId = Id(UUID.fromString(categoryIdString))
         val category = mockCategoryWith { id = categoryId }
-        every { cucumberContext.categoryDatastoreOutputPort.exists(categoryId) } returns true
+        every { cucumberContext.categoryOutputPort.exists(categoryId) } returns true
 
         every {
-            cucumberContext.categoryDatastoreOutputPort.exists(
+            cucumberContext.categoryOutputPort.exists(
                 storeId,
                 categoryId
             )
         } returns true
 
         every {
-            cucumberContext.categoryDatastoreOutputPort.findById(
+            cucumberContext.categoryOutputPort.findById(
                 storeId,
                 categoryId
             )
         } returns category
 
         justRun {
-            cucumberContext.categoryDatastoreOutputPort.delete(
+            cucumberContext.categoryOutputPort.delete(
                 storeId,
                 categoryId
             )
         }
 
         justRun {
-            cucumberContext.categoryDatastoreOutputPort.update(
+            cucumberContext.categoryOutputPort.update(
                 storeId,
                 match { category -> category.id == categoryId }
             )
@@ -270,8 +270,8 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
     ) {
         cucumberContext.result.isSuccess shouldBe true
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
-            cucumberContext.categoryDatastoreOutputPort.getCategories(
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.categoryOutputPort.getCategories(
                 cucumberContext.storeId,
                 limit.toInt(),
                 offset.toInt(),
@@ -295,8 +295,8 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
     fun theCategoriesShouldBeCountedInTheDatabaseWithTheLimitAsOffsetAsAndBeginsWithAs(beginsWith: String) {
         cucumberContext.result.isSuccess shouldBe true
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
-            cucumberContext.categoryDatastoreOutputPort.countCategories(
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.categoryOutputPort.countCategories(
                 cucumberContext.storeId,
                 beginsWith
             )

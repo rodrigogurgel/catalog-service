@@ -15,22 +15,22 @@ class StoreStepDefs(
     @And("that there is a Store with the Id {string}")
     fun thatThereIsAStoreWithTheId(storeIdString: String) {
         val storeId = Id(UUID.fromString(storeIdString))
-        every { cucumberContext.storeDatastoreOutputPort.exists(storeId) } returns true
+        every { cucumberContext.storeOutputPort.exists(storeId) } returns true
 
         every {
-            cucumberContext.productDatastoreOutputPort.getProducts(storeId, any(), any(), any())
+            cucumberContext.productOutputPort.getProducts(storeId, any(), any(), any())
         } returns emptyList()
 
         every {
-            cucumberContext.productDatastoreOutputPort.countProducts(storeId, any())
+            cucumberContext.productOutputPort.countProducts(storeId, any())
         } returns 0
 
         every {
-            cucumberContext.categoryDatastoreOutputPort.getCategories(storeId, any(), any(), any())
+            cucumberContext.categoryOutputPort.getCategories(storeId, any(), any(), any())
         } returns emptyList()
 
         every {
-            cucumberContext.categoryDatastoreOutputPort.countCategories(storeId, any())
+            cucumberContext.categoryOutputPort.countCategories(storeId, any())
         } returns 0
     }
 
@@ -38,7 +38,7 @@ class StoreStepDefs(
     fun thatThereIsnTAStoreWithTheId(storeIdString: String) {
         val storeId = Id(UUID.fromString(storeIdString))
 
-        every { cucumberContext.storeDatastoreOutputPort.exists(storeId) } returns false
+        every { cucumberContext.storeOutputPort.exists(storeId) } returns false
     }
 
     @And("the Id of the Store is {string}")

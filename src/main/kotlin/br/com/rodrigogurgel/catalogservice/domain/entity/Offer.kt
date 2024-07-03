@@ -17,17 +17,17 @@ class Offer private constructor(
     private val rootCustomizationsById: MutableMap<Id, Customization> = mutableMapOf()
 
     private val customizationsById
-        get() = customizations
+        get() = getCustomizations()
             .flatMap { customization -> customization.getCustomizationsInChildren() }
             .associateBy { customization -> customization.id }
 
     private val optionsById
-        get() = customizations
+        get() = getCustomizations()
             .flatMap { customization -> customization.getOptionsInChildren() }
             .associateBy { option -> option.id }
 
-    val customizations
-        get() = rootCustomizationsById.values.toList()
+    fun getCustomizations() = rootCustomizationsById.values.toList()
+
     var price: Price = Price.ZERO
         set(value) {
             field = value
@@ -111,6 +111,10 @@ class Offer private constructor(
     }
 
     fun minimalPrice(): Price {
-        return Price(price.normalizedValue() + customizations.sumOf { it.minimalPrice().normalizedValue() })
+        return Price(price.normalizedValue() + getCustomizations().sumOf { it.minimalPrice().normalizedValue() })
     }
+
+    fun getCustomizationInChildren(): List<Customization> = customizationsById.values.toList()
+
+    fun getOptionInChildren(): List<Option> = optionsById.values.toList()
 }

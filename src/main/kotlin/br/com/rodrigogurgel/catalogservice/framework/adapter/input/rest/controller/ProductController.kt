@@ -11,8 +11,8 @@ import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.requ
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.product.UpdateProductRequestDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.PageResponseDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.ProductResponseDTO
-import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.mapper.toDTO
-import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.mapper.toDomain
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.mapper.toEntity
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.mapper.toResponseDTO
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -49,7 +49,7 @@ class ProductController(
             offset,
             beginsWith,
             total,
-            products.map { product -> product.toDTO() }
+            products.map { product -> product.toResponseDTO() }
         )
     }
 
@@ -58,9 +58,9 @@ class ProductController(
         @RequestParam storeId: UUID,
         @RequestBody createProductRequestDTO: CreateProductRequestDTO,
     ): ProductResponseDTO {
-        val product = createProductRequestDTO.toDomain()
+        val product = createProductRequestDTO.toEntity()
         createProductUseCase.execute(Id(storeId), product)
-        return product.toDTO()
+        return product.toResponseDTO()
     }
 
     @PutMapping("/{id}")
@@ -69,13 +69,13 @@ class ProductController(
         @PathVariable(value = "id") productId: UUID,
         @RequestBody updateProductRequestDTO: UpdateProductRequestDTO,
     ) {
-        val product = updateProductRequestDTO.toDomain(productId)
+        val product = updateProductRequestDTO.toEntity(productId)
         updateProductUseCase.execute(Id(storeId), product)
     }
 
     @GetMapping("/{id}")
     fun getProductById(@RequestParam storeId: UUID, @PathVariable(value = "id") productId: UUID): ProductResponseDTO {
-        return getProductUseCase.execute(Id(storeId), Id(productId)).toDTO()
+        return getProductUseCase.execute(Id(storeId), Id(productId)).toResponseDTO()
     }
 
     @DeleteMapping("/{id}")

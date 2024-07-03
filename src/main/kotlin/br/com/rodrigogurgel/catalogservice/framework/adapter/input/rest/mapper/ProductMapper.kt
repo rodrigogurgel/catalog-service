@@ -10,7 +10,7 @@ import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.requ
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.ProductResponseDTO
 import java.util.UUID
 
-fun CreateProductRequestDTO.toDomain(): Product {
+fun CreateProductRequestDTO.toEntity(): Product {
     return run {
         Product(
             id = Id(id),
@@ -21,7 +21,7 @@ fun CreateProductRequestDTO.toDomain(): Product {
     }
 }
 
-fun Product.toDTO(): ProductResponseDTO {
+fun Product.toResponseDTO(): ProductResponseDTO {
     return run {
         ProductResponseDTO(
             id = id.value,
@@ -32,7 +32,7 @@ fun Product.toDTO(): ProductResponseDTO {
     }
 }
 
-fun UpdateProductRequestDTO.toDomain(id: UUID): Product {
+fun UpdateProductRequestDTO.toEntity(id: UUID): Product {
     return run {
         Product(
             id = Id(id),

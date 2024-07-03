@@ -2,21 +2,21 @@ package br.com.rodrigogurgel.catalogservice.application.port.input.category
 
 import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.port.input.validateBeginsWith
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryDatastoreOutputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.StoreDatastoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.StoreOutputPort
 import br.com.rodrigogurgel.catalogservice.application.usecase.category.CountCategoriesUseCase
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
 class CountCategoriesInputPort(
-    private val storeDatastoreOutputPort: StoreDatastoreOutputPort,
-    private val categoryDatastoreOutputPort: CategoryDatastoreOutputPort,
+    private val storeOutputPort: StoreOutputPort,
+    private val categoryOutputPort: CategoryOutputPort,
 ) : CountCategoriesUseCase {
     override fun execute(storeId: Id, beginsWith: String?): Int {
-        if (!storeDatastoreOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
+        if (!storeOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
 
         validateBeginsWith(beginsWith)
 
-        return categoryDatastoreOutputPort.countCategories(
+        return categoryOutputPort.countCategories(
             storeId,
             beginsWith
         )

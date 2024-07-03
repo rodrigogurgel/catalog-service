@@ -11,8 +11,8 @@ import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.requ
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.category.UpdateCategoryRequestDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.CategoryResponseDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.PageResponseDTO
-import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.mapper.toDTO
-import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.mapper.toDomain
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.mapper.toEntity
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.mapper.toResponseDTO
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -43,7 +43,12 @@ class CategoryController(
     ): PageResponseDTO<CategoryResponseDTO> {
         val total = countCategoriesUseCase.execute(Id(storeId), beginsWith)
         val response =
-            getCategoriesUseCase.execute(Id(storeId), limit, offset, beginsWith).map { category -> category.toDTO() }
+            getCategoriesUseCase.execute(
+                Id(storeId),
+                limit,
+                offset,
+                beginsWith
+            ).map { category -> category.toResponseDTO() }
         return PageResponseDTO(limit, offset, beginsWith, total, response)
     }
 
@@ -52,7 +57,7 @@ class CategoryController(
         @RequestParam storeId: UUID,
         @PathVariable(value = "id") categoryId: UUID,
     ): CategoryResponseDTO {
-        return getCategoryUseCase.execute(Id(storeId), Id(categoryId)).toDTO()
+        return getCategoryUseCase.execute(Id(storeId), Id(categoryId)).toResponseDTO()
     }
 
     @PostMapping
@@ -60,9 +65,9 @@ class CategoryController(
         @RequestParam storeId: UUID,
         @RequestBody createCategoryRequestDTO: CreateCategoryRequestDTO,
     ): CategoryResponseDTO {
-        val category = createCategoryRequestDTO.toDomain()
+        val category = createCategoryRequestDTO.toEntity()
         createCategoryUseCase.execute(Id(storeId), category)
-        return category.toDTO()
+        return category.toResponseDTO()
     }
 
     @PutMapping("/{id}")
@@ -71,7 +76,7 @@ class CategoryController(
         @PathVariable(value = "id") categoryId: UUID,
         @RequestBody updateCategoryRequestDTO: UpdateCategoryRequestDTO,
     ) {
-        val category = updateCategoryRequestDTO.toDomain(categoryId)
+        val category = updateCategoryRequestDTO.toEntity(categoryId)
         updateCategoryUseCase.execute(Id(storeId), category)
     }
 

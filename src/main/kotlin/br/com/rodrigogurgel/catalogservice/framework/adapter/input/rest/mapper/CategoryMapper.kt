@@ -9,7 +9,7 @@ import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.requ
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.CategoryResponseDTO
 import java.util.UUID
 
-fun CreateCategoryRequestDTO.toDomain(): Category {
+fun CreateCategoryRequestDTO.toEntity(): Category {
     return run {
         Category(
             id = Id(id),
@@ -20,7 +20,7 @@ fun CreateCategoryRequestDTO.toDomain(): Category {
     }
 }
 
-fun Category.toDTO(): CategoryResponseDTO {
+fun Category.toResponseDTO(): CategoryResponseDTO {
     return run {
         CategoryResponseDTO(
             id = id.value,
@@ -31,7 +31,7 @@ fun Category.toDTO(): CategoryResponseDTO {
     }
 }
 
-fun UpdateCategoryRequestDTO.toDomain(categoryId: UUID): Category {
+fun UpdateCategoryRequestDTO.toEntity(categoryId: UUID): Category {
     return run {
         Category(
             id = Id(categoryId),

@@ -7,7 +7,7 @@ import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOptionWith
 import io.kotest.matchers.collections.shouldHaveSize
 import org.junit.jupiter.api.Test
 
-class CustomizationServiceTest {
+class CustomizationRepositoryServiceTest {
     @Test
     fun `Should return a list with 1 product when call getAllProducts`() {
         val customization = mockCustomization()

@@ -26,11 +26,15 @@ import br.com.rodrigogurgel.catalogservice.domain.exception.PriceNegativeExcepti
 import br.com.rodrigogurgel.catalogservice.domain.exception.QuantityMaxPermittedException
 import br.com.rodrigogurgel.catalogservice.domain.exception.QuantityMaxPermittedZeroException
 import br.com.rodrigogurgel.catalogservice.domain.exception.QuantityMinPermittedException
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.ProblemDetail
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.time.Instant
 
@@ -47,6 +51,34 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
         return ResponseEntity(problemDetail, HttpStatus.INTERNAL_SERVER_ERROR)
     }
+
+    override fun handleHttpMessageNotReadable(
+        ex: HttpMessageNotReadableException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest,
+    ): ResponseEntity<Any>? {
+        logger.warn(ex.message)
+
+        val problemDetail =
+            ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Failed to read request")
+        problemDetail.title = "Bad Request"
+        problemDetail.properties = mapOf("timestamp" to Instant.now().epochSecond)
+
+        return ResponseEntity(problemDetail, HttpStatus.BAD_REQUEST)
+    }
+
+//    @ExceptionHandler(HttpMessageNotReadableException::class)
+//    fun exceptionHandler(e: HttpMessageNotReadableException): ResponseEntity<ProblemDetail> {
+//        logger.warn("Error to deserialize", e)
+//
+//        val problemDetail =
+//            ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Failed to read request")
+//        problemDetail.title = "Bad Request"
+//        problemDetail.properties = mapOf("timestamp" to Instant.now().epochSecond)
+//
+//        return ResponseEntity(problemDetail, HttpStatus.BAD_REQUEST)
+//    }
 
     @ExceptionHandler(BeginsWithLengthException::class)
     fun exceptionHandler(e: BeginsWithLengthException): ResponseEntity<ProblemDetail> {

@@ -8,11 +8,11 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
 object OfferService {
     fun getAllProducts(offer: Offer): List<Product> {
-        return offer.customizations.flatMap { CustomizationService.getAllProducts(it) } + offer.product
+        return offer.getCustomizations().flatMap { CustomizationService.getAllProducts(it) } + offer.product
     }
 
     private fun getDuplicatedCustomizationIds(offer: Offer): List<Id> {
-        return offer.customizations.flatMap { customization -> customization.getCustomizationsInChildren() }
+        return offer.getCustomizations().flatMap { customization -> customization.getCustomizationsInChildren() }
             .groupingBy { customization -> customization.id }
             .eachCount()
             .filter { idByCount -> idByCount.value > 1 }
@@ -20,7 +20,7 @@ object OfferService {
     }
 
     private fun getDuplicatedOptionIds(offer: Offer): List<Id> {
-        return offer.customizations.flatMap { option -> option.getOptionsInChildren() }
+        return offer.getCustomizations().flatMap { option -> option.getOptionsInChildren() }
             .groupingBy { option -> option.id }
             .eachCount()
             .filter { idByCount -> idByCount.value > 1 }

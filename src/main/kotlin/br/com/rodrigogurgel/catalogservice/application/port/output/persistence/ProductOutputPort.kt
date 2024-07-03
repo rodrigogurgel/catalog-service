@@ -3,7 +3,7 @@ package br.com.rodrigogurgel.catalogservice.application.port.output.persistence
 import br.com.rodrigogurgel.catalogservice.domain.entity.Product
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
-interface ProductDatastoreOutputPort {
+interface ProductOutputPort {
     fun create(storeId: Id, product: Product)
     fun findById(storeId: Id, productId: Id): Product?
     fun exists(productId: Id): Boolean
@@ -13,4 +13,5 @@ interface ProductDatastoreOutputPort {
     fun delete(storeId: Id, productId: Id)
     fun getProducts(storeId: Id, limit: Int, offset: Int, beginsWith: String?): List<Product>
     fun countProducts(storeId: Id, beginsWith: String?): Int
+    fun productIsInUse(productId: Id): Boolean
 }

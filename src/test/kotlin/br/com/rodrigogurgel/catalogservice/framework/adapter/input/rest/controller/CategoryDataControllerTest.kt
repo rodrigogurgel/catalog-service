@@ -26,7 +26,7 @@ import java.util.UUID
 @SpringBootTest
 @ActiveProfiles("test")
 @ContextConfiguration(classes = [DatabaseTestConfig::class])
-class CategoryControllerTest {
+class CategoryDataControllerTest {
     private lateinit var mockMvc: MockMvc
     private val objectMapper = jacksonObjectMapper()
 

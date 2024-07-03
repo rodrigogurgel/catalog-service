@@ -8,7 +8,7 @@ value class Name(
 ) {
     companion object {
         const val MIN_LENGTH = 3
-        const val MAX_LENGTH = 30
+        const val MAX_LENGTH = 50
     }
 
     init {

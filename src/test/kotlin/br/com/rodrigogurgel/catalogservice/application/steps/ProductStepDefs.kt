@@ -26,34 +26,34 @@ class ProductStepDefs(
     private lateinit var product: Product
 
     private val createProductInputPort = CreateProductInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.productOutputPort
     )
 
     private val deleteProductInputPort = DeleteProductInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.productOutputPort,
+        cucumberContext.offerOutputPort
     )
 
     private val getProductInputPort = GetProductInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.productOutputPort
     )
 
     private val updateProductInputPort = UpdateProductInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.productOutputPort
     )
 
     private val getProductsInputPort = GetProductsInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.productOutputPort
     )
 
     private val countProductsInputPort = CountProductsInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.productOutputPort
     )
 
     @Given("the information of the Product")
@@ -73,9 +73,9 @@ class ProductStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
-            cucumberContext.productDatastoreOutputPort.exists(product.id)
-            cucumberContext.productDatastoreOutputPort.create(cucumberContext.storeId, product)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.productOutputPort.exists(product.id)
+            cucumberContext.productOutputPort.create(cucumberContext.storeId, product)
         }
     }
 
@@ -102,15 +102,15 @@ class ProductStepDefs(
     fun thatThereIsnTAProductWithTheId(productIdString: String) {
         val productId = Id(UUID.fromString(productIdString))
 
-        every { cucumberContext.productDatastoreOutputPort.exists(productId) } returns false
-        every { cucumberContext.productDatastoreOutputPort.exists(any(), productId) } returns false
+        every { cucumberContext.productOutputPort.exists(productId) } returns false
+        every { cucumberContext.productOutputPort.exists(any(), productId) } returns false
 
-        justRun { cucumberContext.productDatastoreOutputPort.create(any(), match { it.id == productId }) }
+        justRun { cucumberContext.productOutputPort.create(any(), match { it.id == productId }) }
 
-        every { cucumberContext.productDatastoreOutputPort.findById(any(), productId) } returns null
+        every { cucumberContext.productOutputPort.findById(any(), productId) } returns null
 
         every {
-            cucumberContext.productDatastoreOutputPort.getIfNotExists(
+            cucumberContext.productOutputPort.getIfNotExists(
                 any(),
                 match { ids -> productId in ids }
             )
@@ -123,20 +123,20 @@ class ProductStepDefs(
         val storeId = Id(UUID.fromString(storeIdString))
         val product = mockProductWith { id = productId }
 
-        every { cucumberContext.productDatastoreOutputPort.exists(productId) } returns true
-        every { cucumberContext.productDatastoreOutputPort.exists(storeId, productId) } returns true
+        every { cucumberContext.productOutputPort.exists(productId) } returns true
+        every { cucumberContext.productOutputPort.exists(storeId, productId) } returns true
 
-        justRun { cucumberContext.productDatastoreOutputPort.delete(storeId, productId) }
+        justRun { cucumberContext.productOutputPort.delete(storeId, productId) }
         justRun {
-            cucumberContext.productDatastoreOutputPort.update(
+            cucumberContext.productOutputPort.update(
                 storeId,
                 match { product -> product.id == productId }
             )
         }
 
-        every { cucumberContext.productDatastoreOutputPort.findById(storeId, productId) } returns product
+        every { cucumberContext.productOutputPort.findById(storeId, productId) } returns product
         every {
-            cucumberContext.productDatastoreOutputPort.getIfNotExists(
+            cucumberContext.productOutputPort.getIfNotExists(
                 storeId,
                 listOf(productId)
             )
@@ -148,8 +148,8 @@ class ProductStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
-            cucumberContext.productDatastoreOutputPort.delete(
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.productOutputPort.delete(
                 cucumberContext.storeId,
                 Id(UUID.fromString(productIdString))
             )
@@ -166,8 +166,8 @@ class ProductStepDefs(
     @Then("the Product with the Id {string} should be retrieved from database")
     fun theProductWithTheIdShouldBeRetrievedFromDatabase(productIdString: String) {
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
-            cucumberContext.productDatastoreOutputPort.findById(
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.productOutputPort.findById(
                 cucumberContext.storeId,
                 Id(UUID.fromString(productIdString))
             )
@@ -191,12 +191,12 @@ class ProductStepDefs(
             cucumberContext.result.exceptionOrNull()?.printStackTrace()
             cucumberContext.result.isSuccess shouldBe true
 
-            cucumberContext.productDatastoreOutputPort.exists(
+            cucumberContext.productOutputPort.exists(
                 cucumberContext.storeId,
                 product.id
             )
 
-            cucumberContext.productDatastoreOutputPort.update(
+            cucumberContext.productOutputPort.update(
                 cucumberContext.storeId,
                 product
             )
@@ -228,21 +228,21 @@ class ProductStepDefs(
         val storeId = Id(UUID.fromString(storeIdString))
 
         products.forEach { product ->
-            every { cucumberContext.productDatastoreOutputPort.exists(product.id) } returns true
-            every { cucumberContext.productDatastoreOutputPort.exists(storeId, product.id) } returns true
+            every { cucumberContext.productOutputPort.exists(product.id) } returns true
+            every { cucumberContext.productOutputPort.exists(storeId, product.id) } returns true
 
-            justRun { cucumberContext.productDatastoreOutputPort.delete(storeId, product.id) }
+            justRun { cucumberContext.productOutputPort.delete(storeId, product.id) }
             justRun {
-                cucumberContext.productDatastoreOutputPort.update(
+                cucumberContext.productOutputPort.update(
                     storeId,
                     product
                 )
             }
-            every { cucumberContext.productDatastoreOutputPort.findById(storeId, product.id) } returns product
+            every { cucumberContext.productOutputPort.findById(storeId, product.id) } returns product
         }
 
         every {
-            cucumberContext.productDatastoreOutputPort.getIfNotExists(
+            cucumberContext.productOutputPort.getIfNotExists(
                 storeId,
                 match { ids ->
                     products.map { product -> product.id }.containsAll(ids)
@@ -270,8 +270,8 @@ class ProductStepDefs(
     ) {
         cucumberContext.result.isSuccess shouldBe true
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
-            cucumberContext.productDatastoreOutputPort.getProducts(
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.productOutputPort.getProducts(
                 cucumberContext.storeId,
                 limit.toInt(),
                 offset.toInt(),
@@ -288,8 +288,8 @@ class ProductStepDefs(
     ) {
         cucumberContext.result.isSuccess shouldBe true
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
-            cucumberContext.productDatastoreOutputPort.countProducts(
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.productOutputPort.countProducts(
                 cucumberContext.storeId,
                 beginsWith
             )

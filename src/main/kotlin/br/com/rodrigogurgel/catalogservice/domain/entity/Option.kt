@@ -27,8 +27,12 @@ class Option private constructor(
         customizationById.putAll(customizations.associateBy { customization -> customization.id })
     }
 
-    val customizations
+    var customizations
         get() = customizationById.values.toList()
+        set(value) {
+            customizationById.clear()
+            customizationById.putAll(value.associateBy { customization -> customization.id })
+        }
 
     /**
      * Retrieves all the customizations that are present in the children of the current customization.

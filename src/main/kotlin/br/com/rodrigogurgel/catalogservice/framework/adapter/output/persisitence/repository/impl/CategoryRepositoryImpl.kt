@@ -1,47 +1,47 @@
-package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence
+package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.repository.impl
 
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryDatastoreOutputPort
-import br.com.rodrigogurgel.catalogservice.domain.entity.Category
-import br.com.rodrigogurgel.catalogservice.domain.vo.Id
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.mapper.CategoryMapper
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.data.CategoryData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.mapper.CategoryDataMapper
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.repository.CategoryRepository
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
+import java.util.UUID
 
 @Repository
-class CategoryDatastorePostgres(
+class CategoryRepositoryImpl(
     private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate,
-) : CategoryDatastoreOutputPort {
+) : CategoryRepository {
     companion object {
         private val CREATE_CATEGORY = """
-            insert into category (id, store_id, name, description, status)
-            values (:id, :store_id, :name, :description, :status);
+            insert into category (category_id, store_id, name, description, status)
+            values (:category_id, :store_id, :name, :description, :status);
         """.trimIndent()
 
         private val GET_CATEGORY = """
             select *
             from category
             where store_id = :store_id
-            and id = :id;
+            and category_id = :category_id;
         """.trimIndent()
 
         private val EXISTS_CATEGORY_BY_CATEGORY_ID = """
             select exists(select 1
             from category
-            where id = :id);
+            where category_id = :category_id);
         """.trimIndent()
 
         private val EXISTS_CATEGORY_BY_CATEGORY_ID_AND_STORE_ID = """
             select exists(select 1
             from category
             where store_id = :store_id
-                and id = :id);
+                and category_id = :category_id);
         """.trimIndent()
 
         private val DELETE_CATEGORY = """
             delete
             from category
             where store_id = :store_id
-              and id = :id;
+              and category_id = :category_id;
         """.trimIndent()
 
         private val UPDATE_CATEGORY = """
@@ -50,7 +50,7 @@ class CategoryDatastorePostgres(
                 description = :description,
                 status      = :status
             where store_id = :store_id
-              and id = :id;
+              and category_id = :category_id;
         """.trimIndent()
 
         private val GET_CATEGORIES = """
@@ -70,33 +70,35 @@ class CategoryDatastorePostgres(
         """.trimIndent()
     }
 
-    private fun buildParams(storeId: Id, category: Category): Map<String, Any?> {
-        return with(category) {
+    private fun buildParams(categoryData: CategoryData): Map<String, Any?> {
+        return with(categoryData) {
             mapOf(
-                "id" to id.value,
-                "store_id" to storeId.value,
-                "name" to name.value,
-                "description" to description?.value,
+                "category_id" to categoryId,
+                "store_id" to storeId,
+                "name" to name,
+                "description" to description,
                 "status" to status.name
             )
         }
     }
 
-    override fun create(storeId: Id, category: Category) {
-        val params = buildParams(storeId, category)
+
+    override fun create(categoryData: CategoryData) {
+        val params = buildParams(categoryData)
         namedParameterJdbcTemplate.update(
             CREATE_CATEGORY,
             params,
         )
     }
 
-    override fun findById(storeId: Id, categoryId: Id): Category? {
-        val params = mapOf("store_id" to storeId.value, "id" to categoryId.value)
-        return namedParameterJdbcTemplate.query(GET_CATEGORY, params, CategoryMapper()).firstOrNull()
+    override fun findById(storeId: UUID, categoryId: UUID): CategoryData? {
+        val params = mapOf("store_id" to storeId, "category_id" to categoryId)
+        return namedParameterJdbcTemplate.query(GET_CATEGORY, params, CategoryDataMapper())
+            .firstOrNull()
     }
 
-    override fun exists(categoryId: Id): Boolean {
-        val params = mapOf("id" to categoryId.value)
+    override fun exists(categoryId: UUID): Boolean {
+        val params = mapOf("category_id" to categoryId)
         return namedParameterJdbcTemplate.queryForObject(
             EXISTS_CATEGORY_BY_CATEGORY_ID,
             params,
@@ -104,8 +106,8 @@ class CategoryDatastorePostgres(
         )!!
     }
 
-    override fun exists(storeId: Id, categoryId: Id): Boolean {
-        val params = mapOf("store_id" to storeId.value, "id" to categoryId.value)
+    override fun exists(storeId: UUID, categoryId: UUID): Boolean {
+        val params = mapOf("store_id" to storeId, "category_id" to categoryId)
         return namedParameterJdbcTemplate.queryForObject(
             EXISTS_CATEGORY_BY_CATEGORY_ID_AND_STORE_ID,
             params,
@@ -113,29 +115,29 @@ class CategoryDatastorePostgres(
         )!!
     }
 
-    override fun delete(storeId: Id, categoryId: Id) {
-        val params = mapOf("store_id" to storeId.value, "id" to categoryId.value)
+    override fun delete(storeId: UUID, categoryId: UUID) {
+        val params = mapOf("store_id" to storeId, "category_id" to categoryId)
         namedParameterJdbcTemplate.update(DELETE_CATEGORY, params)
     }
 
-    override fun update(storeId: Id, category: Category) {
-        val params = buildParams(storeId, category)
+    override fun update(categoryData: CategoryData) {
+        val params = buildParams(categoryData)
         namedParameterJdbcTemplate.update(UPDATE_CATEGORY, params)
     }
 
-    override fun getCategories(storeId: Id, limit: Int, offset: Int, beginsWith: String?): List<Category> {
+    override fun getCategories(storeId: UUID, limit: Int, offset: Int, beginsWith: String?): List<CategoryData> {
         val params = mapOf(
-            "store_id" to storeId.value,
+            "store_id" to storeId,
             "limit" to limit,
             "offset" to offset,
             "begins_with" to beginsWith.orEmpty()
         )
-        return namedParameterJdbcTemplate.query(GET_CATEGORIES, params, CategoryMapper())
+        return namedParameterJdbcTemplate.query(GET_CATEGORIES, params, CategoryDataMapper())
     }
 
-    override fun countCategories(storeId: Id, beginsWith: String?): Int {
+    override fun countCategories(storeId: UUID, beginsWith: String?): Int {
         val params = mapOf(
-            "store_id" to storeId.value,
+            "store_id" to storeId,
             "begins_with" to beginsWith.orEmpty()
         )
         return namedParameterJdbcTemplate.queryForObject(

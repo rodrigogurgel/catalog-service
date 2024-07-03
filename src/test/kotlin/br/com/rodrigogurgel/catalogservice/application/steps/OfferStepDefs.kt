@@ -42,77 +42,77 @@ class OfferStepDefs(
     private val options: MutableMap<Id, Option> = mutableMapOf()
 
     private val createOfferInputPort = CreateOfferInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.categoryDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.categoryOutputPort,
+        cucumberContext.productOutputPort,
+        cucumberContext.offerOutputPort
     )
 
     private val updateOfferInputPort = UpdateOfferInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.productOutputPort,
+        cucumberContext.offerOutputPort
     )
 
     private val getOfferInputPort = GetOfferInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.offerOutputPort
     )
 
     private val deleteOfferInputPort = DeleteOfferInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.offerOutputPort
     )
 
     private val addCustomizationInputPort = AddCustomizationInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.offerOutputPort,
+        cucumberContext.productOutputPort
     )
 
     private val addCustomizationOnChildrenInputPort = AddCustomizationOnChildrenInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.offerOutputPort,
+        cucumberContext.productOutputPort
     )
 
     private val addOptionOnChildrenInputPort = AddOptionOnChildrenInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.offerOutputPort,
+        cucumberContext.productOutputPort
     )
 
     private val removeCustomizationInputPort = RemoveCustomizationInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort,
+        cucumberContext.storeOutputPort,
+        cucumberContext.offerOutputPort,
     )
 
     private val removeCustomizationOnChildrenInputPort = RemoveCustomizationOnChildrenInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.offerOutputPort
     )
 
     private val removeOptionOnChildrenInputPort = RemoveOptionOnChildrenInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort
+        cucumberContext.storeOutputPort,
+        cucumberContext.offerOutputPort
     )
 
     private val updateCustomizationInputPort = UpdateCustomizationInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort,
+        cucumberContext.storeOutputPort,
+        cucumberContext.offerOutputPort,
+        cucumberContext.productOutputPort,
     )
 
     private val updateCustomizationOnChildrenInputPort = UpdateCustomizationOnChildrenInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort,
+        cucumberContext.storeOutputPort,
+        cucumberContext.offerOutputPort,
+        cucumberContext.productOutputPort,
     )
 
     private val updateOptionOnChildrenInputPort = UpdateOptionOnChildrenInputPort(
-        cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort,
+        cucumberContext.storeOutputPort,
+        cucumberContext.productOutputPort,
+        cucumberContext.offerOutputPort,
     )
 
     @Given("the information of the Offer")
@@ -132,16 +132,16 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
-            cucumberContext.categoryDatastoreOutputPort.exists(cucumberContext.storeId, categoryId)
-            cucumberContext.offerDatastoreOutputPort.exists(offer.id)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.categoryOutputPort.exists(cucumberContext.storeId, categoryId)
+            cucumberContext.offerOutputPort.exists(offer.id)
 
-            cucumberContext.productDatastoreOutputPort.getIfNotExists(
+            cucumberContext.productOutputPort.getIfNotExists(
                 cucumberContext.storeId,
                 OfferService.getAllProducts(offer).map { product -> product.id }
             )
 
-            cucumberContext.offerDatastoreOutputPort.create(cucumberContext.storeId, categoryId, offer)
+            cucumberContext.offerOutputPort.create(cucumberContext.storeId, categoryId, offer)
         }
     }
 
@@ -150,18 +150,18 @@ class OfferStepDefs(
         val offerId = Id(UUID.fromString(offerIdString))
         val storeId = Id(UUID.fromString(storeIdString))
 
-        every { cucumberContext.offerDatastoreOutputPort.exists(offerId) } returns true
-        every { cucumberContext.offerDatastoreOutputPort.exists(storeId, offerId) } returns true
-        every { cucumberContext.offerDatastoreOutputPort.findById(storeId, offerId) } returns (
+        every { cucumberContext.offerOutputPort.exists(offerId) } returns true
+        every { cucumberContext.offerOutputPort.exists(storeId, offerId) } returns true
+        every { cucumberContext.offerOutputPort.findById(storeId, offerId) } returns (
             offers[offerId]
                 ?: mockOfferWith {
                     id = offerId
                 }
             )
 
-        justRun { cucumberContext.offerDatastoreOutputPort.update(storeId, match { offer -> offer.id == offerId }) }
+        justRun { cucumberContext.offerOutputPort.update(storeId, match { offer -> offer.id == offerId }) }
         justRun {
-            cucumberContext.offerDatastoreOutputPort.delete(storeId, offerId)
+            cucumberContext.offerOutputPort.delete(storeId, offerId)
         }
     }
 
@@ -169,12 +169,12 @@ class OfferStepDefs(
     fun thatThereIsnTAnOfferWithTheId(offerIdString: String) {
         val offerId = Id(UUID.fromString(offerIdString))
 
-        every { cucumberContext.offerDatastoreOutputPort.exists(offerId) } returns false
-        every { cucumberContext.offerDatastoreOutputPort.exists(any(), offerId) } returns false
-        every { cucumberContext.offerDatastoreOutputPort.findById(any(), offerId) } returns null
+        every { cucumberContext.offerOutputPort.exists(offerId) } returns false
+        every { cucumberContext.offerOutputPort.exists(any(), offerId) } returns false
+        every { cucumberContext.offerOutputPort.findById(any(), offerId) } returns null
 
         justRun {
-            cucumberContext.offerDatastoreOutputPort.create(
+            cucumberContext.offerOutputPort.create(
                 any(),
                 any(),
                 match { offer -> offer.id == offerId }
@@ -182,7 +182,7 @@ class OfferStepDefs(
         }
 
         justRun {
-            cucumberContext.offerDatastoreOutputPort.update(
+            cucumberContext.offerOutputPort.update(
                 any(),
                 match { offer -> offer.id == offerId }
             )
@@ -244,15 +244,15 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
-            cucumberContext.offerDatastoreOutputPort.exists(cucumberContext.storeId, offer.id)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.offerOutputPort.exists(cucumberContext.storeId, offer.id)
 
-            cucumberContext.productDatastoreOutputPort.getIfNotExists(
+            cucumberContext.productOutputPort.getIfNotExists(
                 cucumberContext.storeId,
                 OfferService.getAllProducts(offer).map { product -> product.id }
             )
 
-            cucumberContext.offerDatastoreOutputPort.update(cucumberContext.storeId, offer)
+            cucumberContext.offerOutputPort.update(cucumberContext.storeId, offer)
         }
     }
 
@@ -269,9 +269,9 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
 
-            cucumberContext.offerDatastoreOutputPort.findById(
+            cucumberContext.offerOutputPort.findById(
                 cucumberContext.storeId,
                 Id(UUID.fromString(offerIdString))
             )
@@ -291,9 +291,9 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
 
-            cucumberContext.offerDatastoreOutputPort.delete(
+            cucumberContext.offerOutputPort.delete(
                 cucumberContext.storeId,
                 Id(UUID.fromString(offerIdString))
             )
@@ -373,16 +373,16 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
 
-            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+            cucumberContext.offerOutputPort.findById(cucumberContext.storeId, offer.id)
 
-            cucumberContext.productDatastoreOutputPort.getIfNotExists(
+            cucumberContext.productOutputPort.getIfNotExists(
                 cucumberContext.storeId,
                 match { ids -> ids.toSet() == OfferService.getAllProducts(offer).map { product -> product.id }.toSet() }
             )
 
-            cucumberContext.offerDatastoreOutputPort.update(
+            cucumberContext.offerOutputPort.update(
                 cucumberContext.storeId,
                 match { offer -> offer.findCustomizationInChildrenById(customizationId) != null }
             )
@@ -476,16 +476,16 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
 
-            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+            cucumberContext.offerOutputPort.findById(cucumberContext.storeId, offer.id)
 
-            cucumberContext.productDatastoreOutputPort.getIfNotExists(
+            cucumberContext.productOutputPort.getIfNotExists(
                 cucumberContext.storeId,
                 OfferService.getAllProducts(offer).map { product -> product.id }
             )
 
-            cucumberContext.offerDatastoreOutputPort.update(
+            cucumberContext.offerOutputPort.update(
                 cucumberContext.storeId,
                 match { offer -> offer.findOptionInChildrenById(optionId) != null }
             )
@@ -512,11 +512,11 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
 
-            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+            cucumberContext.offerOutputPort.findById(cucumberContext.storeId, offer.id)
 
-            cucumberContext.offerDatastoreOutputPort.update(
+            cucumberContext.offerOutputPort.update(
                 cucumberContext.storeId,
                 match { offer ->
                     offer.customizations.none { it.id == customizationId }
@@ -549,11 +549,11 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
 
-            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+            cucumberContext.offerOutputPort.findById(cucumberContext.storeId, offer.id)
 
-            cucumberContext.offerDatastoreOutputPort.update(
+            cucumberContext.offerOutputPort.update(
                 cucumberContext.storeId,
                 match { offer ->
                     offer.findCustomizationInChildrenById(customizationId) == null
@@ -595,11 +595,11 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
 
-            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+            cucumberContext.offerOutputPort.findById(cucumberContext.storeId, offer.id)
 
-            cucumberContext.offerDatastoreOutputPort.update(
+            cucumberContext.offerOutputPort.update(
                 cucumberContext.storeId,
                 match { offer ->
                     offer.findOptionInChildrenById(optionId) == null
@@ -628,11 +628,11 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
 
-            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+            cucumberContext.offerOutputPort.findById(cucumberContext.storeId, offer.id)
 
-            cucumberContext.offerDatastoreOutputPort.update(
+            cucumberContext.offerOutputPort.update(
                 cucumberContext.storeId,
                 match { offer ->
                     offer.customizations
@@ -668,11 +668,11 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
 
-            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+            cucumberContext.offerOutputPort.findById(cucumberContext.storeId, offer.id)
 
-            cucumberContext.offerDatastoreOutputPort.update(
+            cucumberContext.offerOutputPort.update(
                 cucumberContext.storeId,
                 match { offer ->
                     offer.findCustomizationInChildrenById(customizationId)?.id == customizations[customizationId]?.id &&
@@ -706,11 +706,11 @@ class OfferStepDefs(
         cucumberContext.result.isSuccess shouldBe true
 
         verifySequence {
-            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.storeOutputPort.exists(cucumberContext.storeId)
 
-            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
+            cucumberContext.offerOutputPort.findById(cucumberContext.storeId, offer.id)
 
-            cucumberContext.offerDatastoreOutputPort.update(
+            cucumberContext.offerOutputPort.update(
                 cucumberContext.storeId,
                 match { offer ->
                     offer.findOptionInChildrenById(optionId) == options[optionId]

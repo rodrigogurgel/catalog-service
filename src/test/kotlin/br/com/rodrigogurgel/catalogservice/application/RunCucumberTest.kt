@@ -33,7 +33,7 @@ class RunCucumberTest(
 ) {
     @Before
     fun setUp() {
-        every { cucumberContext.offerDatastoreOutputPort.getOffersByProductIdIncludingChildren(any()) } returns emptyList()
+        every { cucumberContext.offerOutputPort.getOffersByProductIdIncludingChildren(any()) } returns emptyList()
     }
 
     @DataTableType
@@ -73,7 +73,7 @@ class RunCucumberTest(
         }
 
         OfferService.getAllProducts(offer).forEach {
-            every { cucumberContext.offerDatastoreOutputPort.getOffersByProductIdIncludingChildren(it.id) } returns listOf(offer.id)
+            every { cucumberContext.offerOutputPort.getOffersByProductIdIncludingChildren(it.id) } returns listOf(offer.id)
         }
 
         return offer
