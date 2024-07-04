@@ -29,8 +29,8 @@ class ProductDatastoreOutputPortAdapter(
         return productRepository.exists(storeId.value, productId.value)
     }
 
-    override fun getIfNotExists(storeId: Id, productIds: List<Id>): List<Id> {
-        return productRepository.getIfNotExists(storeId.value, productIds.map { id -> id.value })
+    override fun getIfNotExists(productIds: List<Id>): List<Id> {
+        return productRepository.getIfNotExists(productIds.map { id -> id.value })
             .map { value -> Id(value) }
     }
 

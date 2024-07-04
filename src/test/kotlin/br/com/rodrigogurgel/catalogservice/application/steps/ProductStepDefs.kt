@@ -110,7 +110,6 @@ class ProductStepDefs(
 
         every {
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                any(),
                 match { ids -> productId in ids }
             )
         } returns listOf(productId)
@@ -136,7 +135,6 @@ class ProductStepDefs(
         every { cucumberContext.productDatastoreOutputPort.findById(storeId, productId) } returns product
         every {
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                storeId,
                 listOf(productId)
             )
         } returns emptyList()
@@ -170,17 +168,6 @@ class ProductStepDefs(
             cucumberContext.productDatastoreOutputPort.findById(
                 cucumberContext.storeId,
                 Id(UUID.fromString(productIdString))
-            )
-        }
-    }
-
-    fun iAttemptToUpdateAProductUsingTheId(productIdString: String) {
-        val productId = Id(UUID.fromString(productIdString))
-
-        cucumberContext.result = runCatching {
-            updateProductInputPort.execute(
-                cucumberContext.storeId,
-                product.copy(id = productId)
             )
         }
     }
@@ -243,7 +230,6 @@ class ProductStepDefs(
 
         every {
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                storeId,
                 match { ids ->
                     products.map { product -> product.id }.containsAll(ids)
                 }

@@ -110,8 +110,8 @@ class OfferStepDefs(
 
     private val updateOptionOnChildrenInputPort = UpdateOptionOnChildrenInputPort(
         cucumberContext.storeDatastoreOutputPort,
-        cucumberContext.productDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort,
+        cucumberContext.productDatastoreOutputPort,
     )
 
     @Given("the information of the Offer")
@@ -137,7 +137,6 @@ class OfferStepDefs(
             cucumberContext.offerDatastoreOutputPort.exists(offer.id)
 
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                cucumberContext.storeId,
                 offer.getAllProducts().map { product -> product.id }
             )
 
@@ -248,7 +247,6 @@ class OfferStepDefs(
             cucumberContext.offerDatastoreOutputPort.exists(cucumberContext.storeId, offer.id)
 
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                cucumberContext.storeId,
                 offer.getAllProducts().map { product -> product.id }
             )
 
@@ -378,7 +376,6 @@ class OfferStepDefs(
             cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
 
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                cucumberContext.storeId,
                 match { ids -> ids.toSet() == offer.getAllProducts().map { product -> product.id }.toSet() }
             )
 
@@ -481,7 +478,6 @@ class OfferStepDefs(
             cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
 
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                cucumberContext.storeId,
                 offer.getAllProducts().map { product -> product.id }
             )
 

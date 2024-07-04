@@ -8,7 +8,7 @@ interface ProductDatastoreOutputPort {
     fun findById(storeId: Id, productId: Id): Product?
     fun exists(productId: Id): Boolean
     fun exists(storeId: Id, productId: Id): Boolean
-    fun getIfNotExists(storeId: Id, productIds: List<Id>): List<Id>
+    fun getIfNotExists(productIds: List<Id>): List<Id>
     fun update(storeId: Id, product: Product)
     fun delete(storeId: Id, productId: Id)
     fun getProducts(storeId: Id, limit: Int, offset: Int, beginsWith: String?): List<Product>

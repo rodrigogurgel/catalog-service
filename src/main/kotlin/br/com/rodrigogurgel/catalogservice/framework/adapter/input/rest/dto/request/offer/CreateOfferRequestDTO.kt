@@ -1,6 +1,7 @@
 package br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.offer
 
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.customization.CustomizationRequestDTO
 import java.math.BigDecimal
 import java.util.UUID
 

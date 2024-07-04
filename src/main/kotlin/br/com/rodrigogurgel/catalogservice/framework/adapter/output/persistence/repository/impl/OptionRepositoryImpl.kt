@@ -42,7 +42,7 @@ class OptionRepositoryImpl(
 
         private val DELETE_IF_NOT_IN = """
             delete
-            from customization
+            from option
             where option_id not in (select unnest(array [:option_ids]::uuid[]))
                 and offer_id = :offer_id
                 and store_id = :store_id;

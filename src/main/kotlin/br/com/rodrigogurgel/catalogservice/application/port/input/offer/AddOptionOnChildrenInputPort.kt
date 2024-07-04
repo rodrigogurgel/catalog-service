@@ -31,7 +31,7 @@ class AddOptionOnChildrenInputPort(
         customization.addOption(option)
 
         val productIds = offer.getAllProducts().map { it.id }
-        val nonexistentProducts = productDatastoreOutputPort.getIfNotExists(storeId, productIds)
+        val nonexistentProducts = productDatastoreOutputPort.getIfNotExists(productIds)
         if (nonexistentProducts.isNotEmpty()) throw ProductsNotFoundException(nonexistentProducts)
 
         OfferService.validateDuplications(offer)

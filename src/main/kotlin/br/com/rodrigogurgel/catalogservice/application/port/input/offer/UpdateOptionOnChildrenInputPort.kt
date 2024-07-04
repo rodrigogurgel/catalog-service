@@ -14,8 +14,8 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
 class UpdateOptionOnChildrenInputPort(
     private val storeDatastoreOutputPort: StoreDatastoreOutputPort,
-    private val productDatastoreOutputPort: ProductDatastoreOutputPort,
     private val offerDatastoreOutputPort: OfferDatastoreOutputPort,
+    private val productDatastoreOutputPort: ProductDatastoreOutputPort,
 ) : UpdateOptionOnChildrenUseCase {
     override fun execute(storeId: Id, offerId: Id, customizationId: Id, option: Option) {
         if (!storeDatastoreOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
@@ -30,7 +30,7 @@ class UpdateOptionOnChildrenInputPort(
         customization.updateOption(option)
 
         val productIds = offer.getAllProducts().map { it.id }
-        val nonexistentProducts = productDatastoreOutputPort.getIfNotExists(storeId, productIds)
+        val nonexistentProducts = productDatastoreOutputPort.getIfNotExists(productIds)
         if (nonexistentProducts.isNotEmpty()) throw ProductsNotFoundException(nonexistentProducts)
 
         OfferService.validateDuplications(offer)

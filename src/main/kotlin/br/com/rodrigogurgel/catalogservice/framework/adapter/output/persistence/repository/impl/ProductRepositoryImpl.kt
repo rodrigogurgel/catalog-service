@@ -143,7 +143,7 @@ class ProductRepositoryImpl(
         )!!
     }
 
-    override fun getIfNotExists(storeId: UUID, productIds: List<UUID>): List<UUID> {
+    override fun getIfNotExists(productIds: List<UUID>): List<UUID> {
         val params = mapOf("product_ids" to productIds.map { productId -> productId })
 
         return namedParameterJdbcTemplate.query(

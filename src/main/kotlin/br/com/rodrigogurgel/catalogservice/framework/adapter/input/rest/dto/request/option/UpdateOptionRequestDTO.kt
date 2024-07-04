@@ -1,11 +1,11 @@
-package br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.offer
+package br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.option
 
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.customization.CustomizationRequestDTO
 import java.math.BigDecimal
 import java.util.UUID
 
-data class OptionRequestDTO(
-    val id: UUID = UUID.randomUUID(),
+data class UpdateOptionRequestDTO(
     val productId: UUID,
     val minPermitted: Int,
     val maxPermitted: Int,

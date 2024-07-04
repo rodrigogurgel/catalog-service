@@ -8,7 +8,7 @@ interface ProductRepository {
     fun findById(storeId: UUID, productId: UUID): ProductData?
     fun exists(productId: UUID): Boolean
     fun exists(storeId: UUID, productId: UUID): Boolean
-    fun getIfNotExists(storeId: UUID, productIds: List<UUID>): List<UUID>
+    fun getIfNotExists(productIds: List<UUID>): List<UUID>
     fun update(productData: ProductData)
     fun delete(storeId: UUID, productId: UUID)
     fun getProducts(storeId: UUID, limit: Int, offset: Int, beginsWith: String?): List<ProductData>
