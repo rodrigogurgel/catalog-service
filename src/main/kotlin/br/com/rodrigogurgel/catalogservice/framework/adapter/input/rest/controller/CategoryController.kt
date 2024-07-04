@@ -6,10 +6,13 @@ import br.com.rodrigogurgel.catalogservice.application.usecase.category.DeleteCa
 import br.com.rodrigogurgel.catalogservice.application.usecase.category.GetCategoriesUseCase
 import br.com.rodrigogurgel.catalogservice.application.usecase.category.GetCategoryUseCase
 import br.com.rodrigogurgel.catalogservice.application.usecase.category.UpdateCategoryUseCase
+import br.com.rodrigogurgel.catalogservice.application.usecase.offer.CountOffersUseCase
+import br.com.rodrigogurgel.catalogservice.application.usecase.offer.GetOffersUseCase
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.category.CreateCategoryRequestDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.category.UpdateCategoryRequestDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.CategoryResponseDTO
+import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.OfferResponseDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.PageResponseDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.mapper.toEntity
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.mapper.toResponseDTO
@@ -33,6 +36,8 @@ class CategoryController(
     private val updateCategoryUseCase: UpdateCategoryUseCase,
     private val deleteCategoryUseCase: DeleteCategoryUseCase,
     private val countCategoriesUseCase: CountCategoriesUseCase,
+    private val countOffersUseCase: CountOffersUseCase,
+    private val getOffersUseCase: GetOffersUseCase,
 ) {
     @GetMapping
     fun getCategories(
@@ -86,5 +91,19 @@ class CategoryController(
         @PathVariable(value = "id") categoryId: UUID,
     ) {
         deleteCategoryUseCase.execute(Id(storeId), Id(categoryId))
+    }
+
+    @GetMapping("/{id}/offers")
+    fun getOffers(
+        @PathVariable(value = "id") categoryId: UUID,
+        @RequestParam storeId: UUID,
+        @RequestParam(defaultValue = "20", required = false) limit: Int,
+        @RequestParam(defaultValue = "0", required = false) offset: Int,
+        @RequestParam(required = false) beginsWith: String?,
+    ): PageResponseDTO<OfferResponseDTO> {
+        val total = countOffersUseCase.execute(Id(storeId), Id(categoryId), beginsWith)
+        val offers = getOffersUseCase.execute(Id(storeId), Id(categoryId), limit, offset, beginsWith)
+
+        return PageResponseDTO(limit, offset, beginsWith, total, offers.map { offer -> offer.toResponseDTO() })
     }
 }

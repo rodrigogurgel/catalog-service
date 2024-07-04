@@ -31,6 +31,7 @@ fun Offer.toResponseDTO(): OfferResponseDTO {
     return OfferResponseDTO(
         id = id.value,
         name = name.value,
+        productId = product.id.value,
         product = product.toResponseDTO(),
         price = price.normalizedValue(),
         status = status,

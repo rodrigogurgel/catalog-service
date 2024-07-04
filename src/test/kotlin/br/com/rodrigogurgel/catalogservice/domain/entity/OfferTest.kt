@@ -186,12 +186,12 @@ class OfferTest {
             options = mutableListOf(option1, option2, option3, option4)
         }
 
-        val item = mockOfferWith {
+        val offer = mockOfferWith {
             price = Price(7.50.toBigDecimal())
             customizations = mutableListOf(customization1)
         }
 
-        item.minimalPrice().normalizedValue() shouldBe Price(8.5.toBigDecimal()).normalizedValue()
+        offer.minimalPrice().normalizedValue() shouldBe Price(8.5.toBigDecimal()).normalizedValue()
     }
 
     /**
@@ -321,12 +321,12 @@ class OfferTest {
             options = mutableListOf(option5, option6)
         }
 
-        val item = mockOfferWith {
+        val offer = mockOfferWith {
             price = Price(7.50.toBigDecimal())
             customizations = mutableListOf(customization1, customization2)
         }
 
-        item.minimalPrice().normalizedValue() shouldBe Price(9.5.toBigDecimal()).normalizedValue()
+        offer.minimalPrice().normalizedValue() shouldBe Price(9.5.toBigDecimal()).normalizedValue()
     }
 
     @Test

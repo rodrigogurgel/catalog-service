@@ -30,6 +30,7 @@ fun OptionRequestDTO.toEntity(): Option {
 fun Option.toResponseDTO(): OptionResponseDTO {
     return OptionResponseDTO(
         id = id.value,
+        productId = product.id.value,
         product = product.toResponseDTO(),
         price = price.normalizedValue(),
         status = status,

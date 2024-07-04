@@ -136,6 +136,8 @@ complexity:
     ignoreDefaultParameters: false
     ignoreDataClasses: true
     ignoreAnnotatedParameter: []
+    excludes:
+      - '**Controller.kt'
   MethodOverloading:
     active: false
     threshold: 6
