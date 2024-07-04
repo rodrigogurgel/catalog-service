@@ -14,4 +14,5 @@ interface ProductRepository {
     fun getProducts(storeId: UUID, limit: Int, offset: Int, beginsWith: String?): List<ProductData>
     fun countProducts(storeId: UUID, beginsWith: String?): Int
     fun productIsInUse(productId: UUID): Boolean
+    fun getAllProductByOfferId(offerId: UUID): List<ProductData>
 }

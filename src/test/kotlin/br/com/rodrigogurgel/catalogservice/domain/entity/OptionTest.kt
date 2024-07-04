@@ -151,7 +151,7 @@ class OptionTest {
     fun `Should add Customization with error when call addCustomization and customization already exists`() {
         val customization = mockCustomization()
         val option = mockOptionWith {
-            customizations = listOf(customization)
+            customizations = mutableListOf(customization)
         }
 
         shouldThrow<CustomizationAlreadyExistsException> {
@@ -165,7 +165,7 @@ class OptionTest {
     fun `Should update Customization with success when call updateCustomization`() {
         val customization = mockCustomization()
         val updatedCustomization = mockCustomizationWith { id = customization.id }
-        val option = mockOptionWith { customizations = listOf(customization) }
+        val option = mockOptionWith { customizations = mutableListOf(customization) }
 
         option.customizations shouldContain customization
 
@@ -178,7 +178,7 @@ class OptionTest {
     fun `Should update Customization with error when call updateCustomization and customization not exists`() {
         val customization = mockCustomization()
         val newCustomization = mockCustomization()
-        val option = mockOptionWith { customizations = listOf(customization) }
+        val option = mockOptionWith { customizations = mutableListOf(customization) }
 
         option.customizations shouldContain customization
 
@@ -193,7 +193,7 @@ class OptionTest {
     fun `Should remove Customization with success when call updateCustomization`() {
         val customization = mockCustomization()
         val option = mockOptionWith {
-            customizations = listOf(customization)
+            customizations = mutableListOf(customization)
         }
 
         option.customizations shouldContain customization

@@ -1,18 +1,18 @@
 package br.com.rodrigogurgel.catalogservice.application.port.input.category
 
 import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryOutputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.StoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryDatastoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.StoreDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.application.usecase.category.DeleteCategoryUseCase
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
 class DeleteCategoryInputPort(
-    private val storeOutputPort: StoreOutputPort,
-    private val categoryOutputPort: CategoryOutputPort,
+    private val storeDatastoreOutputPort: StoreDatastoreOutputPort,
+    private val categoryDatastoreOutputPort: CategoryDatastoreOutputPort,
 ) : DeleteCategoryUseCase {
     override fun execute(storeId: Id, categoryId: Id) {
-        if (!storeOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
+        if (!storeDatastoreOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
 
-        categoryOutputPort.delete(storeId, categoryId)
+        categoryDatastoreOutputPort.delete(storeId, categoryId)
     }
 }

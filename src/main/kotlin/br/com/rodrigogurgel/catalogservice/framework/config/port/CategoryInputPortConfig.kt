@@ -6,8 +6,8 @@ import br.com.rodrigogurgel.catalogservice.application.port.input.category.Delet
 import br.com.rodrigogurgel.catalogservice.application.port.input.category.GetCategoriesInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.category.GetCategoryInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.category.UpdateCategoryInputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryOutputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.StoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryDatastoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.StoreDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.application.usecase.category.CountCategoriesUseCase
 import br.com.rodrigogurgel.catalogservice.application.usecase.category.CreateCategoryUseCase
 import br.com.rodrigogurgel.catalogservice.application.usecase.category.DeleteCategoryUseCase
@@ -21,67 +21,67 @@ import org.springframework.context.annotation.Configuration
 class CategoryInputPortConfig {
     @Bean
     fun getCategoryUseCase(
-        storeOutputPort: StoreOutputPort,
-        categoryOutputPort: CategoryOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        categoryDatastoreOutputPort: CategoryDatastoreOutputPort,
     ): GetCategoryUseCase {
         return GetCategoryInputPort(
-            storeOutputPort,
-            categoryOutputPort
+            storeDatastoreOutputPort,
+            categoryDatastoreOutputPort
         )
     }
 
     @Bean
     fun getCategoriesUseCase(
-        storeOutputPort: StoreOutputPort,
-        categoryOutputPort: CategoryOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        categoryDatastoreOutputPort: CategoryDatastoreOutputPort,
     ): GetCategoriesUseCase {
         return GetCategoriesInputPort(
-            storeOutputPort,
-            categoryOutputPort
+            storeDatastoreOutputPort,
+            categoryDatastoreOutputPort
         )
     }
 
     @Bean
     fun createCategoryUseCase(
-        storeOutputPort: StoreOutputPort,
-        categoryOutputPort: CategoryOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        categoryDatastoreOutputPort: CategoryDatastoreOutputPort,
     ): CreateCategoryUseCase {
         return CreateCategoryInputPort(
-            storeOutputPort,
-            categoryOutputPort
+            storeDatastoreOutputPort,
+            categoryDatastoreOutputPort
         )
     }
 
     @Bean
     fun updateCategoryUseCase(
-        storeOutputPort: StoreOutputPort,
-        categoryOutputPort: CategoryOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        categoryDatastoreOutputPort: CategoryDatastoreOutputPort,
     ): UpdateCategoryUseCase {
         return UpdateCategoryInputPort(
-            storeOutputPort,
-            categoryOutputPort
+            storeDatastoreOutputPort,
+            categoryDatastoreOutputPort
         )
     }
 
     @Bean
     fun deleteCategoryUseCase(
-        storeOutputPort: StoreOutputPort,
-        categoryOutputPort: CategoryOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        categoryDatastoreOutputPort: CategoryDatastoreOutputPort,
     ): DeleteCategoryUseCase {
         return DeleteCategoryInputPort(
-            storeOutputPort,
-            categoryOutputPort
+            storeDatastoreOutputPort,
+            categoryDatastoreOutputPort
         )
     }
 
     @Bean
     fun countCategoriesUseCase(
-        storeOutputPort: StoreOutputPort,
-        categoryOutputPort: CategoryOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        categoryDatastoreOutputPort: CategoryDatastoreOutputPort,
     ): CountCategoriesUseCase {
         return CountCategoriesInputPort(
-            storeOutputPort,
-            categoryOutputPort
+            storeDatastoreOutputPort,
+            categoryDatastoreOutputPort
         )
     }
 }

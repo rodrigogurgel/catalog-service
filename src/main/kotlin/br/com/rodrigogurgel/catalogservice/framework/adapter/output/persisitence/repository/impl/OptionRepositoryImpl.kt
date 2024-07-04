@@ -1,12 +1,14 @@
 package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.repository.impl
 
 import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.data.OptionData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.mapper.OptionDataMapper
 import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.repository.CustomizationRepository
 import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.repository.OptionRepository
 import org.springframework.context.annotation.Lazy
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils
 import org.springframework.stereotype.Repository
+import java.util.UUID
 
 @Repository
 class OptionRepositoryImpl(
@@ -23,18 +25,18 @@ class OptionRepositoryImpl(
         private val GET_ALL_OPTION_BY_OFFER_ID = """
             select *
             from option
-            where store_id = :store_id
-              and offer_id = :offer_id;
+            where offer_id = :offer_id
+                and store_id = :store_id;
         """.trimIndent()
 
         private val UPSERT_OPTION = """
             insert into option (option_id, offer_id, store_id, product_id, customization_id, min_permitted, max_permitted, price, status)
             values (:option_id, :offer_id, :store_id, :product_id, :customization_id, :min_permitted, :max_permitted, :price, :status)
             on conflict (option_id, offer_id) do update
-                set product_id = product_id,
-                    price = price,
+                set product_id = :product_id,
+                    price = :price,
                     min_permitted = :min_permitted,
-                    max_permitted = : max_permitted,
+                    max_permitted = :max_permitted,
                     status        = :status;
         """.trimIndent()
 
@@ -77,5 +79,32 @@ class OptionRepositoryImpl(
                 optionData.customizations
             )
         }
+    }
+
+    override fun getOptionsByOfferId(storeId: UUID, offerId: UUID): List<OptionData> {
+        val params = mapOf("store_id" to storeId, "offer_id" to offerId)
+        return namedParameterJdbcTemplate.query(GET_ALL_OPTION_BY_OFFER_ID, params, OptionDataMapper())
+    }
+
+    override fun updateBatch(options: List<OptionData>) {
+        namedParameterJdbcTemplate.batchUpdate(
+            UPSERT_OPTION,
+            SqlParameterSourceUtils.createBatch(
+                options.map { optionData ->
+                    buildParams(optionData)
+                }
+            )
+        )
+    }
+
+    override fun deleteIfNotIn(storeId: UUID, offerId: UUID, optionIds: List<UUID>) {
+        namedParameterJdbcTemplate.update(
+            DELETE_IF_NOT_IN,
+            mapOf(
+                "store_id" to storeId,
+                "offer_id" to offerId,
+                "option_ids" to optionIds
+            )
+        )
     }
 }

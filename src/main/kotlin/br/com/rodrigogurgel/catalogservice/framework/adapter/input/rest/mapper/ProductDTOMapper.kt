@@ -11,34 +11,28 @@ import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.resp
 import java.util.UUID
 
 fun CreateProductRequestDTO.toEntity(): Product {
-    return run {
-        Product(
-            id = Id(id),
-            name = Name(name),
-            description = description?.let { Description(it) },
-            image = image?.let { Image(it) },
-        )
-    }
+    return Product(
+        id = Id(id),
+        name = Name(name),
+        description = description?.let { Description(it) },
+        image = image?.let { Image(it) },
+    )
 }
 
 fun Product.toResponseDTO(): ProductResponseDTO {
-    return run {
-        ProductResponseDTO(
-            id = id.value,
-            name = name.value,
-            description = description?.value,
-            image = image?.path,
-        )
-    }
+    return ProductResponseDTO(
+        id = id.value,
+        name = name.value,
+        description = description?.value,
+        image = image?.path,
+    )
 }
 
 fun UpdateProductRequestDTO.toEntity(id: UUID): Product {
-    return run {
-        Product(
-            id = Id(id),
-            name = Name(name),
-            description = description?.let { Description(it) },
-            image = image?.let { Image(it) },
-        )
-    }
+    return Product(
+        id = Id(id),
+        name = Name(name),
+        description = description?.let { Description(it) },
+        image = image?.let { Image(it) },
+    )
 }

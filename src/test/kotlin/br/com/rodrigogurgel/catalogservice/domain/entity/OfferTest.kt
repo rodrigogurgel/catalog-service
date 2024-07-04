@@ -18,6 +18,7 @@ import br.com.rodrigogurgel.catalogservice.fixture.mock.mockProduct
 import br.com.rodrigogurgel.catalogservice.fixture.randomString
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -75,7 +76,7 @@ class OfferTest {
             product,
             price,
             status,
-            emptyList()
+            mutableListOf()
         )
 
         offer.product shouldBe product
@@ -342,7 +343,7 @@ class OfferTest {
     fun `Should add Customization with error when call addCustomization and customization already exists`() {
         val customization = mockCustomization()
         val offer = mockOfferWith {
-            customizations = listOf(customization)
+            customizations = mutableListOf(customization)
         }
 
         shouldThrow<CustomizationAlreadyExistsException> {
@@ -356,7 +357,7 @@ class OfferTest {
     fun `Should update Customization with success when call updateCustomization`() {
         val customization = mockCustomization()
         val updatedCustomization = mockCustomizationWith { id = customization.id }
-        val offer = mockOfferWith { customizations = listOf(customization) }
+        val offer = mockOfferWith { customizations = mutableListOf(customization) }
 
         offer.customizations shouldContain customization
 
@@ -369,7 +370,7 @@ class OfferTest {
     fun `Should update Customization with error when call updateCustomization and customization not exists`() {
         val customization = mockCustomization()
         val newCustomization = mockCustomization()
-        val offer = mockOfferWith { customizations = listOf(customization) }
+        val offer = mockOfferWith { customizations = mutableListOf(customization) }
 
         offer.customizations shouldContain customization
 
@@ -384,7 +385,7 @@ class OfferTest {
     fun `Should remove Customization with success when call updateCustomization`() {
         val customization = mockCustomization()
         val offer = mockOfferWith {
-            customizations = listOf(customization)
+            customizations = mutableListOf(customization)
         }
 
         offer.customizations shouldContain customization
@@ -398,7 +399,7 @@ class OfferTest {
     fun `Should return a Customization when call findCustomizationInChildrenById and Offer has the Customization`() {
         val customization = mockCustomization()
         val offer = mockOfferWith {
-            customizations = listOf(customization)
+            customizations = mutableListOf(customization)
         }
 
         val result = offer.findCustomizationInChildrenById(customization.id)
@@ -410,13 +411,13 @@ class OfferTest {
     fun `Should return a Customization when call findCustomizationInChildrenById and some child has the Customization`() {
         val childCustomization = mockCustomization()
         val childOption = mockOptionWith {
-            customizations = listOf(childCustomization)
+            customizations = mutableListOf(childCustomization)
         }
         val customization = mockCustomizationWith {
-            options = listOf(childOption)
+            options = mutableListOf(childOption)
         }
         val offer = mockOfferWith {
-            customizations = listOf(customization)
+            customizations = mutableListOf(customization)
         }
 
         val result = offer.findCustomizationInChildrenById(childCustomization.id)
@@ -428,14 +429,75 @@ class OfferTest {
     fun `Should return an Option when call findOptionInChildrenById and some child has the Option`() {
         val childOption = mockOption()
         val customization = mockCustomizationWith {
-            options = listOf(childOption)
+            options = mutableListOf(childOption)
         }
         val offer = mockOfferWith {
-            customizations = listOf(customization)
+            customizations = mutableListOf(customization)
         }
 
         val result = offer.findOptionInChildrenById(childOption.id)
         result shouldNotBe null
         result shouldBe childOption
+    }
+
+    @Test
+    fun `Should return a list with only one element when call getAllProducts and offer don't have customizations`() {
+        val offer = mockOffer()
+        val ids = offer.getAllProducts()
+
+        ids shouldHaveSize 1
+        ids shouldContain offer.product
+    }
+
+    @Test
+    fun `Should return a list with only 12 products when call getAllProducts`() {
+        val subOption1 = mockOptionWith {
+            customizations = mutableListOf(
+                mockCustomizationWith {
+                    options = mutableListOf(
+                        mockOption(),
+                        mockOption(),
+                        mockOption()
+                    )
+                }
+            )
+        }
+
+        val subOption2 = mockOptionWith {
+            customizations = mutableListOf(
+                mockCustomizationWith {
+                    options = mutableListOf(
+                        mockOption(),
+                        mockOption(),
+                        mockOption()
+                    )
+                }
+            )
+        }
+
+        val offer = mockOfferWith {
+            customizations = mutableListOf(
+                mockCustomizationWith {
+                    options = mutableListOf(
+                        mockOption(),
+                        mockOption(),
+                        subOption1
+                    )
+                },
+                mockCustomizationWith {
+                    options = mutableListOf(
+                        mockOption()
+                    )
+                },
+                mockCustomizationWith {
+                    options = mutableListOf(
+                        subOption2
+                    )
+                }
+            )
+        }
+        val products = offer.getAllProducts()
+
+        products shouldHaveSize 12
     }
 }

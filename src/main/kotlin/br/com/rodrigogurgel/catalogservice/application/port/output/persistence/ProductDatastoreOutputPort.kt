@@ -3,7 +3,7 @@ package br.com.rodrigogurgel.catalogservice.application.port.output.persistence
 import br.com.rodrigogurgel.catalogservice.domain.entity.Product
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
-interface ProductOutputPort {
+interface ProductDatastoreOutputPort {
     fun create(storeId: Id, product: Product)
     fun findById(storeId: Id, productId: Id): Product?
     fun exists(productId: Id): Boolean

@@ -1,19 +1,17 @@
 package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence
 
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Category
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.mapper.CategoryDataMapper.Companion.toData
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.mapper.CategoryDataMapper.Companion.toEntity
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.mapper.toData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.mapper.toEntity
 import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.repository.CategoryRepository
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Repository
 
 @Component
-class CategoryOutputPortAdapter(
+class CategoryDatastoreOutputPortAdapter(
     private val categoryRepository: CategoryRepository,
-) : CategoryOutputPort {
+) : CategoryDatastoreOutputPort {
     override fun create(storeId: Id, category: Category) {
         categoryRepository.create(category.toData(storeId.value))
     }

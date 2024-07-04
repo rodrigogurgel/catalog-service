@@ -13,5 +13,13 @@ data class CustomizationData(
     val minPermitted: Int,
     val maxPermitted: Int,
     val status: Status,
-    val options: List<OptionData>,
-)
+    var options: List<OptionData> = emptyList(),
+) {
+    fun getAllCustomizationsInChildren(): List<CustomizationData> {
+        return options.flatMap { optionData -> optionData.getAllCustomizationsInChildren() }
+    }
+
+    fun getAllOptionsInChildren(): List<OptionData> {
+        return options + options.flatMap { optionData -> optionData.getAllOptionsInChildren() }
+    }
+}

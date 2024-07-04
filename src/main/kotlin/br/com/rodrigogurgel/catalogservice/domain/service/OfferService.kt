@@ -1,18 +1,13 @@
 package br.com.rodrigogurgel.catalogservice.domain.service
 
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
-import br.com.rodrigogurgel.catalogservice.domain.entity.Product
 import br.com.rodrigogurgel.catalogservice.domain.exception.DuplicatedCustomizationException
 import br.com.rodrigogurgel.catalogservice.domain.exception.DuplicatedOptionException
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
 object OfferService {
-    fun getAllProducts(offer: Offer): List<Product> {
-        return offer.getCustomizations().flatMap { CustomizationService.getAllProducts(it) } + offer.product
-    }
-
     private fun getDuplicatedCustomizationIds(offer: Offer): List<Id> {
-        return offer.getCustomizations().flatMap { customization -> customization.getCustomizationsInChildren() }
+        return offer.customizations.flatMap { customization -> customization.getAllCustomizationsInChildren() }
             .groupingBy { customization -> customization.id }
             .eachCount()
             .filter { idByCount -> idByCount.value > 1 }
@@ -20,7 +15,7 @@ object OfferService {
     }
 
     private fun getDuplicatedOptionIds(offer: Offer): List<Id> {
-        return offer.getCustomizations().flatMap { option -> option.getOptionsInChildren() }
+        return offer.customizations.flatMap { option -> option.getAllOptionsInChildren() }
             .groupingBy { option -> option.id }
             .eachCount()
             .filter { idByCount -> idByCount.value > 1 }

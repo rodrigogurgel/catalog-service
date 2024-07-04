@@ -17,22 +17,20 @@ fun CustomizationRequestDTO.toEntity(): Customization {
         status = status,
         options = options?.map { optionRequestDTO ->
             optionRequestDTO.toEntity()
-        }.orEmpty()
+        }.orEmpty().toMutableList()
     )
 }
 
 fun Customization.toResponseDTO(): CustomizationResponseDTO {
-    return run {
-        CustomizationResponseDTO(
-            id = id.value,
-            name = name.value,
-            description = description?.value,
-            status = status,
-            minPermitted = quantity.minPermitted,
-            maxPermitted = quantity.maxPermitted,
-            options = options.map { option ->
-                option.toResponseDTO()
-            }
-        )
-    }
+    return CustomizationResponseDTO(
+        id = id.value,
+        name = name.value,
+        description = description?.value,
+        status = status,
+        minPermitted = quantity.minPermitted,
+        maxPermitted = quantity.maxPermitted,
+        options = options.map { option ->
+            option.toResponseDTO()
+        }
+    )
 }

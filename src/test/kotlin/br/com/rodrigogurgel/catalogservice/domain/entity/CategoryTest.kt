@@ -8,7 +8,7 @@ import br.com.rodrigogurgel.catalogservice.fixture.randomString
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
-class CategoryDataTest {
+class CategoryTest {
     @Test
     fun `Should instantiate Category with success`() {
         val id = Id()

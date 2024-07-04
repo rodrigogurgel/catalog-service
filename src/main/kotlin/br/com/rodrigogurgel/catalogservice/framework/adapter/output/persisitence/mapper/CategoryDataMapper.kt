@@ -20,21 +20,19 @@ class CategoryDataMapper : RowMapper<CategoryData> {
             description = rs.getString("description"),
             status = rs.getStatus("status")!!,
         )
-
-    companion object {
-        fun Category.toData(storeId: UUID): CategoryData = CategoryData(
-            categoryId = id.value,
-            storeId = storeId,
-            name = name.value,
-            description = description?.value,
-            status = status,
-        )
-
-        fun CategoryData.toEntity(): Category = Category(
-            id = Id(categoryId),
-            name = Name(name),
-            description = description?.let { Description(description) },
-            status = status,
-        )
-    }
 }
+
+fun Category.toData(storeId: UUID): CategoryData = CategoryData(
+    categoryId = id.value,
+    storeId = storeId,
+    name = name.value,
+    description = description?.value,
+    status = status,
+)
+
+fun CategoryData.toEntity(): Category = Category(
+    id = Id(categoryId),
+    name = Name(name),
+    description = description?.let { Description(description) },
+    status = status,
+)

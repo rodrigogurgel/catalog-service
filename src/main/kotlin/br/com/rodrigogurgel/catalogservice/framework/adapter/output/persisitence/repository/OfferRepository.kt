@@ -10,5 +10,4 @@ interface OfferRepository {
     fun exists(storeId: UUID, offerId: UUID): Boolean
     fun update(offerData: OfferData)
     fun delete(storeId: UUID, offerId: UUID)
-    fun getOffersByProductIdIncludingChildren(productId: UUID): List<UUID>
 }

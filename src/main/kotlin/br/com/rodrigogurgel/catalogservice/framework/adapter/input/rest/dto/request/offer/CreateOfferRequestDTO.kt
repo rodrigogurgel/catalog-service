@@ -13,4 +13,3 @@ data class CreateOfferRequestDTO(
     val status: Status,
     val customizations: List<CustomizationRequestDTO>? = null,
 )
-

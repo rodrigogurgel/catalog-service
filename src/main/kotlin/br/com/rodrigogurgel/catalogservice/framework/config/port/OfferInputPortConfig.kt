@@ -4,10 +4,10 @@ import br.com.rodrigogurgel.catalogservice.application.port.input.offer.CreateOf
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.DeleteOfferInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.GetOfferInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.UpdateOfferInputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryOutputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.OfferOutputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.ProductOutputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.StoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryDatastoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.OfferDatastoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.ProductDatastoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.StoreDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.application.usecase.offer.CreateOfferUseCase
 import br.com.rodrigogurgel.catalogservice.application.usecase.offer.DeleteOfferUseCase
 import br.com.rodrigogurgel.catalogservice.application.usecase.offer.GetOfferUseCase
@@ -19,51 +19,51 @@ import org.springframework.context.annotation.Configuration
 class OfferInputPortConfig {
     @Bean
     fun createOfferUseCase(
-        storeOutputPort: StoreOutputPort,
-        categoryOutputPort: CategoryOutputPort,
-        productOutputPort: ProductOutputPort,
-        offerOutputPort: OfferOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        categoryDatastoreOutputPort: CategoryDatastoreOutputPort,
+        productDatastoreOutputPort: ProductDatastoreOutputPort,
+        offerDatastoreOutputPort: OfferDatastoreOutputPort,
     ): CreateOfferUseCase {
         return CreateOfferInputPort(
-            storeOutputPort,
-            categoryOutputPort,
-            productOutputPort,
-            offerOutputPort,
+            storeDatastoreOutputPort,
+            categoryDatastoreOutputPort,
+            productDatastoreOutputPort,
+            offerDatastoreOutputPort,
         )
     }
 
     @Bean
     fun getOfferUseCase(
-        storeOutputPort: StoreOutputPort,
-        offerOutputPort: OfferOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        offerDatastoreOutputPort: OfferDatastoreOutputPort,
     ): GetOfferUseCase {
         return GetOfferInputPort(
-            storeOutputPort,
-            offerOutputPort
+            storeDatastoreOutputPort,
+            offerDatastoreOutputPort
         )
     }
 
     @Bean
     fun deleteOfferUseCase(
-        storeOutputPort: StoreOutputPort,
-        offerOutputPort: OfferOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        offerDatastoreOutputPort: OfferDatastoreOutputPort,
     ): DeleteOfferUseCase {
         return DeleteOfferInputPort(
-            storeOutputPort,
-            offerOutputPort
+            storeDatastoreOutputPort,
+            offerDatastoreOutputPort
         )
     }
 
     @Bean
     fun updateOfferUseCase(
-        storeOutputPort: StoreOutputPort,
-        offerOutputPort: OfferOutputPort,
-        productOutputPort: ProductOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        offerDatastoreOutputPort: OfferDatastoreOutputPort,
+        productDatastoreOutputPort: ProductDatastoreOutputPort,
     ): UpdateOfferUseCase {
         return UpdateOfferInputPort(
-            storeOutputPort,
-            productOutputPort,
-            offerOutputPort
+            storeDatastoreOutputPort,
+            productDatastoreOutputPort,
+            offerDatastoreOutputPort
         )
     }
 }

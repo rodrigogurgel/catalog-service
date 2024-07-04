@@ -26,9 +26,9 @@ class NameTest {
     }
 
     @Test
-    fun `Should instantiate Name with error when value is less than 3 and greater than 30`() {
+    fun `Should instantiate Name with error when value is less than 3 and greater than 50`() {
         val random2Letters = randomString(2)
-        val random31Letters = randomString(31)
+        val random31Letters = randomString(51)
 
         shouldThrow<IllegalArgumentException> {
             Name(random2Letters)

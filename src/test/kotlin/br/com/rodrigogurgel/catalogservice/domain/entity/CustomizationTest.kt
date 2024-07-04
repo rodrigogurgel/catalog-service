@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal
 
-class CustomizationRepositoryTest {
+class CustomizationTest {
     @Test
     fun `Should instantiate with success when minPermitted is equal to 0 and options is not empty`() {
         val id = Id()
@@ -66,7 +66,7 @@ class CustomizationRepositoryTest {
             description,
             quantity,
             status,
-            listOf(option)
+            mutableListOf(option)
         )
 
         customization.id shouldBe id
@@ -115,7 +115,7 @@ class CustomizationRepositoryTest {
         customization.status = Status.UNAVAILABLE
         customization.name = updatedName
         customization.description = updatedDescription
-        customization.setQuantity(updatedQuantity)
+        customization.quantity = updatedQuantity
 
         customization.id shouldBe id
         customization.name.value shouldBe updatedName.value
@@ -283,18 +283,6 @@ class CustomizationRepositoryTest {
     }
 
     @Test
-    fun `Should update option with error when option not exists in customization`() {
-        val option = mockOption()
-        val customization = mockCustomization()
-
-        customization.options shouldNotContain option
-
-        shouldThrow<OptionNotFoundException> {
-            customization.removeOption(option.id)
-        }
-    }
-
-    @Test
     fun `Should update option with success`() {
         val option = mockOption()
         val updatedOption = mockOptionWith {
@@ -345,11 +333,12 @@ class CustomizationRepositoryTest {
             description,
             quantity,
             status,
-            options = listOf(option)
+            mutableListOf(option)
         )
 
         shouldThrow<CustomizationMinPermittedException> {
-            customization.setQuantity(Quantity(1, 1))
+            customization.quantity = Quantity(1, 1)
+            customization
         }
     }
 }

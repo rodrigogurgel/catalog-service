@@ -6,9 +6,8 @@ import br.com.rodrigogurgel.catalogservice.application.port.input.product.Delete
 import br.com.rodrigogurgel.catalogservice.application.port.input.product.GetProductInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.product.GetProductsInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.product.UpdateProductInputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.OfferOutputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.ProductOutputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.StoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.ProductDatastoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.StoreDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.application.usecase.product.CountProductsUseCase
 import br.com.rodrigogurgel.catalogservice.application.usecase.product.DeleteProductUseCase
 import br.com.rodrigogurgel.catalogservice.application.usecase.product.GetProductUseCase
@@ -20,49 +19,49 @@ import org.springframework.context.annotation.Configuration
 class ProductInputPortConfig {
     @Bean
     fun createProductInputPort(
-        storeOutputPort: StoreOutputPort,
-        productOutputPort: ProductOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        productDatastoreOutputPort: ProductDatastoreOutputPort,
     ): CreateProductInputPort {
-        return CreateProductInputPort(storeOutputPort, productOutputPort)
+        return CreateProductInputPort(storeDatastoreOutputPort, productDatastoreOutputPort)
     }
 
     @Bean
     fun updateProductInputPort(
-        storeOutputPort: StoreOutputPort,
-        productOutputPort: ProductOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        productDatastoreOutputPort: ProductDatastoreOutputPort,
     ): UpdateProductInputPort {
-        return UpdateProductInputPort(storeOutputPort, productOutputPort)
+        return UpdateProductInputPort(storeDatastoreOutputPort, productDatastoreOutputPort)
     }
 
     @Bean
     fun getProductUseCase(
-        storeOutputPort: StoreOutputPort,
-        productOutputPort: ProductOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        productDatastoreOutputPort: ProductDatastoreOutputPort,
     ): GetProductUseCase {
-        return GetProductInputPort(storeOutputPort, productOutputPort)
+        return GetProductInputPort(storeDatastoreOutputPort, productDatastoreOutputPort)
     }
 
     @Bean
     fun deleteProductUseCase(
-        storeOutputPort: StoreOutputPort,
-        productOutputPort: ProductOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        productDatastoreOutputPort: ProductDatastoreOutputPort,
     ): DeleteProductUseCase {
-        return DeleteProductInputPort(storeOutputPort, productOutputPort)
+        return DeleteProductInputPort(storeDatastoreOutputPort, productDatastoreOutputPort)
     }
 
     @Bean
     fun getProductsUseCase(
-        storeOutputPort: StoreOutputPort,
-        productOutputPort: ProductOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        productDatastoreOutputPort: ProductDatastoreOutputPort,
     ): GetProductsUseCase {
-        return GetProductsInputPort(storeOutputPort, productOutputPort)
+        return GetProductsInputPort(storeDatastoreOutputPort, productDatastoreOutputPort)
     }
 
     @Bean
     fun countProductsUseCase(
-        storeOutputPort: StoreOutputPort,
-        productOutputPort: ProductOutputPort,
+        storeDatastoreOutputPort: StoreDatastoreOutputPort,
+        productDatastoreOutputPort: ProductDatastoreOutputPort,
     ): CountProductsUseCase {
-        return CountProductsInputPort(storeOutputPort, productOutputPort)
+        return CountProductsInputPort(storeDatastoreOutputPort, productDatastoreOutputPort)
     }
 }

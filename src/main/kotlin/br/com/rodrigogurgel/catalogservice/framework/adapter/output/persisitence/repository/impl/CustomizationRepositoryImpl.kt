@@ -1,11 +1,13 @@
 package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.repository.impl
 
 import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.data.CustomizationData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.mapper.CustomizationDataMapper
 import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.repository.CustomizationRepository
 import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.repository.OptionRepository
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils
 import org.springframework.stereotype.Repository
+import java.util.UUID
 
 @Repository
 class CustomizationRepositoryImpl(
@@ -22,8 +24,8 @@ class CustomizationRepositoryImpl(
         private val GET_ALL_CUSTOMIZATION_BY_OFFER_ID = """
             select *
             from customization
-            where store_id = :store_id
-              and offer_id = :offer_id;
+            where offer_id = :offer_id
+                and store_id = :store_id;
         """.trimIndent()
 
         private val UPSERT_CUSTOMIZATION = """
@@ -33,14 +35,14 @@ class CustomizationRepositoryImpl(
                 set name          = :name,
                     description   = :description,
                     min_permitted = :min_permitted,
-                    max_permitted = : max_permitted,
+                    max_permitted = :max_permitted,
                     status        = :status;
         """.trimIndent()
 
         private val DELETE_IF_NOT_IN = """
             delete
             from customization
-            where customization_id not in (select unnest(array [:ids]::uuid[]))
+            where customization_id not in (select unnest(array [:customization_ids]::uuid[]))
                 and offer_id = :offer_id
                 and store_id = :store_id;
         """.trimIndent()
@@ -76,5 +78,32 @@ class CustomizationRepositoryImpl(
         customizations.forEach { customizationData ->
             optionRepository.createBatch(customizationData.options)
         }
+    }
+
+    override fun getCustomizationsByOfferId(storeId: UUID, offerId: UUID): List<CustomizationData> {
+        val params = mapOf("store_id" to storeId, "offer_id" to offerId)
+        return namedParameterJdbcTemplate.query(GET_ALL_CUSTOMIZATION_BY_OFFER_ID, params, CustomizationDataMapper())
+    }
+
+    override fun updateBatch(customizations: List<CustomizationData>) {
+        namedParameterJdbcTemplate.batchUpdate(
+            UPSERT_CUSTOMIZATION,
+            SqlParameterSourceUtils.createBatch(
+                customizations.map { customization ->
+                    buildParams(customization)
+                }
+            )
+        )
+    }
+
+    override fun deleteIfNotIn(storeId: UUID, offerId: UUID, customizationIds: List<UUID>) {
+        namedParameterJdbcTemplate.update(
+            DELETE_IF_NOT_IN,
+            mapOf(
+                "store_id" to storeId,
+                "offer_id" to offerId,
+                "customization_ids" to customizationIds.map { it }
+            )
+        )
     }
 }

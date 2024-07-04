@@ -13,4 +13,13 @@ data class OfferData(
     val price: BigDecimal,
     val status: Status,
     val customizations: List<CustomizationData>,
-)
+) {
+    fun getAllCustomizationsInChildren(): List<CustomizationData> {
+        return customizations + customizations
+            .flatMap { customizationData -> customizationData.getAllCustomizationsInChildren() }
+    }
+
+    fun getAllOptionsInChildren(): List<OptionData> {
+        return customizations.flatMap { customizationData -> customizationData.getAllOptionsInChildren() }
+    }
+}

@@ -3,29 +3,29 @@ package br.com.rodrigogurgel.catalogservice.application.port.input.offer
 import br.com.rodrigogurgel.catalogservice.application.exception.OfferNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.exception.ProductsNotFoundException
 import br.com.rodrigogurgel.catalogservice.application.exception.StoreNotFoundException
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.OfferOutputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.ProductOutputPort
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.StoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.OfferDatastoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.ProductDatastoreOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.StoreDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.application.usecase.offer.UpdateOfferUseCase
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
 import br.com.rodrigogurgel.catalogservice.domain.service.OfferService
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 
 class UpdateOfferInputPort(
-    private val storeOutputPort: StoreOutputPort,
-    private val productOutputPort: ProductOutputPort,
-    private val offerOutputPort: OfferOutputPort,
+    private val storeDatastoreOutputPort: StoreDatastoreOutputPort,
+    private val productDatastoreOutputPort: ProductDatastoreOutputPort,
+    private val offerDatastoreOutputPort: OfferDatastoreOutputPort,
 ) : UpdateOfferUseCase {
     override fun execute(storeId: Id, offer: Offer) {
-        if (!storeOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
-        if (!offerOutputPort.exists(storeId, offer.id)) throw OfferNotFoundException(storeId, offer.id)
+        if (!storeDatastoreOutputPort.exists(storeId)) throw StoreNotFoundException(storeId)
+        if (!offerDatastoreOutputPort.exists(storeId, offer.id)) throw OfferNotFoundException(storeId, offer.id)
 
-        val productIds = OfferService.getAllProducts(offer).map { it.id }
-        val nonexistentProducts = productOutputPort.getIfNotExists(storeId, productIds)
+        val productIds = offer.getAllProducts().map { it.id }
+        val nonexistentProducts = productDatastoreOutputPort.getIfNotExists(storeId, productIds)
         if (nonexistentProducts.isNotEmpty()) throw ProductsNotFoundException(nonexistentProducts)
 
         OfferService.validateDuplications(offer)
 
-        offerOutputPort.update(storeId, offer)
+        offerDatastoreOutputPort.update(storeId, offer)
     }
 }

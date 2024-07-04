@@ -5,7 +5,6 @@ import java.math.BigDecimal
 import java.util.UUID
 
 data class UpdateOfferRequestDTO(
-    val categoryId: UUID,
     val name: String,
     val productId: UUID,
     val price: BigDecimal,

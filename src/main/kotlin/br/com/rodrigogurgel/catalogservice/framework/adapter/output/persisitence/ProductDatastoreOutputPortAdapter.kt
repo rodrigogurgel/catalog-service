@@ -1,17 +1,17 @@
 package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence
 
-import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.ProductOutputPort
+import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.ProductDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Product
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.mapper.ProductDataMapper.Companion.toData
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.mapper.ProductDataMapper.Companion.toEntity
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.mapper.toData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.mapper.toEntity
 import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persisitence.repository.ProductRepository
 import org.springframework.stereotype.Component
 
 @Component
-class ProductOutputPortAdapter(
+class ProductDatastoreOutputPortAdapter(
     private val productRepository: ProductRepository,
-) : ProductOutputPort {
+) : ProductDatastoreOutputPort {
 
     override fun create(storeId: Id, product: Product) {
         productRepository.create(product.toData(storeId.value))

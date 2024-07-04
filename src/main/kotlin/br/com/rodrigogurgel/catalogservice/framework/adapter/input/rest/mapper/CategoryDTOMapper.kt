@@ -10,34 +10,28 @@ import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.resp
 import java.util.UUID
 
 fun CreateCategoryRequestDTO.toEntity(): Category {
-    return run {
-        Category(
-            id = Id(id),
-            name = Name(name),
-            description = description?.let { Description(it) },
-            status = status
-        )
-    }
+    return Category(
+        id = Id(id),
+        name = Name(name),
+        description = description?.let { Description(it) },
+        status = status
+    )
 }
 
 fun Category.toResponseDTO(): CategoryResponseDTO {
-    return run {
-        CategoryResponseDTO(
-            id = id.value,
-            name = name.value,
-            description = description?.value,
-            status = status
-        )
-    }
+    return CategoryResponseDTO(
+        id = id.value,
+        name = name.value,
+        description = description?.value,
+        status = status
+    )
 }
 
 fun UpdateCategoryRequestDTO.toEntity(categoryId: UUID): Category {
-    return run {
-        Category(
-            id = Id(categoryId),
-            name = Name(name),
-            description = description?.let { Description(it) },
-            status = status
-        )
-    }
+    return Category(
+        id = Id(categoryId),
+        name = Name(name),
+        description = description?.let { Description(it) },
+        status = status
+    )
 }

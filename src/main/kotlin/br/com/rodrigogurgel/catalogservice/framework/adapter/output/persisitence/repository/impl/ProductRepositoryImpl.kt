@@ -84,6 +84,13 @@ class ProductRepositoryImpl(
                 from option
                 where product_id = :product_id);
         """.trimIndent()
+
+        private val GET_ALL_PRODUCT_BY_OFFER_ID = """
+            select product.*
+            from product
+                     inner join offer on product.product_id = offer.product_id
+            where offer_id = :offer_id;
+        """.trimIndent()
     }
 
     private fun buildParams(productData: ProductData): Map<String, Any?> {
@@ -190,5 +197,10 @@ class ProductRepositoryImpl(
             params,
             Boolean::class.java
         )!!
+    }
+
+    override fun getAllProductByOfferId(offerId: UUID): List<ProductData> {
+        val params = mapOf("offer_id" to offerId)
+        return namedParameterJdbcTemplate.query(GET_ALL_PRODUCT_BY_OFFER_ID, params, ProductDataMapper())
     }
 }

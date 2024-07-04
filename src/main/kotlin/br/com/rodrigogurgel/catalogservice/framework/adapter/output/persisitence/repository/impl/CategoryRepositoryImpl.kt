@@ -82,7 +82,6 @@ class CategoryRepositoryImpl(
         }
     }
 
-
     override fun create(categoryData: CategoryData) {
         val params = buildParams(categoryData)
         namedParameterJdbcTemplate.update(

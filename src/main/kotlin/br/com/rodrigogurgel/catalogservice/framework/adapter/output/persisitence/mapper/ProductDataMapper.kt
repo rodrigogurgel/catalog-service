@@ -20,25 +20,23 @@ class ProductDataMapper : RowMapper<ProductData> {
             description = rs.getString("description"),
             imagePath = rs.getString("image_path"),
         )
+}
 
-    companion object {
-        fun Product.toData(storeId: UUID): ProductData {
-            return ProductData(
-                productId = id.value,
-                storeId = storeId,
-                name = name.value,
-                description = description?.value,
-                imagePath = image?.path
-            )
-        }
+fun Product.toData(storeId: UUID): ProductData {
+    return ProductData(
+        productId = id.value,
+        storeId = storeId,
+        name = name.value,
+        description = description?.value,
+        imagePath = image?.path
+    )
+}
 
-        fun ProductData.toEntity(): Product {
-            return Product(
-                id = Id(productId),
-                name = Name(name),
-                description = description?.let { Description(it) },
-                image = imagePath?.let { Image(path = it) },
-            )
-        }
-    }
+fun ProductData.toEntity(): Product {
+    return Product(
+        id = Id(productId),
+        name = Name(name),
+        description = description?.let { Description(it) },
+        image = imagePath?.let { Image(path = it) },
+    )
 }
