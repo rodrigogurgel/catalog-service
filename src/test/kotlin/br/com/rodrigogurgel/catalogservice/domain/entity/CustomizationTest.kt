@@ -18,8 +18,11 @@ import br.com.rodrigogurgel.catalogservice.fixture.randomString
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain
+import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.equals.shouldNotBeEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.types.shouldHaveSameHashCodeAs
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal
@@ -340,5 +343,43 @@ class CustomizationTest {
             customization.quantity = Quantity(1, 1)
             customization
         }
+    }
+
+    @Test
+    fun `Should be equals`() {
+        val customization = mockCustomizationWith {
+            description = null
+        }
+        val other = customization.run {
+            Customization(id, name, description, quantity, status, options)
+        }
+
+        customization shouldBeEqual customization
+        customization shouldBeEqual other
+    }
+
+    @Test
+    fun `Should not be equals`() {
+        val customization = mockCustomizationWith {
+            description = null
+        }
+        val other = customization.run {
+            Customization(id, name, Description(randomString(1000)), quantity, status, options)
+        }
+
+        customization shouldNotBeEqual Any()
+        customization shouldNotBeEqual other
+    }
+
+    @Test
+    fun `Should have same hash code`() {
+        val customization = mockCustomizationWith {
+            description = null
+        }
+        val other = customization.run {
+            Customization(id, name, description, quantity, status, options)
+        }
+
+        customization shouldHaveSameHashCodeAs other
     }
 }

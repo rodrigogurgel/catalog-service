@@ -57,7 +57,7 @@ class OfferRepositoryImpl(
             select exists(select 1
               from offer
               where offer_id = :offer_id
-              and store_id = :store_id);
+                and store_id = :store_id);
         """.trimIndent()
 
         private val COUNT_OFFERS = """
@@ -101,7 +101,7 @@ class OfferRepositoryImpl(
         val customizationOptionsMap = options.groupBy { it.customizationId }
 
         customizations.forEach { customizationData ->
-            customizationData.options = customizationOptionsMap[customizationData.customizationId] ?: emptyList()
+            customizationData.options = customizationOptionsMap[customizationData.customizationId]!!
         }
 
         val optionCustomizationsMap = customizations.groupBy { it.optionId }
@@ -150,11 +150,11 @@ class OfferRepositoryImpl(
     @Transactional
     override fun update(offerData: OfferData) {
         namedParameterJdbcTemplate.update(UPDATE_OFFER, buildParams(offerData))
+        customizationRepository.updateBatch(offerData.customizations)
+
         val customizations = offerData.getAllCustomizationsInChildren()
         val options = offerData.getAllOptionsInChildren()
 
-        customizationRepository.updateBatch(customizations)
-        optionRepository.updateBatch(options)
         customizationRepository.deleteIfNotIn(
             offerData.storeId,
             offerData.offerId,

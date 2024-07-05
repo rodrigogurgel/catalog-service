@@ -10,6 +10,8 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Name
 import br.com.rodrigogurgel.catalogservice.domain.vo.Price
 import br.com.rodrigogurgel.catalogservice.domain.vo.Quantity
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
+import org.apache.commons.lang3.builder.EqualsBuilder
+import org.apache.commons.lang3.builder.HashCodeBuilder
 
 class Customization(
     val id: Id,
@@ -17,7 +19,7 @@ class Customization(
     var description: Description?,
     quantity: Quantity,
     var status: Status,
-    var options: MutableList<Option>,
+    val options: MutableList<Option>,
 ) {
     var quantity: Quantity = quantity
         set(value) {
@@ -110,5 +112,30 @@ class Customization(
             .take(quantity.minPermitted)
             .sumOf { it.normalizedValue() }
             .let { Price(it) }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Customization) return false
+
+        return EqualsBuilder()
+            .append(id, other.id)
+            .append(name, other.name)
+            .append(description, other.description)
+            .append(quantity, other.quantity)
+            .append(status, other.status)
+            .append(options, other.options)
+            .isEquals
+    }
+
+    override fun hashCode(): Int {
+        return HashCodeBuilder()
+            .append(id)
+            .append(name)
+            .append(description)
+            .append(quantity)
+            .append(status)
+            .append(options)
+            .toHashCode()
     }
 }

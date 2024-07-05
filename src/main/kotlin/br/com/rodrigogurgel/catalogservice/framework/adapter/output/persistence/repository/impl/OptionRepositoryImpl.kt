@@ -95,6 +95,8 @@ class OptionRepositoryImpl(
                 }
             )
         )
+
+        customizationRepository.updateBatch(options.flatMap { option -> option.customizations })
     }
 
     override fun deleteIfNotIn(storeId: UUID, offerId: UUID, optionIds: List<UUID>) {

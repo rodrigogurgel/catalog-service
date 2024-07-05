@@ -70,9 +70,9 @@ class ProductRepositoryImpl(
         """.trimIndent()
 
         private val GET_IF_NOT_EXISTS = """
-            with offer_product as (select unnest(array[:product_ids]) as product_id)
+            with offer_product as (select unnest(array[:product_ids]::uuid[]) as product_id)
             select product_id as product_id from offer_product
-            where not exists(select 1 from product where product_id = product_id)
+            where not exists(select 1 from product where product_id = offer_product.product_id)
         """.trimIndent()
 
         private val PRODUCT_IS_IN_USE = """
@@ -86,10 +86,20 @@ class ProductRepositoryImpl(
         """.trimIndent()
 
         private val GET_ALL_PRODUCT_BY_OFFER_IDS = """
-            select product.*
-            from product
-                     inner join offer on product.product_id = offer.product_id
-            where offer_id in (select unnest(array [:offer_ids]::uuid[]));
+            with offer_ids as (select unnest(array [:offer_ids]::uuid[]) as offer_id),
+                 option_products as (select distinct o.product_id
+                                     from option o
+                                              join offer_ids oi on o.offer_id = oi.offer_id),
+                 offer_products as (select distinct o.product_id
+                                    from offer o
+                                             join offer_ids oi on o.offer_id = oi.offer_id)
+            select p.*
+            from product p
+            where p.product_id in (select product_id
+                                   from option_products
+                                   union all
+                                   select product_id
+                                   from offer_products);
         """.trimIndent()
     }
 

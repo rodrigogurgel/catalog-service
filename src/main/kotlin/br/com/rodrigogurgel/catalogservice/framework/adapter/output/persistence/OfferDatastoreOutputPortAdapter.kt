@@ -31,7 +31,7 @@ class OfferDatastoreOutputPortAdapter(
     }
 
     override fun exists(storeId: Id, offerId: Id): Boolean {
-        return offerRepository.exists(offerId.value, storeId.value)
+        return offerRepository.exists(storeId.value, offerId.value)
     }
 
     override fun update(storeId: Id, offer: Offer) {
@@ -39,11 +39,11 @@ class OfferDatastoreOutputPortAdapter(
     }
 
     override fun delete(storeId: Id, offerId: Id) {
-        offerRepository.delete(offerId.value, offerId.value)
+        offerRepository.delete(storeId.value, offerId.value)
     }
 
     override fun getOffers(storeId: Id, categoryId: Id, limit: Int, offset: Int, beginsWith: String?): List<Offer> {
-        val offers = offerRepository.getOffers(storeId.value, categoryId.value, limit, offset, beginsWith)
+        val offers = offerRepository.getOffers(storeId.value, categoryId.value, limit, offset, beginsWith?.trim())
 
         val products = productRepository.getAllProductByOfferIds(offers.map { offerData -> offerData.offerId })
             .associateBy { productData ->

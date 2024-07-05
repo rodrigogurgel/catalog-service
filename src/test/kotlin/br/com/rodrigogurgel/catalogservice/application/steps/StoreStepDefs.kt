@@ -4,8 +4,8 @@ import br.com.rodrigogurgel.catalogservice.application.CucumberContext
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Then
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import java.util.UUID
 
@@ -49,7 +49,7 @@ class StoreStepDefs(
     @Then("I should encounter a {string} error")
     fun iShouldEncounterAError(exceptionClassName: String) {
         cucumberContext.result.isFailure shouldBe true
-        cucumberContext.result.exceptionOrNull() shouldNotBe null
+        cucumberContext.result.exceptionOrNull().shouldNotBeNull()
         cucumberContext.result.exceptionOrNull()!!::class.simpleName shouldBe exceptionClassName
     }
 }

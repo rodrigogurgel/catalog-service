@@ -24,7 +24,7 @@ class CustomizationDataMapper : RowMapper<CustomizationData> {
             description = rs.getString("description"),
             minPermitted = rs.getInt("min_permitted"),
             maxPermitted = rs.getInt("max_permitted"),
-            status = rs.getStatus("status")!!,
+            status = rs.getStatus("status"),
         )
 }
 

@@ -6,6 +6,8 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Price
 import br.com.rodrigogurgel.catalogservice.domain.vo.Quantity
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
+import org.apache.commons.lang3.builder.EqualsBuilder
+import org.apache.commons.lang3.builder.HashCodeBuilder
 
 class Option(
     val id: Id,
@@ -13,7 +15,7 @@ class Option(
     var price: Price,
     var quantity: Quantity,
     var status: Status,
-    var customizations: MutableList<Customization>,
+    val customizations: MutableList<Customization>,
 ) {
     /**
      * Retrieves all the customizations that are present in the children of the current customization.
@@ -81,5 +83,30 @@ class Option(
                 it.minimalPrice().normalizedValue()
             }
         )
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Option) return false
+
+        return EqualsBuilder()
+            .append(id, other.id)
+            .append(product, other.product)
+            .append(price.normalizedValue(), other.price.normalizedValue())
+            .append(quantity, other.quantity)
+            .append(status, other.status)
+            .append(customizations, other.customizations)
+            .isEquals
+    }
+
+    override fun hashCode(): Int {
+        return HashCodeBuilder()
+            .append(id)
+            .append(product)
+            .append(price.normalizedValue())
+            .append(quantity)
+            .append(status)
+            .append(customizations)
+            .toHashCode()
     }
 }

@@ -68,18 +68,6 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         return ResponseEntity(problemDetail, HttpStatus.BAD_REQUEST)
     }
 
-//    @ExceptionHandler(HttpMessageNotReadableException::class)
-//    fun exceptionHandler(e: HttpMessageNotReadableException): ResponseEntity<ProblemDetail> {
-//        logger.warn("Error to deserialize", e)
-//
-//        val problemDetail =
-//            ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Failed to read request")
-//        problemDetail.title = "Bad Request"
-//        problemDetail.properties = mapOf("timestamp" to Instant.now().epochSecond)
-//
-//        return ResponseEntity(problemDetail, HttpStatus.BAD_REQUEST)
-//    }
-
     @ExceptionHandler(BeginsWithLengthException::class)
     fun exceptionHandler(e: BeginsWithLengthException): ResponseEntity<ProblemDetail> {
         val problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.message)

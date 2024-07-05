@@ -12,6 +12,6 @@ fun normalizeLimit(limit: Int): Int = limit.coerceIn(MIN_LIMIT_VALUE, MAX_LIMIT_
 fun normalizeOffset(offset: Int): Int = offset.coerceAtLeast(MIN_OFFSET_VALUE)
 
 fun validateBeginsWith(beginsWith: String?) {
-    if (beginsWith.isNullOrEmpty()) return
+    if (beginsWith.isNullOrBlank()) return
     if (beginsWith.length < MIN_BEGINS_WITH_LENGTH) throw BeginsWithLengthException(beginsWith.length)
 }

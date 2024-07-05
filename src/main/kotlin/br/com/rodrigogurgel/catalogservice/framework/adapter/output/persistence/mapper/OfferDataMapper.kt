@@ -21,7 +21,7 @@ class OfferDataMapper : RowMapper<OfferData> {
             storeId = rs.getUUID("store_id")!!,
             name = rs.getString("name"),
             price = rs.getBigDecimal("price"),
-            status = rs.getStatus("status")!!,
+            status = rs.getStatus("status"),
             customizations = emptyList(),
         )
     }

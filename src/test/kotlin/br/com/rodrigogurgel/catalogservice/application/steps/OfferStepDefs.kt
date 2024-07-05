@@ -298,28 +298,6 @@ class OfferStepDefs(
         }
     }
 
-//    @And("the Customization should be added in the offer")
-//    fun theCustomizationShouldBeAddedInTheOffer() {
-//        cucumberContext.result.exceptionOrNull()?.printStackTrace()
-//        cucumberContext.result.isSuccess shouldBe true
-//
-//        verifySequence {
-//            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
-//
-//            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
-//
-//            cucumberContext.productDatastoreOutputPort.getIfNotExists(
-//                cucumberContext.storeId,
-//                offer.getAllProducts().map { product -> product.id }
-//            )
-//
-//            cucumberContext.offerDatastoreOutputPort.update(
-//                cucumberContext.storeId,
-//                match { offer -> offer.findCustomizationInChildrenById(customization.id) != null }
-//            )
-//        }
-//    }
-
     @And("the Offer to be updated has a Customization with the Id {string}")
     fun theOfferToBeUpdatedHasACustomizationWithTheId(customizationIdString: String) {
         val customization = mockCustomizationWith {

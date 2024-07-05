@@ -18,7 +18,7 @@ class CategoryDataMapper : RowMapper<CategoryData> {
             storeId = rs.getUUID("store_id")!!,
             name = rs.getString("name"),
             description = rs.getString("description"),
-            status = rs.getStatus("status")!!,
+            status = rs.getStatus("status"),
         )
 }
 

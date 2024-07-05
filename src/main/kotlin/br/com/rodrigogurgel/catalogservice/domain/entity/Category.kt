@@ -7,7 +7,7 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Status
 
 data class Category(
     val id: Id,
-    val name: Name,
-    val description: Description?,
-    val status: Status,
+    var name: Name,
+    var description: Description?,
+    var status: Status,
 )

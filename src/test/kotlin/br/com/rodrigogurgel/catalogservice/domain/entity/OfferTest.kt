@@ -20,8 +20,10 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotContain
+import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldHaveSameHashCodeAs
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
@@ -403,7 +405,7 @@ class OfferTest {
         }
 
         val result = offer.findCustomizationInChildrenById(customization.id)
-        result shouldNotBe null
+        result.shouldNotBeNull()
         result shouldBe customization
     }
 
@@ -421,7 +423,7 @@ class OfferTest {
         }
 
         val result = offer.findCustomizationInChildrenById(childCustomization.id)
-        result shouldNotBe null
+        result.shouldNotBeNull()
         result shouldBe childCustomization
     }
 
@@ -436,7 +438,7 @@ class OfferTest {
         }
 
         val result = offer.findOptionInChildrenById(childOption.id)
-        result shouldNotBe null
+        result.shouldNotBeNull()
         result shouldBe childOption
     }
 
@@ -499,5 +501,26 @@ class OfferTest {
         val products = offer.getAllProducts()
 
         products shouldHaveSize 12
+    }
+
+    @Test
+    fun `Should be equals`() {
+        val offer = mockOffer()
+        val other = offer.run {
+            Offer(id, name, product, price, status, customizations)
+        }
+
+        offer shouldBeEqual offer
+        other shouldBeEqual offer
+    }
+
+    @Test
+    fun `Should have same hash code`() {
+        val offer = mockOffer()
+        val other = offer.run {
+            Offer(id, name, product, price, status, customizations)
+        }
+
+        other shouldHaveSameHashCodeAs offer
     }
 }

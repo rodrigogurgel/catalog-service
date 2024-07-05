@@ -14,6 +14,8 @@ import br.com.rodrigogurgel.catalogservice.fixture.mock.mockProduct
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain
+import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.equals.shouldNotBeEqual
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -201,5 +203,29 @@ class OptionTest {
         option.removeCustomization(customization.id)
 
         option.customizations shouldNotContain customization
+    }
+
+    @Test
+    fun `Should be equals`() {
+        val option = mockOption()
+        val other = option.run {
+            Option(id, product, price, quantity, status, customizations)
+        }
+
+        option shouldBeEqual other
+        option shouldBeEqual option
+    }
+
+    @Test
+    fun `Should be not equals`() {
+        val option = mockOptionWith {
+            customizations = mutableListOf(mockCustomization())
+        }
+        val other = option.run {
+            Option(id, product, Price("20".toBigDecimal()), quantity, Status.UNAVAILABLE, mutableListOf())
+        }
+
+        option shouldNotBeEqual other
+        option shouldNotBeEqual Any()
     }
 }

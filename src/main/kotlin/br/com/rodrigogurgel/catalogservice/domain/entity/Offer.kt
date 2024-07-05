@@ -7,6 +7,8 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name
 import br.com.rodrigogurgel.catalogservice.domain.vo.Price
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
+import org.apache.commons.lang3.builder.EqualsBuilder
+import org.apache.commons.lang3.builder.HashCodeBuilder
 
 class Offer(
     val id: Id,
@@ -32,6 +34,7 @@ class Offer(
                 .flatMap { customization -> customization.getAllCustomizationsInChildren() }
             )
             .associateBy { it.id }
+
     private val optionsById: Map<Id, Option>
         get() = customizations
             .flatMap { it.getAllOptionsInChildren() }
@@ -104,5 +107,30 @@ class Offer(
 
     fun getAllProducts(): List<Product> {
         return optionsById.values.map { option -> option.product } + product
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Offer) return false
+
+        return EqualsBuilder()
+            .append(id, other.id)
+            .append(name, other.name)
+            .append(product, other.product)
+            .append(price.normalizedValue(), other.price.normalizedValue())
+            .append(status, other.status)
+            .append(customizations, other.customizations)
+            .isEquals
+    }
+
+    override fun hashCode(): Int {
+        return HashCodeBuilder()
+            .append(id)
+            .append(name)
+            .append(product)
+            .append(price.normalizedValue())
+            .append(status)
+            .append(customizations)
+            .toHashCode()
     }
 }

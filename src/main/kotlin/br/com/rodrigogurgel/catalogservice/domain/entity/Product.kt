@@ -7,7 +7,7 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Name
 
 data class Product(
     val id: Id,
-    val name: Name,
-    val description: Description?,
-    val image: Image?,
+    var name: Name,
+    var description: Description?,
+    var image: Image?,
 )

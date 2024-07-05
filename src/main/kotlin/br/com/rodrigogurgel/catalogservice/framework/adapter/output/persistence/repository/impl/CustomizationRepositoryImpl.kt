@@ -33,6 +33,7 @@ class CustomizationRepositoryImpl(
             values (:customization_id, :offer_id, :store_id, :option_id, :name, :description, :min_permitted, :max_permitted, :status)
             on conflict (customization_id, offer_id) do update
                 set name          = :name,
+                    option_id     = :option_id,
                     description   = :description,
                     min_permitted = :min_permitted,
                     max_permitted = :max_permitted,
@@ -86,6 +87,8 @@ class CustomizationRepositoryImpl(
     }
 
     override fun updateBatch(customizations: List<CustomizationData>) {
+        if (customizations.isEmpty()) return
+
         namedParameterJdbcTemplate.batchUpdate(
             UPSERT_CUSTOMIZATION,
             SqlParameterSourceUtils.createBatch(
@@ -94,6 +97,8 @@ class CustomizationRepositoryImpl(
                 }
             )
         )
+
+        optionRepository.updateBatch(customizations.flatMap { customization -> customization.options })
     }
 
     override fun deleteIfNotIn(storeId: UUID, offerId: UUID, customizationIds: List<UUID>) {
