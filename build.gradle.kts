@@ -42,6 +42,10 @@ dependencies {
     val gradlePitestPluginVersion = properties["gradlePitestPluginVersion"]
     val arcmutatePitestKotlinPluginVersion = properties["arcmutatePitestKotlinPluginVersion"]
     val arcmutateSpringVersion = properties["arcmutateSpringVersion"]
+    val springDocVersion = properties["springDocVersion"]
+    val hikariCPVersion = properties["hikariCPVersion"]
+    val postgresqlVersion = properties["postgresqlVersion"]
+    val postgresqlTestContainerVersion = properties["postgresqlTestContainerVersion"]
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -54,17 +58,17 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     // Swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-    implementation("org.springdoc:springdoc-openapi-starter-common:2.5.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
+    implementation("org.springdoc:springdoc-openapi-starter-common:$springDocVersion")
 
     // JDBC
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
 
     // HikariCP
-    implementation("com.zaxxer:HikariCP:5.1.0")
+    implementation("com.zaxxer:HikariCP:$hikariCPVersion")
 
     // Postgresql Driver
-    implementation("org.postgresql:postgresql:42.7.3")
+    implementation("org.postgresql:postgresql:$postgresqlVersion")
 
     // Detekt
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion")
@@ -80,7 +84,7 @@ dependencies {
     testImplementation("com.ninja-squad:springmockk:$springMockkVersion")
 
     // Postgres Test Container
-    testImplementation("org.testcontainers:postgresql:1.19.8")
+    testImplementation("org.testcontainers:postgresql:$postgresqlTestContainerVersion")
 
     // JUnit
     testImplementation("org.junit.platform:junit-platform-suite")
