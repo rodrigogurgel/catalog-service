@@ -5,7 +5,6 @@ import br.com.rodrigogurgel.catalogservice.domain.entity.Customization
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
 import br.com.rodrigogurgel.catalogservice.domain.entity.Option
 import br.com.rodrigogurgel.catalogservice.domain.entity.Product
-import br.com.rodrigogurgel.catalogservice.domain.service.OfferService
 import br.com.rodrigogurgel.catalogservice.domain.vo.Description
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Image
@@ -17,9 +16,7 @@ import br.com.rodrigogurgel.catalogservice.fixture.mock.mockCustomizationWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOfferWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOptionWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockProductWith
-import io.cucumber.java.Before
 import io.cucumber.java.DataTableType
-import io.mockk.every
 import org.junit.platform.suite.api.IncludeEngines
 import org.junit.platform.suite.api.SelectClasspathResource
 import org.junit.platform.suite.api.Suite
@@ -31,11 +28,6 @@ import java.util.UUID
 class RunCucumberTest(
     private val cucumberContext: CucumberContext,
 ) {
-    @Before
-    fun setUp() {
-        every { cucumberContext.offerDatastoreOutputPort.getOffersByProductIdIncludingChildren(any()) } returns emptyList()
-    }
-
     @DataTableType
     fun categoryEntry(entry: Map<String, String>): Category {
         return mockCategoryWith {
@@ -70,10 +62,6 @@ class RunCucumberTest(
             this.product = product
             price = Price(entry["price"]!!.toBigDecimal())
             status = Status.valueOf(entry["status"]!!)
-        }
-
-        OfferService.getAllProducts(offer).forEach {
-            every { cucumberContext.offerDatastoreOutputPort.getOffersByProductIdIncludingChildren(it.id) } returns listOf(offer.id)
         }
 
         return offer

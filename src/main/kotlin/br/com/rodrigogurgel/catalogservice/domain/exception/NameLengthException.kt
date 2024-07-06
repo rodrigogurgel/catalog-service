@@ -1,8 +1,9 @@
 package br.com.rodrigogurgel.catalogservice.domain.exception
 
-class NameLengthException(name: String, minLength: Int, maxLength: Int) :
+import br.com.rodrigogurgel.catalogservice.domain.vo.Name
+
+class NameLengthException(name: String) :
     IllegalArgumentException(
-        """The name value need to be between $minLength and $maxLength characters. 
-Actual name value is [$name].
-        """.trimIndent()
+        "The name value need to be between ${Name.MIN_LENGTH} and ${Name.MAX_LENGTH} characters. " +
+            "Actual name value is [$name]."
     )

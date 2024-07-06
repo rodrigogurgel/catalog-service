@@ -4,7 +4,6 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Description
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
-import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOffer
 import br.com.rodrigogurgel.catalogservice.fixture.randomString
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
@@ -16,20 +15,16 @@ class CategoryTest {
         val name = Name(randomString(30))
         val description = Description(randomString(100))
         val status = Status.AVAILABLE
-        val offer = mockOffer()
-        val offers = mutableMapOf(offer.id to offer)
         val category = Category(
             id,
             name,
             description,
             status,
-            offers
         )
 
         category.id shouldBe id
         category.name shouldBe name
         category.description shouldBe description
         category.status shouldBe status
-        category.offers shouldBe offers
     }
 }

@@ -15,7 +15,7 @@ class MockCustomization(
     var description: Description? = Description(randomString(100)),
     var quantity: Quantity = Quantity(0, 1),
     var status: Status = Status.AVAILABLE,
-    var options: List<Option> = listOf(mockOption()),
+    var options: MutableList<Option> = mutableListOf(mockOption()),
 )
 
 fun mockCustomization(): Customization = MockCustomization().run {

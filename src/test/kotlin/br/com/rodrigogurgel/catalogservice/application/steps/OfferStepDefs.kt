@@ -4,9 +4,11 @@ import br.com.rodrigogurgel.catalogservice.application.CucumberContext
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.AddCustomizationInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.AddCustomizationOnChildrenInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.AddOptionOnChildrenInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.offer.CountOffersInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.CreateOfferInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.DeleteOfferInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.GetOfferInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.offer.GetOffersInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.RemoveCustomizationInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.RemoveCustomizationOnChildrenInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.RemoveOptionOnChildrenInputPort
@@ -17,7 +19,6 @@ import br.com.rodrigogurgel.catalogservice.application.port.input.offer.UpdateOp
 import br.com.rodrigogurgel.catalogservice.domain.entity.Customization
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
 import br.com.rodrigogurgel.catalogservice.domain.entity.Option
-import br.com.rodrigogurgel.catalogservice.domain.service.OfferService
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockCustomizationWith
 import br.com.rodrigogurgel.catalogservice.fixture.mock.mockOfferWith
@@ -111,7 +112,19 @@ class OfferStepDefs(
 
     private val updateOptionOnChildrenInputPort = UpdateOptionOnChildrenInputPort(
         cucumberContext.storeDatastoreOutputPort,
+        cucumberContext.offerDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort,
+    )
+
+    private val getOffersInputPort = GetOffersInputPort(
+        cucumberContext.storeDatastoreOutputPort,
+        cucumberContext.categoryDatastoreOutputPort,
+        cucumberContext.offerDatastoreOutputPort,
+    )
+
+    private val countOffersInputPort = CountOffersInputPort(
+        cucumberContext.storeDatastoreOutputPort,
+        cucumberContext.categoryDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort,
     )
 
@@ -119,6 +132,7 @@ class OfferStepDefs(
     fun theInformationOfTheOffer(offer: Offer) {
         this.offer = offer
         offers[offer.id] = offer
+        every { cucumberContext.productDatastoreOutputPort.productIsInUse(offer.product.id) } returns true
     }
 
     @And("the Id of the Category is {string}")
@@ -137,8 +151,7 @@ class OfferStepDefs(
             cucumberContext.offerDatastoreOutputPort.exists(offer.id)
 
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                cucumberContext.storeId,
-                OfferService.getAllProducts(offer).map { product -> product.id }
+                offer.getAllProducts().map { product -> product.id }
             )
 
             cucumberContext.offerDatastoreOutputPort.create(cucumberContext.storeId, categoryId, offer)
@@ -200,7 +213,8 @@ class OfferStepDefs(
     fun iAttemptToCreateAnOfferUsingTheId(offerIdString: String) {
         val offer = offer.run {
             Offer(
-                id = Id(UUID.fromString(offerIdString)),
+                Id(UUID.fromString(offerIdString)),
+                name,
                 product,
                 price,
                 status,
@@ -224,6 +238,7 @@ class OfferStepDefs(
         val offer = offer.run {
             Offer(
                 id = Id(UUID.fromString(offerIdString)),
+                name,
                 product,
                 price,
                 status,
@@ -246,8 +261,7 @@ class OfferStepDefs(
             cucumberContext.offerDatastoreOutputPort.exists(cucumberContext.storeId, offer.id)
 
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                cucumberContext.storeId,
-                OfferService.getAllProducts(offer).map { product -> product.id }
+                offer.getAllProducts().map { product -> product.id }
             )
 
             cucumberContext.offerDatastoreOutputPort.update(cucumberContext.storeId, offer)
@@ -298,28 +312,6 @@ class OfferStepDefs(
         }
     }
 
-//    @And("the Customization should be added in the offer")
-//    fun theCustomizationShouldBeAddedInTheOffer() {
-//        cucumberContext.result.exceptionOrNull()?.printStackTrace()
-//        cucumberContext.result.isSuccess shouldBe true
-//
-//        verifySequence {
-//            cucumberContext.storeRestOutputPort.exists(cucumberContext.storeId)
-//
-//            cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
-//
-//            cucumberContext.productDatastoreOutputPort.getIfNotExists(
-//                cucumberContext.storeId,
-//                OfferService.getAllProducts(offer).map { product -> product.id }
-//            )
-//
-//            cucumberContext.offerDatastoreOutputPort.update(
-//                cucumberContext.storeId,
-//                match { offer -> offer.findCustomizationInChildrenById(customization.id) != null }
-//            )
-//        }
-//    }
-
     @And("the Offer to be updated has a Customization with the Id {string}")
     fun theOfferToBeUpdatedHasACustomizationWithTheId(customizationIdString: String) {
         val customization = mockCustomizationWith {
@@ -355,7 +347,7 @@ class OfferStepDefs(
                 description,
                 quantity,
                 status,
-                options
+                options.toMutableList()
             )
         }?.let { customization ->
             customizations[customizationId] = customization
@@ -376,8 +368,7 @@ class OfferStepDefs(
             cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
 
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                cucumberContext.storeId,
-                match { ids -> ids.toSet() == OfferService.getAllProducts(offer).map { product -> product.id }.toSet() }
+                match { ids -> ids.toSet() == offer.getAllProducts().map { product -> product.id }.toSet() }
             )
 
             cucumberContext.offerDatastoreOutputPort.update(
@@ -479,8 +470,7 @@ class OfferStepDefs(
             cucumberContext.offerDatastoreOutputPort.findById(cucumberContext.storeId, offer.id)
 
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                cucumberContext.storeId,
-                OfferService.getAllProducts(offer).map { product -> product.id }
+                offer.getAllProducts().map { product -> product.id }
             )
 
             cucumberContext.offerDatastoreOutputPort.update(
@@ -609,7 +599,7 @@ class OfferStepDefs(
     @When("I attempt to update a Customization with the Id {string} from the Offer with the Id {string}")
     fun iAttemptToUpdateACustomizationWithTheIdFromTheOfferWithTheId(
         customizationIdString: String,
-        offerIdString: String
+        offerIdString: String,
     ) {
         val customizationId = Id(UUID.fromString(customizationIdString))
         val offerId = Id(UUID.fromString(offerIdString))
@@ -648,7 +638,7 @@ class OfferStepDefs(
     fun iAttemptToUpdateACustomizationWithTheIdOnChildrenWithTheIdInTheOfferWithTheId(
         customizationIdString: String,
         optionIdString: String,
-        offerIdString: String
+        offerIdString: String,
     ) {
         val customizationId = Id(UUID.fromString(customizationIdString))
         val optionId = Id(UUID.fromString(optionIdString))
@@ -686,7 +676,7 @@ class OfferStepDefs(
     fun iAttemptToUpdateAnOptionWithTheIdFromParentCustomizationWithTheIdInTheOfferWithTheId(
         optionIdString: String,
         customizationIdString: String,
-        offerIdString: String
+        offerIdString: String,
     ) {
         val optionId = Id(UUID.fromString(optionIdString))
         val customizationId = Id(UUID.fromString(customizationIdString))
@@ -713,6 +703,97 @@ class OfferStepDefs(
                 match { offer ->
                     offer.findOptionInChildrenById(optionId) == options[optionId]
                 }
+            )
+        }
+    }
+
+    @When(
+        "I attempt to get an Offer with the Category Id {string}, limit as {string}, offset as {string} and begins with as {string}"
+    )
+    fun iAttemptToGetAnOfferWithTheCategoryIdLimitAsOffsetAsAndBeginsWithAs(
+        categoryIdString: String,
+        limit: String,
+        offset: String,
+        beginsWith: String
+    ) {
+        cucumberContext.result = runCatching {
+            getOffersInputPort.execute(cucumberContext.storeId, Id(UUID.fromString(categoryIdString)), limit.toInt(), offset.toInt(), beginsWith)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then(
+        "the Offers should be retrieved from database with the Category Id {string}, limit as {string}, offset as {string} and begins with as {string}"
+    )
+    fun theOffersShouldBeRetrievedFromDatabaseWithTheCategoryIdLimitAsOffsetAsAndBeginsWithAs(
+        categoryIdString: String,
+        limit: String,
+        offset: String,
+        beginsWith: String
+    ) {
+        cucumberContext.result.isSuccess shouldBe true
+        verifySequence {
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.categoryDatastoreOutputPort.exists(
+                cucumberContext.storeId,
+                Id(UUID.fromString(categoryIdString))
+            )
+            cucumberContext.offerDatastoreOutputPort.getOffers(
+                cucumberContext.storeId,
+                Id(UUID.fromString(categoryIdString)),
+                limit.toInt(),
+                offset.toInt(),
+                beginsWith
+            )
+        }
+    }
+
+    @When("I attempt to count Offers with the Category Id {string} and begins with as {string}")
+    fun iAttemptToCountOffersWithTheCategoryIdAndBeginsWithAs(categoryIdString: String, beginsWith: String) {
+        cucumberContext.result = runCatching {
+            countOffersInputPort.execute(cucumberContext.storeId, Id(UUID.fromString(categoryIdString)), beginsWith)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then("the Offers should be counted in the database with the Category Id {string} and begins with as {string}")
+    fun theOffersShouldBeCountedInTheDatabaseWithTheCategoryIdAndBeginsWithAs(
+        categoryIdString: String,
+        beginsWith: String
+    ) {
+        cucumberContext.result.isSuccess shouldBe true
+        verifySequence {
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.categoryDatastoreOutputPort.exists(
+                cucumberContext.storeId,
+                Id(UUID.fromString(categoryIdString))
+            )
+            cucumberContext.offerDatastoreOutputPort.countOffers(
+                cucumberContext.storeId,
+                Id(UUID.fromString(categoryIdString)),
+                beginsWith
+            )
+        }
+    }
+
+    @When("I attempt to count Offers with the Category Id {string} and begins with as null")
+    fun iAttemptToCountOffersWithTheCategoryIdAndBeginsWithAsNull(categoryIdString: String) {
+        cucumberContext.result = runCatching {
+            countOffersInputPort.execute(cucumberContext.storeId, Id(UUID.fromString(categoryIdString)), null)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then("the Offers should be counted in the database with the Category Id {string} and begins with as null")
+    fun theOffersShouldBeCountedInTheDatabaseWithTheCategoryIdAndBeginsWithAsNull(categoryIdString: String) {
+        cucumberContext.result.isSuccess shouldBe true
+        verifySequence {
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.categoryDatastoreOutputPort.exists(
+                cucumberContext.storeId,
+                Id(UUID.fromString(categoryIdString))
+            )
+            cucumberContext.offerDatastoreOutputPort.countOffers(
+                cucumberContext.storeId,
+                Id(UUID.fromString(categoryIdString)),
+                null
             )
         }
     }

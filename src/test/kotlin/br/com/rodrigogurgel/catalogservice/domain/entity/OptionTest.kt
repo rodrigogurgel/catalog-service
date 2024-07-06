@@ -14,6 +14,8 @@ import br.com.rodrigogurgel.catalogservice.fixture.mock.mockProduct
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain
+import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.equals.shouldNotBeEqual
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -43,7 +45,7 @@ class OptionTest {
         option.quantity shouldBe quantity
         option.customizations shouldBe customizations
 
-        option.minimalPrice().normalizedValue() shouldBe Price.ZERO.normalizedValue()
+        option.minimalPrice().value shouldBe Price.ZERO.value
         option.quantity.minPermitted shouldBe 0
         option.customizations.isEmpty() shouldBe true
     }
@@ -100,7 +102,7 @@ class OptionTest {
             mutableListOf()
         )
 
-        option.minimalPrice().normalizedValue() shouldBe Price(BigDecimal.TEN).normalizedValue()
+        option.minimalPrice().value shouldBe Price(BigDecimal.TEN).value
         option.quantity.minPermitted shouldBe 1
         option.customizations.isEmpty() shouldBe true
     }
@@ -116,7 +118,7 @@ class OptionTest {
             mutableListOf()
         )
 
-        option.minimalPrice().normalizedValue() shouldBe Price(BigDecimal.TEN).normalizedValue()
+        option.minimalPrice().value shouldBe Price(BigDecimal.TEN).value
         option.quantity.minPermitted shouldBe 0
         option.customizations.isEmpty() shouldBe true
     }
@@ -132,7 +134,7 @@ class OptionTest {
             mutableListOf()
         )
 
-        option.minimalPrice().normalizedValue() shouldBe Price(BigDecimal.valueOf(20)).normalizedValue()
+        option.minimalPrice().value shouldBe Price(BigDecimal.valueOf(20)).value
         option.quantity.minPermitted shouldBe 2
         option.customizations.isEmpty() shouldBe true
     }
@@ -151,7 +153,7 @@ class OptionTest {
     fun `Should add Customization with error when call addCustomization and customization already exists`() {
         val customization = mockCustomization()
         val option = mockOptionWith {
-            customizations = listOf(customization)
+            customizations = mutableListOf(customization)
         }
 
         shouldThrow<CustomizationAlreadyExistsException> {
@@ -165,7 +167,7 @@ class OptionTest {
     fun `Should update Customization with success when call updateCustomization`() {
         val customization = mockCustomization()
         val updatedCustomization = mockCustomizationWith { id = customization.id }
-        val option = mockOptionWith { customizations = listOf(customization) }
+        val option = mockOptionWith { customizations = mutableListOf(customization) }
 
         option.customizations shouldContain customization
 
@@ -178,7 +180,7 @@ class OptionTest {
     fun `Should update Customization with error when call updateCustomization and customization not exists`() {
         val customization = mockCustomization()
         val newCustomization = mockCustomization()
-        val option = mockOptionWith { customizations = listOf(customization) }
+        val option = mockOptionWith { customizations = mutableListOf(customization) }
 
         option.customizations shouldContain customization
 
@@ -193,7 +195,7 @@ class OptionTest {
     fun `Should remove Customization with success when call updateCustomization`() {
         val customization = mockCustomization()
         val option = mockOptionWith {
-            customizations = listOf(customization)
+            customizations = mutableListOf(customization)
         }
 
         option.customizations shouldContain customization
@@ -201,5 +203,29 @@ class OptionTest {
         option.removeCustomization(customization.id)
 
         option.customizations shouldNotContain customization
+    }
+
+    @Test
+    fun `Should be equals`() {
+        val option = mockOption()
+        val other = option.run {
+            Option(id, product, price, quantity, status, customizations)
+        }
+
+        option shouldBeEqual other
+        option shouldBeEqual option
+    }
+
+    @Test
+    fun `Should be not equals`() {
+        val option = mockOptionWith {
+            customizations = mutableListOf(mockCustomization())
+        }
+        val other = option.run {
+            Option(id, product, Price("20".toBigDecimal()), quantity, Status.UNAVAILABLE, mutableListOf())
+        }
+
+        option shouldNotBeEqual other
+        option shouldNotBeEqual Any()
     }
 }

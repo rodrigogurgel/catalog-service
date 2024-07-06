@@ -18,8 +18,11 @@ import br.com.rodrigogurgel.catalogservice.fixture.randomString
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain
+import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.equals.shouldNotBeEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.types.shouldHaveSameHashCodeAs
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal
@@ -66,7 +69,7 @@ class CustomizationTest {
             description,
             quantity,
             status,
-            listOf(option)
+            mutableListOf(option)
         )
 
         customization.id shouldBe id
@@ -115,7 +118,7 @@ class CustomizationTest {
         customization.status = Status.UNAVAILABLE
         customization.name = updatedName
         customization.description = updatedDescription
-        customization.setQuantity(updatedQuantity)
+        customization.quantity = updatedQuantity
 
         customization.id shouldBe id
         customization.name.value shouldBe updatedName.value
@@ -190,7 +193,7 @@ class CustomizationTest {
             options = mutableListOf(option1, option2)
         }
 
-        customization.minimalPrice().normalizedValue() shouldBe Price(10.toBigDecimal()).normalizedValue()
+        customization.minimalPrice().value shouldBe Price(10.toBigDecimal()).value
     }
 
     @Test
@@ -242,7 +245,7 @@ class CustomizationTest {
             options = mutableListOf(option1, option2)
         }
 
-        customization.minimalPrice().normalizedValue() shouldBe Price(10.toBigDecimal()).normalizedValue()
+        customization.minimalPrice().value shouldBe Price(10.toBigDecimal()).value
     }
 
     @Test
@@ -280,18 +283,6 @@ class CustomizationTest {
         customization.removeOption(option.id)
 
         customization.options shouldNotContain option
-    }
-
-    @Test
-    fun `Should update option with error when option not exists in customization`() {
-        val option = mockOption()
-        val customization = mockCustomization()
-
-        customization.options shouldNotContain option
-
-        shouldThrow<OptionNotFoundException> {
-            customization.removeOption(option.id)
-        }
     }
 
     @Test
@@ -345,11 +336,50 @@ class CustomizationTest {
             description,
             quantity,
             status,
-            options = listOf(option)
+            mutableListOf(option)
         )
 
         shouldThrow<CustomizationMinPermittedException> {
-            customization.setQuantity(Quantity(1, 1))
+            customization.quantity = Quantity(1, 1)
+            customization
         }
+    }
+
+    @Test
+    fun `Should be equals`() {
+        val customization = mockCustomizationWith {
+            description = null
+        }
+        val other = customization.run {
+            Customization(id, name, description, quantity, status, options)
+        }
+
+        customization shouldBeEqual customization
+        customization shouldBeEqual other
+    }
+
+    @Test
+    fun `Should not be equals`() {
+        val customization = mockCustomizationWith {
+            description = null
+        }
+        val other = customization.run {
+            Customization(id, name, Description(randomString(1000)), quantity, status, options)
+        }
+
+        customization shouldNotBeEqual Any()
+        customization shouldNotBeEqual other
+    }
+
+    @Test
+    fun `Should have same hash code`() {
+        val customization = mockCustomizationWith {
+            description = null
+        }
+        val other = customization.run {
+            Customization(id, name, description, quantity, status, options)
+        }
+
+        customization shouldHaveSameHashCodeAs other
     }
 }

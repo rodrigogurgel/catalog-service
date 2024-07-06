@@ -16,7 +16,7 @@ class MockOption(
     var price: Price = Price(BigDecimal.valueOf(Random.nextDouble(0.0, 100.0))),
     var quantity: Quantity = Quantity(0, 1),
     var status: Status = Status.AVAILABLE,
-    var customizations: List<Customization> = listOf(),
+    var customizations: MutableList<Customization> = mutableListOf(),
 )
 
 fun mockOption() = MockOption()

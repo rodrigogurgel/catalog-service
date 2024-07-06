@@ -1,8 +1,10 @@
 package br.com.rodrigogurgel.catalogservice.application.steps
 
 import br.com.rodrigogurgel.catalogservice.application.CucumberContext
+import br.com.rodrigogurgel.catalogservice.application.port.input.category.CountCategoriesInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.category.CreateCategoryInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.category.DeleteCategoryInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.category.GetCategoriesInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.category.GetCategoryInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.category.UpdateCategoryInputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Category
@@ -37,6 +39,16 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
     )
 
     private val updateCategoryInputPort = UpdateCategoryInputPort(
+        cucumberContext.storeDatastoreOutputPort,
+        cucumberContext.categoryDatastoreOutputPort
+    )
+
+    private val getCategoriesInputPort = GetCategoriesInputPort(
+        cucumberContext.storeDatastoreOutputPort,
+        cucumberContext.categoryDatastoreOutputPort
+    )
+
+    private val countCategoriesInputPort = CountCategoriesInputPort(
         cucumberContext.storeDatastoreOutputPort,
         cucumberContext.categoryDatastoreOutputPort
     )
@@ -233,6 +245,60 @@ class CategoryStepDefs(private val cucumberContext: CucumberContext) {
             updateCategoryInputPort.execute(
                 cucumberContext.storeId,
                 category.copy(id = Id(UUID.fromString(categoryIdString)))
+            )
+        }
+    }
+
+    @When("I attempt to get a Categories with the limit as {string}, offset as {string} and begins with as {string}")
+    fun iAttemptToGetACategoriesWithTheLimitAsOffsetAsAndBeginsWithAs(
+        limit: String,
+        offset: String,
+        beginsWith: String,
+    ) {
+        cucumberContext.result = runCatching {
+            getCategoriesInputPort.execute(cucumberContext.storeId, limit.toInt(), offset.toInt(), beginsWith)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then(
+        "the Categories should be retrieved from database with the limit as {string}, offset as {string} and begins with as {string}"
+    )
+    fun theCategoriesShouldBeRetrievedFromDatabaseWithTheLimitAsOffsetAsAndBeginsWithAs(
+        limit: String,
+        offset: String,
+        beginsWith: String,
+    ) {
+        cucumberContext.result.isSuccess shouldBe true
+        verifySequence {
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.categoryDatastoreOutputPort.getCategories(
+                cucumberContext.storeId,
+                limit.toInt(),
+                offset.toInt(),
+                beginsWith
+            )
+        }
+    }
+
+    @When(
+        "I attempt to count the Categories with the begins with as {string}"
+    )
+    fun iAttemptToCountTheCategoriesWithTheLimitAsOffsetAsAndBeginsWithAs(beginsWith: String) {
+        cucumberContext.result = runCatching {
+            countCategoriesInputPort.execute(cucumberContext.storeId, beginsWith)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then(
+        "the Categories should be counted in the database with the begins with as {string}"
+    )
+    fun theCategoriesShouldBeCountedInTheDatabaseWithTheLimitAsOffsetAsAndBeginsWithAs(beginsWith: String) {
+        cucumberContext.result.isSuccess shouldBe true
+        verifySequence {
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.categoryDatastoreOutputPort.countCategories(
+                cucumberContext.storeId,
+                beginsWith
             )
         }
     }

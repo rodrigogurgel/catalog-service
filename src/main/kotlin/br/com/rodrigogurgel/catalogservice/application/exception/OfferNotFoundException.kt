@@ -6,5 +6,5 @@ class OfferNotFoundException private constructor(override val message: String) :
     constructor(
         storeId: Id,
         offerId: Id,
-    ) : this("Offer with the id ${offerId.value} and Store with the id $storeId not found")
+    ) : this("Offer with the ${offerId.value} and Store with the $storeId not found")
 }

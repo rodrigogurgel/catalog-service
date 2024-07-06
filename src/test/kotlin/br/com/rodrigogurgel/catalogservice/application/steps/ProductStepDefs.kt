@@ -1,9 +1,11 @@
 package br.com.rodrigogurgel.catalogservice.application.steps
 
 import br.com.rodrigogurgel.catalogservice.application.CucumberContext
+import br.com.rodrigogurgel.catalogservice.application.port.input.product.CountProductsInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.product.CreateProductInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.product.DeleteProductInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.product.GetProductInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.product.GetProductsInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.product.UpdateProductInputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Product
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
@@ -31,7 +33,6 @@ class ProductStepDefs(
     private val deleteProductInputPort = DeleteProductInputPort(
         cucumberContext.storeDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort,
-        cucumberContext.offerDatastoreOutputPort
     )
 
     private val getProductInputPort = GetProductInputPort(
@@ -40,6 +41,16 @@ class ProductStepDefs(
     )
 
     private val updateProductInputPort = UpdateProductInputPort(
+        cucumberContext.storeDatastoreOutputPort,
+        cucumberContext.productDatastoreOutputPort
+    )
+
+    private val getProductsInputPort = GetProductsInputPort(
+        cucumberContext.storeDatastoreOutputPort,
+        cucumberContext.productDatastoreOutputPort
+    )
+
+    private val countProductsInputPort = CountProductsInputPort(
         cucumberContext.storeDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort
     )
@@ -99,7 +110,6 @@ class ProductStepDefs(
 
         every {
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                any(),
                 match { ids -> productId in ids }
             )
         } returns listOf(productId)
@@ -125,7 +135,6 @@ class ProductStepDefs(
         every { cucumberContext.productDatastoreOutputPort.findById(storeId, productId) } returns product
         every {
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                storeId,
                 listOf(productId)
             )
         } returns emptyList()
@@ -137,6 +146,7 @@ class ProductStepDefs(
 
         verifySequence {
             cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.productDatastoreOutputPort.productIsInUse(Id(UUID.fromString(productIdString)))
             cucumberContext.productDatastoreOutputPort.delete(
                 cucumberContext.storeId,
                 Id(UUID.fromString(productIdString))
@@ -158,17 +168,6 @@ class ProductStepDefs(
             cucumberContext.productDatastoreOutputPort.findById(
                 cucumberContext.storeId,
                 Id(UUID.fromString(productIdString))
-            )
-        }
-    }
-
-    fun iAttemptToUpdateAProductUsingTheId(productIdString: String) {
-        val productId = Id(UUID.fromString(productIdString))
-
-        cucumberContext.result = runCatching {
-            updateProductInputPort.execute(
-                cucumberContext.storeId,
-                product.copy(id = productId)
             )
         }
     }
@@ -231,7 +230,6 @@ class ProductStepDefs(
 
         every {
             cucumberContext.productDatastoreOutputPort.getIfNotExists(
-                storeId,
                 match { ids ->
                     products.map { product -> product.id }.containsAll(ids)
                 }
@@ -239,5 +237,62 @@ class ProductStepDefs(
         } returns emptyList()
 
         cucumberContext.storeProducts.putAll(products.associateBy { it.id })
+    }
+
+    @When("I attempt to get a Products with the limit as {string}, offset as {string} and begins with as {string}")
+    fun iAttemptToGetAProductsWithTheLimitAsOffsetAsAndBeginsWithAs(limit: String, offset: String, beginsWith: String) {
+        cucumberContext.result = runCatching {
+            getProductsInputPort.execute(cucumberContext.storeId, limit.toInt(), offset.toInt(), beginsWith)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then(
+        "the Products should be retrieved from database with the limit as {string}, offset as {string} and begins with as {string}"
+    )
+    fun theProductsShouldBeRetrievedFromDatabaseWithTheLimitAsOffsetAsAndBeginsWithAs(
+        limit: String,
+        offset: String,
+        beginsWith: String,
+    ) {
+        cucumberContext.result.isSuccess shouldBe true
+        verifySequence {
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.productDatastoreOutputPort.getProducts(
+                cucumberContext.storeId,
+                limit.toInt(),
+                offset.toInt(),
+                beginsWith
+            )
+        }
+    }
+
+    @Then(
+        "the Products should be counted in the database with the begins with as {string}"
+    )
+    fun theProductsShouldBeCountedInTheDatabaseWithTheLimitAsOffsetAsAndBeginsWithAs(
+        beginsWith: String,
+    ) {
+        cucumberContext.result.isSuccess shouldBe true
+        verifySequence {
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.productDatastoreOutputPort.countProducts(
+                cucumberContext.storeId,
+                beginsWith
+            )
+        }
+    }
+
+    @When("I attempt to count the Products with the begins with as {string}")
+    fun iAttemptToCountTheProductsWithTheLimitAsOffsetAsAndBeginsWithAs(
+        beginsWith: String,
+    ) {
+        cucumberContext.result = runCatching {
+            countProductsInputPort.execute(cucumberContext.storeId, beginsWith)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @And("that there isn't an Offer using the Product with the Id {string}")
+    fun thatThereIsnTAnOfferUsingTheProductWithTheId(productIdString: String) {
+        every { cucumberContext.productDatastoreOutputPort.productIsInUse(Id(UUID.fromString(productIdString))) } returns false
     }
 }

@@ -7,6 +7,7 @@ Feature: Delete Product
 
   Scenario: Deleting a Product successfully
     Given the Id of the Store is "259f3a2d-12d2-4b4d-9e10-0e59efb378a9"
+    And that there isn't an Offer using the Product with the Id "4bb8b866-2137-4f10-8604-c7acb850d686"
     When I attempt to delete a Product with the Id "4bb8b866-2137-4f10-8604-c7acb850d686"
     Then the Product with the Id "4bb8b866-2137-4f10-8604-c7acb850d686" should be deleted from database
 

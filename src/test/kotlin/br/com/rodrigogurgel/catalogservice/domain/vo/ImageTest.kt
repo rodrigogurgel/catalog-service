@@ -1,9 +1,9 @@
 package br.com.rodrigogurgel.catalogservice.domain.vo
 
+import br.com.rodrigogurgel.catalogservice.domain.exception.MalformedImagePathURLException
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
-import java.net.MalformedURLException
 
 class ImageTest {
     @Test
@@ -17,7 +17,7 @@ class ImageTest {
     @Test
     fun `Should instantiate Image with error when path is not a valid url`() {
         val path = "www.example.com"
-        shouldThrow<MalformedURLException> {
+        shouldThrow<MalformedImagePathURLException> {
             Image(path)
         }
     }

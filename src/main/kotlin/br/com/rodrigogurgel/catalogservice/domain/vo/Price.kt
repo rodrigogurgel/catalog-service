@@ -4,14 +4,11 @@ import br.com.rodrigogurgel.catalogservice.domain.exception.PriceNegativeExcepti
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-@JvmInline
-value class Price(
-    private val value: BigDecimal,
-) {
-    fun normalizedValue(): BigDecimal = this.value.setScale(2, RoundingMode.UP)
+class Price(value: BigDecimal) {
+    val value: BigDecimal = value.setScale(2, RoundingMode.UP)
 
     init {
-        if (value < BigDecimal.ZERO) throw PriceNegativeException(value)
+        if (value.setScale(2, RoundingMode.UP) < BigDecimal.ZERO) throw PriceNegativeException(value)
     }
 
     companion object {

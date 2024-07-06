@@ -1,7 +1,6 @@
 package br.com.rodrigogurgel.catalogservice.fixture.mock
 
 import br.com.rodrigogurgel.catalogservice.domain.entity.Category
-import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
 import br.com.rodrigogurgel.catalogservice.domain.vo.Description
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name
@@ -13,13 +12,12 @@ data class MockCategory(
     var name: Name = Name(randomString(30)),
     var description: Description = Description(randomString(100)),
     var status: Status = Status.AVAILABLE,
-    var offers: MutableMap<Id, Offer> = mutableMapOf(),
 )
 
 fun mockCategory(): Category = MockCategory().run {
-    Category(id, name, description, status, offers)
+    Category(id, name, description, status)
 }
 
 fun mockCategoryWith(block: MockCategory.() -> Unit): Category = MockCategory()
     .apply(block)
-    .run { Category(id, name, description, status, offers) }
+    .run { Category(id, name, description, status) }

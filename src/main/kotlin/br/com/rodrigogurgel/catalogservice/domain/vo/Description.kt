@@ -12,6 +12,6 @@ value class Description(
     }
 
     init {
-        if (value.length !in MIN_LENGTH..MAX_LENGTH) throw DescriptionLengthException(value, MIN_LENGTH, MAX_LENGTH)
+        if (value.length !in MIN_LENGTH..MAX_LENGTH) throw DescriptionLengthException(value)
     }
 }

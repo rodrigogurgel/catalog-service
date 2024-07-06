@@ -6,37 +6,24 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Price
 import br.com.rodrigogurgel.catalogservice.domain.vo.Quantity
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
+import org.apache.commons.lang3.builder.EqualsBuilder
+import org.apache.commons.lang3.builder.HashCodeBuilder
 
-class Option private constructor(
+class Option(
     val id: Id,
     var product: Product,
-    var quantity: Quantity,
     var price: Price,
+    var quantity: Quantity,
     var status: Status,
+    val customizations: MutableList<Customization>,
 ) {
-    private val customizationById: MutableMap<Id, Customization> = mutableMapOf()
-
-    constructor(
-        id: Id,
-        product: Product,
-        price: Price,
-        quantity: Quantity,
-        status: Status,
-        customizations: List<Customization>,
-    ) : this(id, product, quantity, price, status) {
-        customizationById.putAll(customizations.associateBy { customization -> customization.id })
-    }
-
-    val customizations
-        get() = customizationById.values.toList()
-
     /**
      * Retrieves all the customizations that are present in the children of the current customization.
      *
      * @return A list of Customization objects that are found in the children of the current customization.
      */
-    fun getCustomizationsInChildren(): List<Customization> {
-        return customizations.flatMap { customization -> customization.getCustomizationsInChildren() }
+    fun getAllCustomizationsInChildren(): List<Customization> {
+        return customizations + customizations.flatMap { it.getAllCustomizationsInChildren() }
     }
 
     /**
@@ -44,8 +31,8 @@ class Option private constructor(
      *
      * @return A list of options present in the current object and its child customizations.
      */
-    fun getOptionsInChildren(): List<Option> {
-        return customizations.flatMap { customization -> customization.getOptionsInChildren() } + this
+    fun getAllOptionsInChildren(): List<Option> {
+        return customizations.flatMap { it.getAllOptionsInChildren() }
     }
 
     /**
@@ -55,8 +42,11 @@ class Option private constructor(
      * @throws CustomizationAlreadyExistsException if a customization with the same ID already exists in the Option.
      */
     fun addCustomization(customization: Customization) {
-        if (customizationById[customization.id] != null) throw CustomizationAlreadyExistsException(customization.id)
-        customizationById[customization.id] = customization
+        if (customizations.any { it.id == customization.id }) {
+            throw CustomizationAlreadyExistsException(customization.id)
+        }
+
+        customizations.add(customization)
     }
 
     /**
@@ -66,8 +56,9 @@ class Option private constructor(
      * @throws CustomizationNotFoundException if the customization with the specified ID is not found.
      */
     fun updateCustomization(customization: Customization) {
-        customizationById[customization.id] ?: throw CustomizationNotFoundException(customization.id)
-        customizationById[customization.id] = customization
+        val index = customizations.indexOfFirst { it.id == customization.id }
+        if (index == -1) throw CustomizationNotFoundException(customization.id)
+        customizations[index] = customization
     }
 
     /**
@@ -76,16 +67,46 @@ class Option private constructor(
      * @param customizationId The ID of the customization to be removed.
      */
     fun removeCustomization(customizationId: Id) {
-        customizationById.remove(customizationId)
+        customizations.removeIf { it.id == customizationId }
     }
 
+    /**
+     * Calculates the minimal price for the Option.
+     *
+     * @return The minimal price.
+     */
     fun minimalPrice(): Price {
         val minPermittedOrOne = if (quantity.minPermitted == 0) 1 else quantity.minPermitted
 
         return Price(
-            (price.normalizedValue() * minPermittedOrOne.toBigDecimal()) + customizations.sumOf {
-                it.minimalPrice().normalizedValue()
+            (price.value * minPermittedOrOne.toBigDecimal()) + customizations.sumOf {
+                it.minimalPrice().value
             }
         )
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Option) return false
+
+        return EqualsBuilder()
+            .append(id, other.id)
+            .append(product, other.product)
+            .append(price.value, other.price.value)
+            .append(quantity, other.quantity)
+            .append(status, other.status)
+            .append(customizations, other.customizations)
+            .isEquals
+    }
+
+    override fun hashCode(): Int {
+        return HashCodeBuilder()
+            .append(id)
+            .append(product)
+            .append(price.value)
+            .append(quantity)
+            .append(status)
+            .append(customizations)
+            .toHashCode()
     }
 }
