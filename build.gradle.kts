@@ -115,6 +115,11 @@ kotlin {
     }
 }
 
+tasks.jar {
+    enabled = false
+    archiveClassifier = ""
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport)
