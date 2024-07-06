@@ -1,4 +1,4 @@
-package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.data
+package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.data
 
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
 import java.math.BigDecimal

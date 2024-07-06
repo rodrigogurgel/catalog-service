@@ -8,6 +8,7 @@ import br.com.rodrigogurgel.catalogservice.domain.vo.Price
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.offer.CreateOfferRequestDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.request.offer.UpdateOfferRequestDTO
 import br.com.rodrigogurgel.catalogservice.framework.adapter.input.rest.dto.response.OfferResponseDTO
+import java.util.UUID
 
 fun CreateOfferRequestDTO.toEntity(): Offer {
     return Offer(
@@ -33,7 +34,7 @@ fun Offer.toResponseDTO(): OfferResponseDTO {
         name = name.value,
         productId = product.id.value,
         product = product.toResponseDTO(),
-        price = price.normalizedValue(),
+        price = price.value,
         status = status,
         customizations = customizations.map { customization ->
             customization.toResponseDTO()
@@ -41,13 +42,13 @@ fun Offer.toResponseDTO(): OfferResponseDTO {
     )
 }
 
-fun UpdateOfferRequestDTO.toEntity(offerId: Id): Offer {
+fun UpdateOfferRequestDTO.toEntity(offerId: UUID): Offer {
     return Offer(
-        id = offerId,
+        id = Id(offerId),
         name = Name(name),
         product = Product(
             id = Id(productId),
-            name = Name("OFFER${offerId.value}HOLDER"),
+            name = Name("OFFER${offerId}HOLDER"),
             description = null,
             image = null
         ),

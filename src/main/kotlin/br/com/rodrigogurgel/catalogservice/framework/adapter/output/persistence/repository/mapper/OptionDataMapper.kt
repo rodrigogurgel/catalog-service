@@ -1,13 +1,13 @@
-package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.mapper
+package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.mapper
 
 import br.com.rodrigogurgel.catalogservice.domain.entity.Option
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Price
 import br.com.rodrigogurgel.catalogservice.domain.vo.Quantity
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.data.OptionData
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.data.ProductData
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.utils.getStatus
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.utils.getUUID
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.data.OptionData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.data.ProductData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.utils.getStatus
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.utils.getUUID
 import org.springframework.jdbc.core.RowMapper
 import java.sql.ResultSet
 import java.util.UUID
@@ -48,7 +48,7 @@ fun Option.toData(storeId: UUID, offerId: UUID, customizationId: UUID): OptionDa
         customizationId = customizationId,
         minPermitted = quantity.minPermitted,
         maxPermitted = quantity.maxPermitted,
-        price = price.normalizedValue(),
+        price = price.value,
         status = status,
         customizations = customizations.map { customization ->
             customization.toData(

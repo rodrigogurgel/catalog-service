@@ -1,9 +1,9 @@
 package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.impl
 
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.data.ProductData
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.mapper.ProductDataMapper
 import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.ProductRepository
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.utils.getUUID
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.data.ProductData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.mapper.ProductDataMapper
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.utils.getUUID
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 import java.util.UUID

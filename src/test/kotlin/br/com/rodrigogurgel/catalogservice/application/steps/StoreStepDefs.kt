@@ -32,6 +32,14 @@ class StoreStepDefs(
         every {
             cucumberContext.categoryDatastoreOutputPort.countCategories(storeId, any())
         } returns 0
+
+        every {
+            cucumberContext.offerDatastoreOutputPort.getOffers(storeId, any(), any(), any(), any())
+        } returns emptyList()
+
+        every {
+            cucumberContext.offerDatastoreOutputPort.countOffers(storeId, any(), any())
+        } returns 0
     }
 
     @And("that there isn't a Store with the Id {string}")

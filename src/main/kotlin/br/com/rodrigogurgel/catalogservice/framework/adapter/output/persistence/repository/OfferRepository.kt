@@ -1,6 +1,6 @@
 package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository
 
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.data.OfferData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.data.OfferData
 import java.util.UUID
 
 interface OfferRepository {

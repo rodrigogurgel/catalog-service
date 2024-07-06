@@ -3,9 +3,9 @@ package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence
 import br.com.rodrigogurgel.catalogservice.application.port.output.persistence.CategoryDatastoreOutputPort
 import br.com.rodrigogurgel.catalogservice.domain.entity.Category
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.mapper.toData
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.mapper.toEntity
 import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.CategoryRepository
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.mapper.toData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.mapper.toEntity
 import org.springframework.stereotype.Component
 
 @Component

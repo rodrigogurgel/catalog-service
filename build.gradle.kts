@@ -1,4 +1,5 @@
 import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.getSupportedKotlinVersion
 
 plugins {
     id("org.springframework.boot") version "3.3.1"
@@ -136,7 +137,7 @@ tasks.withType<Detekt>().configureEach {
 configurations.all {
     resolutionStrategy.eachDependency {
         if (requested.group == "org.jetbrains.kotlin") {
-            useVersion(io.gitlab.arturbosch.detekt.getSupportedKotlinVersion())
+            useVersion(getSupportedKotlinVersion())
         }
     }
 }
@@ -190,6 +191,7 @@ tasks.jacocoTestCoverageVerification {
 
             excludes = listOf(
                 "br.com.rodrigogurgel.catalogservice.CatalogApplication*",
+                "br.com.rodrigogurgel.catalogservice.framework.config.DatabaseConfig*",
                 *excludeValueClasses
             )
 

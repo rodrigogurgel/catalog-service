@@ -1,4 +1,4 @@
-package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.utils
+package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.utils
 
 import br.com.rodrigogurgel.catalogservice.domain.vo.Status
 import java.sql.ResultSet

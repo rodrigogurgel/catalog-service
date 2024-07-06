@@ -108,9 +108,9 @@ class Customization(
     fun minimalPrice(): Price {
         return options.asSequence()
             .map { it.minimalPrice() }
-            .sortedBy { it.normalizedValue() }
+            .sortedBy { it.value }
             .take(quantity.minPermitted)
-            .sumOf { it.normalizedValue() }
+            .sumOf { it.value }
             .let { Price(it) }
     }
 

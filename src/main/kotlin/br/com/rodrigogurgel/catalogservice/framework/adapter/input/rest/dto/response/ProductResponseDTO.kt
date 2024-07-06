@@ -6,5 +6,5 @@ data class ProductResponseDTO(
     val id: UUID,
     val name: String,
     val description: String?,
-    val image: String?,
+    val imagePath: String?,
 )

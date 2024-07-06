@@ -1,13 +1,13 @@
-package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.mapper
+package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.mapper
 
 import br.com.rodrigogurgel.catalogservice.domain.entity.Offer
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name
 import br.com.rodrigogurgel.catalogservice.domain.vo.Price
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.data.OfferData
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.data.ProductData
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.utils.getStatus
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.utils.getUUID
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.data.OfferData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.data.ProductData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.utils.getStatus
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.utils.getUUID
 import org.springframework.jdbc.core.RowMapper
 import java.sql.ResultSet
 import java.util.UUID
@@ -46,7 +46,7 @@ fun Offer.toData(storeId: UUID, categoryId: UUID): OfferData = OfferData(
     categoryId = categoryId,
     storeId = storeId,
     name = name.value,
-    price = price.normalizedValue(),
+    price = price.value,
     status = status,
     customizations = customizations.map { customization ->
         customization.toData(

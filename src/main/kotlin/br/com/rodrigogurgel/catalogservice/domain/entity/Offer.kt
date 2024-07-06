@@ -41,7 +41,7 @@ class Offer(
             .associateBy { it.id }
 
     private fun validatePrice() {
-        if (price.normalizedValue() <= Price.ZERO.normalizedValue()) throw OfferPriceZeroException(id)
+        if (price.value <= Price.ZERO.value) throw OfferPriceZeroException(id)
     }
 
     /**
@@ -102,7 +102,7 @@ class Offer(
      * @return The minimal price.
      */
     fun minimalPrice(): Price {
-        return Price(price.normalizedValue() + customizations.sumOf { it.minimalPrice().normalizedValue() })
+        return Price(price.value + customizations.sumOf { it.minimalPrice().value })
     }
 
     fun getAllProducts(): List<Product> {
@@ -117,7 +117,7 @@ class Offer(
             .append(id, other.id)
             .append(name, other.name)
             .append(product, other.product)
-            .append(price.normalizedValue(), other.price.normalizedValue())
+            .append(price.value, other.price.value)
             .append(status, other.status)
             .append(customizations, other.customizations)
             .isEquals
@@ -128,7 +128,7 @@ class Offer(
             .append(id)
             .append(name)
             .append(product)
-            .append(price.normalizedValue())
+            .append(price.value)
             .append(status)
             .append(customizations)
             .toHashCode()

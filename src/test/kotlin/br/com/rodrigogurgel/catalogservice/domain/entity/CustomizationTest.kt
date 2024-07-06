@@ -193,7 +193,7 @@ class CustomizationTest {
             options = mutableListOf(option1, option2)
         }
 
-        customization.minimalPrice().normalizedValue() shouldBe Price(10.toBigDecimal()).normalizedValue()
+        customization.minimalPrice().value shouldBe Price(10.toBigDecimal()).value
     }
 
     @Test
@@ -245,7 +245,7 @@ class CustomizationTest {
             options = mutableListOf(option1, option2)
         }
 
-        customization.minimalPrice().normalizedValue() shouldBe Price(10.toBigDecimal()).normalizedValue()
+        customization.minimalPrice().value shouldBe Price(10.toBigDecimal()).value
     }
 
     @Test

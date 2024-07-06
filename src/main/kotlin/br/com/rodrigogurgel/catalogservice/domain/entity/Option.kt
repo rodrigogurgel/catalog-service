@@ -79,8 +79,8 @@ class Option(
         val minPermittedOrOne = if (quantity.minPermitted == 0) 1 else quantity.minPermitted
 
         return Price(
-            (price.normalizedValue() * minPermittedOrOne.toBigDecimal()) + customizations.sumOf {
-                it.minimalPrice().normalizedValue()
+            (price.value * minPermittedOrOne.toBigDecimal()) + customizations.sumOf {
+                it.minimalPrice().value
             }
         )
     }
@@ -92,7 +92,7 @@ class Option(
         return EqualsBuilder()
             .append(id, other.id)
             .append(product, other.product)
-            .append(price.normalizedValue(), other.price.normalizedValue())
+            .append(price.value, other.price.value)
             .append(quantity, other.quantity)
             .append(status, other.status)
             .append(customizations, other.customizations)
@@ -103,7 +103,7 @@ class Option(
         return HashCodeBuilder()
             .append(id)
             .append(product)
-            .append(price.normalizedValue())
+            .append(price.value)
             .append(quantity)
             .append(status)
             .append(customizations)

@@ -62,7 +62,7 @@ class OfferTest {
         offer.price shouldBe price
         offer.status shouldBe status
         offer.customizations shouldBe customizations
-        offer.minimalPrice().normalizedValue() shouldBe Price(20.toBigDecimal()).normalizedValue()
+        offer.minimalPrice().value shouldBe Price(20.toBigDecimal()).value
     }
 
     @Test
@@ -193,7 +193,7 @@ class OfferTest {
             customizations = mutableListOf(customization1)
         }
 
-        offer.minimalPrice().normalizedValue() shouldBe Price(8.5.toBigDecimal()).normalizedValue()
+        offer.minimalPrice().value shouldBe Price(8.5.toBigDecimal()).value
     }
 
     /**
@@ -328,7 +328,7 @@ class OfferTest {
             customizations = mutableListOf(customization1, customization2)
         }
 
-        offer.minimalPrice().normalizedValue() shouldBe Price(9.5.toBigDecimal()).normalizedValue()
+        offer.minimalPrice().value shouldBe Price(9.5.toBigDecimal()).value
     }
 
     @Test

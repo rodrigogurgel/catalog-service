@@ -34,7 +34,7 @@ fun Option.toResponseDTO(): OptionResponseDTO {
         id = id.value,
         productId = product.id.value,
         product = product.toResponseDTO(),
-        price = price.normalizedValue(),
+        price = price.value,
         status = status,
         minPermitted = quantity.minPermitted,
         maxPermitted = quantity.maxPermitted,

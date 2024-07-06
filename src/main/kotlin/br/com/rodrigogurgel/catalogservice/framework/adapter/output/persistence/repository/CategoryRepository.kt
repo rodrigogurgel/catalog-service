@@ -1,6 +1,6 @@
 package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository
 
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.data.CategoryData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.data.CategoryData
 import java.util.UUID
 
 interface CategoryRepository {

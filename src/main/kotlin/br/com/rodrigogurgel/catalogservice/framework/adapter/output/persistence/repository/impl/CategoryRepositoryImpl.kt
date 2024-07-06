@@ -1,8 +1,8 @@
 package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.impl
 
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.data.CategoryData
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.mapper.CategoryDataMapper
 import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.CategoryRepository
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.data.CategoryData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.mapper.CategoryDataMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 import java.util.UUID

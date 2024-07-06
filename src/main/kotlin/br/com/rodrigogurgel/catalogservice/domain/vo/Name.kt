@@ -12,6 +12,6 @@ value class Name(
     }
 
     init {
-        if (value.length !in MIN_LENGTH..MAX_LENGTH) throw NameLengthException(value, MIN_LENGTH, MAX_LENGTH)
+        if (value.length !in MIN_LENGTH..MAX_LENGTH) throw NameLengthException(value)
     }
 }

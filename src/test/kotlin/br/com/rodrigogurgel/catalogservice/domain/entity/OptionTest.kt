@@ -45,7 +45,7 @@ class OptionTest {
         option.quantity shouldBe quantity
         option.customizations shouldBe customizations
 
-        option.minimalPrice().normalizedValue() shouldBe Price.ZERO.normalizedValue()
+        option.minimalPrice().value shouldBe Price.ZERO.value
         option.quantity.minPermitted shouldBe 0
         option.customizations.isEmpty() shouldBe true
     }
@@ -102,7 +102,7 @@ class OptionTest {
             mutableListOf()
         )
 
-        option.minimalPrice().normalizedValue() shouldBe Price(BigDecimal.TEN).normalizedValue()
+        option.minimalPrice().value shouldBe Price(BigDecimal.TEN).value
         option.quantity.minPermitted shouldBe 1
         option.customizations.isEmpty() shouldBe true
     }
@@ -118,7 +118,7 @@ class OptionTest {
             mutableListOf()
         )
 
-        option.minimalPrice().normalizedValue() shouldBe Price(BigDecimal.TEN).normalizedValue()
+        option.minimalPrice().value shouldBe Price(BigDecimal.TEN).value
         option.quantity.minPermitted shouldBe 0
         option.customizations.isEmpty() shouldBe true
     }
@@ -134,7 +134,7 @@ class OptionTest {
             mutableListOf()
         )
 
-        option.minimalPrice().normalizedValue() shouldBe Price(BigDecimal.valueOf(20)).normalizedValue()
+        option.minimalPrice().value shouldBe Price(BigDecimal.valueOf(20)).value
         option.quantity.minPermitted shouldBe 2
         option.customizations.isEmpty() shouldBe true
     }

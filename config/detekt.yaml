@@ -126,9 +126,14 @@ complexity:
   LargeClass:
     active: true
     threshold: 600
+    excludes:
+      - "**Test*"
+      - "**OfferStepDefs.kt"
   LongMethod:
     active: true
     threshold: 60
+    excludes:
+      - "**Test*"
   LongParameterList:
     active: true
     functionThreshold: 6

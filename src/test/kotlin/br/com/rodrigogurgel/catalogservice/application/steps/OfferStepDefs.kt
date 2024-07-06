@@ -4,9 +4,11 @@ import br.com.rodrigogurgel.catalogservice.application.CucumberContext
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.AddCustomizationInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.AddCustomizationOnChildrenInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.AddOptionOnChildrenInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.offer.CountOffersInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.CreateOfferInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.DeleteOfferInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.GetOfferInputPort
+import br.com.rodrigogurgel.catalogservice.application.port.input.offer.GetOffersInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.RemoveCustomizationInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.RemoveCustomizationOnChildrenInputPort
 import br.com.rodrigogurgel.catalogservice.application.port.input.offer.RemoveOptionOnChildrenInputPort
@@ -112,6 +114,18 @@ class OfferStepDefs(
         cucumberContext.storeDatastoreOutputPort,
         cucumberContext.offerDatastoreOutputPort,
         cucumberContext.productDatastoreOutputPort,
+    )
+
+    private val getOffersInputPort = GetOffersInputPort(
+        cucumberContext.storeDatastoreOutputPort,
+        cucumberContext.categoryDatastoreOutputPort,
+        cucumberContext.offerDatastoreOutputPort,
+    )
+
+    private val countOffersInputPort = CountOffersInputPort(
+        cucumberContext.storeDatastoreOutputPort,
+        cucumberContext.categoryDatastoreOutputPort,
+        cucumberContext.offerDatastoreOutputPort,
     )
 
     @Given("the information of the Offer")
@@ -689,6 +703,97 @@ class OfferStepDefs(
                 match { offer ->
                     offer.findOptionInChildrenById(optionId) == options[optionId]
                 }
+            )
+        }
+    }
+
+    @When(
+        "I attempt to get an Offer with the Category Id {string}, limit as {string}, offset as {string} and begins with as {string}"
+    )
+    fun iAttemptToGetAnOfferWithTheCategoryIdLimitAsOffsetAsAndBeginsWithAs(
+        categoryIdString: String,
+        limit: String,
+        offset: String,
+        beginsWith: String
+    ) {
+        cucumberContext.result = runCatching {
+            getOffersInputPort.execute(cucumberContext.storeId, Id(UUID.fromString(categoryIdString)), limit.toInt(), offset.toInt(), beginsWith)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then(
+        "the Offers should be retrieved from database with the Category Id {string}, limit as {string}, offset as {string} and begins with as {string}"
+    )
+    fun theOffersShouldBeRetrievedFromDatabaseWithTheCategoryIdLimitAsOffsetAsAndBeginsWithAs(
+        categoryIdString: String,
+        limit: String,
+        offset: String,
+        beginsWith: String
+    ) {
+        cucumberContext.result.isSuccess shouldBe true
+        verifySequence {
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.categoryDatastoreOutputPort.exists(
+                cucumberContext.storeId,
+                Id(UUID.fromString(categoryIdString))
+            )
+            cucumberContext.offerDatastoreOutputPort.getOffers(
+                cucumberContext.storeId,
+                Id(UUID.fromString(categoryIdString)),
+                limit.toInt(),
+                offset.toInt(),
+                beginsWith
+            )
+        }
+    }
+
+    @When("I attempt to count Offers with the Category Id {string} and begins with as {string}")
+    fun iAttemptToCountOffersWithTheCategoryIdAndBeginsWithAs(categoryIdString: String, beginsWith: String) {
+        cucumberContext.result = runCatching {
+            countOffersInputPort.execute(cucumberContext.storeId, Id(UUID.fromString(categoryIdString)), beginsWith)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then("the Offers should be counted in the database with the Category Id {string} and begins with as {string}")
+    fun theOffersShouldBeCountedInTheDatabaseWithTheCategoryIdAndBeginsWithAs(
+        categoryIdString: String,
+        beginsWith: String
+    ) {
+        cucumberContext.result.isSuccess shouldBe true
+        verifySequence {
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.categoryDatastoreOutputPort.exists(
+                cucumberContext.storeId,
+                Id(UUID.fromString(categoryIdString))
+            )
+            cucumberContext.offerDatastoreOutputPort.countOffers(
+                cucumberContext.storeId,
+                Id(UUID.fromString(categoryIdString)),
+                beginsWith
+            )
+        }
+    }
+
+    @When("I attempt to count Offers with the Category Id {string} and begins with as null")
+    fun iAttemptToCountOffersWithTheCategoryIdAndBeginsWithAsNull(categoryIdString: String) {
+        cucumberContext.result = runCatching {
+            countOffersInputPort.execute(cucumberContext.storeId, Id(UUID.fromString(categoryIdString)), null)
+        }.onFailure { it.printStackTrace() }
+    }
+
+    @Then("the Offers should be counted in the database with the Category Id {string} and begins with as null")
+    fun theOffersShouldBeCountedInTheDatabaseWithTheCategoryIdAndBeginsWithAsNull(categoryIdString: String) {
+        cucumberContext.result.isSuccess shouldBe true
+        verifySequence {
+            cucumberContext.storeDatastoreOutputPort.exists(cucumberContext.storeId)
+            cucumberContext.categoryDatastoreOutputPort.exists(
+                cucumberContext.storeId,
+                Id(UUID.fromString(categoryIdString))
+            )
+            cucumberContext.offerDatastoreOutputPort.countOffers(
+                cucumberContext.storeId,
+                Id(UUID.fromString(categoryIdString)),
+                null
             )
         }
     }

@@ -15,7 +15,7 @@ fun CreateProductRequestDTO.toEntity(): Product {
         id = Id(id),
         name = Name(name),
         description = description?.let { Description(it) },
-        image = image?.let { Image(it) },
+        image = imagePath?.let { Image(it) },
     )
 }
 
@@ -24,7 +24,7 @@ fun Product.toResponseDTO(): ProductResponseDTO {
         id = id.value,
         name = name.value,
         description = description?.value,
-        image = image?.path,
+        imagePath = image?.path,
     )
 }
 
@@ -33,6 +33,6 @@ fun UpdateProductRequestDTO.toEntity(id: UUID): Product {
         id = Id(id),
         name = Name(name),
         description = description?.let { Description(it) },
-        image = image?.let { Image(it) },
+        image = imagePath?.let { Image(it) },
     )
 }

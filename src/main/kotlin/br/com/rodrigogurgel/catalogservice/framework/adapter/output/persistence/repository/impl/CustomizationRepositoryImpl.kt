@@ -1,9 +1,9 @@
 package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.impl
 
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.data.CustomizationData
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.mapper.CustomizationDataMapper
 import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.CustomizationRepository
 import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.OptionRepository
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.data.CustomizationData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.mapper.CustomizationDataMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils
 import org.springframework.stereotype.Repository

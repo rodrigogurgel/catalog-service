@@ -52,7 +52,7 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
         return ResponseEntity(problemDetail, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
-    override fun handleHttpMessageNotReadable(
+    public override fun handleHttpMessageNotReadable(
         ex: HttpMessageNotReadableException,
         headers: HttpHeaders,
         status: HttpStatusCode,

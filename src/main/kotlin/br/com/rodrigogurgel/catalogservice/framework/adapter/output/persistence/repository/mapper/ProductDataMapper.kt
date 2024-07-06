@@ -1,12 +1,12 @@
-package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.mapper
+package br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.mapper
 
 import br.com.rodrigogurgel.catalogservice.domain.entity.Product
 import br.com.rodrigogurgel.catalogservice.domain.vo.Description
 import br.com.rodrigogurgel.catalogservice.domain.vo.Id
 import br.com.rodrigogurgel.catalogservice.domain.vo.Image
 import br.com.rodrigogurgel.catalogservice.domain.vo.Name
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.data.ProductData
-import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.utils.getUUID
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.data.ProductData
+import br.com.rodrigogurgel.catalogservice.framework.adapter.output.persistence.repository.utils.getUUID
 import org.springframework.jdbc.core.RowMapper
 import java.sql.ResultSet
 import java.util.UUID
