@@ -11,7 +11,8 @@ spring:
             maximum-pool-size: 1
             leak-detection-threshold: 30000
             connection-timeout: 5000
-
+            connection-test-query: SELECT 1
+            validation-timeout: 1000
 server:
     shutdown: "graceful"
 
@@ -19,3 +20,28 @@ springdoc:
     swagger-ui:
         layout: BaseLayout
     default-produces-media-type: application/json
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: health,refresh,info,metrics,prometheus
+    prometheus:
+        metrics:
+            export:
+                enabled: true
+    endpoint:
+        health:
+            show-details: never
+            probes:
+                enabled: true
+            group:
+                liveness:
+                    include: livenessState,db
+    health:
+        db:
+            enabled: true
+        readiness-state:
+            enabled: true
+        liveness-state:
+            enabled: true

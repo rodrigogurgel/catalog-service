@@ -46,6 +46,7 @@ dependencies {
     val hikariCPVersion = properties["hikariCPVersion"]
     val postgresqlVersion = properties["postgresqlVersion"]
     val postgresqlTestContainerVersion = properties["postgresqlTestContainerVersion"]
+    val aspectjVersion = properties["aspectjVersion"]
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -53,6 +54,11 @@ dependencies {
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-web")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
+    // Micrometer
+    implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation("org.aspectj:aspectjweaver:$aspectjVersion")
 
     // Jackson
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
