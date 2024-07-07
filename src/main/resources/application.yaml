@@ -18,3 +18,4 @@ server:
 springdoc:
     swagger-ui:
         layout: BaseLayout
+    default-produces-media-type: application/json

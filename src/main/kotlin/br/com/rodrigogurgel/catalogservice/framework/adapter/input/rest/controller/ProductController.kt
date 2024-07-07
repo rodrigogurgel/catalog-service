@@ -51,7 +51,6 @@ class ProductController(
         ]
     )
     @GetMapping(
-        consumes = [APPLICATION_JSON_VALUE],
         produces = [APPLICATION_JSON_VALUE]
     )
     fun getProducts(
@@ -104,7 +103,7 @@ class ProductController(
                 description = "Successful Operation",
                 useReturnTypeSchema = true,
             ),
-        ]
+        ],
     )
     @PutMapping(
         "/{id}",
@@ -133,7 +132,6 @@ class ProductController(
     )
     @GetMapping(
         "/{productId}",
-        consumes = [APPLICATION_JSON_VALUE],
         produces = [APPLICATION_JSON_VALUE]
     )
     fun getProductById(
@@ -155,7 +153,6 @@ class ProductController(
     )
     @DeleteMapping(
         "/{productId}",
-        consumes = [APPLICATION_JSON_VALUE],
         produces = [APPLICATION_JSON_VALUE]
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)

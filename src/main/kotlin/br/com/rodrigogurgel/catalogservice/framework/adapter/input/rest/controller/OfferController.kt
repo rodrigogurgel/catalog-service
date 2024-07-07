@@ -96,7 +96,6 @@ class OfferController(
     )
     @GetMapping(
         "/{offerId}",
-        consumes = [APPLICATION_JSON_VALUE],
         produces = [APPLICATION_JSON_VALUE]
     )
     fun getOfferById(
@@ -118,7 +117,6 @@ class OfferController(
     )
     @DeleteMapping(
         "/{offerId}",
-        consumes = [APPLICATION_JSON_VALUE],
         produces = [APPLICATION_JSON_VALUE]
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -231,7 +229,6 @@ class OfferController(
     )
     @DeleteMapping(
         "/{offerId}/customizations/{customizationId}",
-        consumes = [APPLICATION_JSON_VALUE],
         produces = [APPLICATION_JSON_VALUE]
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -332,7 +329,6 @@ class OfferController(
     )
     @DeleteMapping(
         "/{offerId}/options/{optionId}/customizations/{customizationId}",
-        consumes = [APPLICATION_JSON_VALUE],
         produces = [APPLICATION_JSON_VALUE]
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -435,7 +431,6 @@ class OfferController(
     )
     @DeleteMapping(
         "/{offerId}/customizations/{customizationId}/options/{optionId}",
-        consumes = [APPLICATION_JSON_VALUE],
         produces = [APPLICATION_JSON_VALUE]
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)

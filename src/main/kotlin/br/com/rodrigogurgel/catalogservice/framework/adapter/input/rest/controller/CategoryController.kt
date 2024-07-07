@@ -56,7 +56,6 @@ class CategoryController(
         ]
     )
     @GetMapping(
-        consumes = [APPLICATION_JSON_VALUE],
         produces = [APPLICATION_JSON_VALUE]
     )
     fun getCategories(
@@ -88,7 +87,6 @@ class CategoryController(
     )
     @GetMapping(
         "/{categoryId}",
-        produces = [APPLICATION_JSON_VALUE],
         consumes = [APPLICATION_JSON_VALUE]
     )
     fun getCategoryById(
@@ -159,7 +157,6 @@ class CategoryController(
     )
     @DeleteMapping(
         "/{categoryId}",
-        produces = [APPLICATION_JSON_VALUE],
         consumes = [APPLICATION_JSON_VALUE]
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -185,7 +182,6 @@ class CategoryController(
     )
     @GetMapping(
         "/{categoryId}/offers",
-        consumes = [APPLICATION_JSON_VALUE],
         produces = [APPLICATION_JSON_VALUE]
     )
     fun getOffers(
