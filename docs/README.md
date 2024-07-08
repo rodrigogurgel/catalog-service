@@ -1,73 +1,69 @@
 # Sobre o Domínio
 
-Um catálogo de produtos deve conseguir prover para os usuários uma vasta opção de operações, ele deve conseguir
-comportar os cenários reais desde os mais simples, criar um produto e criar uma oferta de venda para esse
-produto, até os mais complexos, definir N customizações nos mais diversos níveis para uma oferta de venda.
+Um catálogo de produtos deve oferecer aos usuários uma ampla gama de operações. Ele deve suportar desde cenários
+simples, como criar um produto e uma oferta de venda, até cenários complexos, como definir várias customizações em
+diferentes níveis para uma oferta de venda.
 
 ## Definindo os Casos de Uso
 
-Definir os casos de uso não é uma tarefa fácil, é necessário entender quais os comportamentos do usuário no mundo real.
+Definir os casos de uso requer uma compreensão profunda dos comportamentos do usuário no mundo real.
 
-Foram divididos os casos de uso por contexto para ficar mais simples a visualização. São eles:
+Para facilitar a visualização, os casos de uso foram divididos por contexto:
 
-* Caso de uso da Categoria
-* Caso de uso do Produto
-* Caso de uso da Oferta
+- Caso de uso da Categoria
+- Caso de uso do Produto
+- Caso de uso da Oferta
 
-Foi levantado apenas os casos de uso onde o usuário já possui uma loja e que apenas saber da existência dela basta para
-o domínio, abrindo assim uma possível implementação de outro sistema responsável por gerenciar as lojas.
+Os casos de uso considerados envolvem usuários que já possuem uma loja, permitindo a implementação de outro sistema para
+gerenciar as lojas.
 
 ### Caso de uso da Categoria
 
-As ações levantadas de um usuário com uma Categoria foram:
+As ações de um usuário com uma Categoria incluem:
 
-![category use cases](./images/categoryusecases.drawio.png)
+![Casos de uso da Categoria](./images/categoryusecases.drawio.png)
 
 ### Caso de uso do Produto
 
-As ações levantadas de um usuário com um Produto foram:
+As ações de um usuário com um Produto incluem:
 
-![product use cases](./images/productusecases.drawio.png)
+![Casos de uso do Produto](./images/productusecases.drawio.png)
 
 ### Caso de uso da Oferta
 
-A oferta é a raiz da agregação das entidades Customização, Opção e a própria Oferta, isso significa que todas as ações
-realizadas em alguma entidade filha dela, deve obrigatóriamente passar por ela antes.
+A Oferta é a entidade principal que agrega Customizações, Opções e a própria Oferta, significando que todas as ações nas
+entidades filhas devem passar por ela.
 
-As ações levantadas de um usuário com um Oferta foram:
+As ações de um usuário com uma Oferta incluem:
 
-![offer use cases](./images/offerusecases.drawio.png)
+![Casos de uso da Oferta](./images/offerusecases.drawio.png)
 
-## Definindo as entidades e relacionamentos
+## Definindo as Entidades e Relacionamentos
 
-Ao realizar o levantamento dos casos de uso, algumas entidades já haviam sido pensadas, mas ainda era necessário
-levantar o relacionamento entre elas.
+Durante a definição dos casos de uso, algumas entidades foram identificadas, assim como seus relacionamentos.
 
-Nesse momento também foram pensadas algumas regras de negócio, onde ficou claro o forte relacionamento entre uma Oferta
-e suas Customizações e Opções. Com isso, ficou definido que a Oferta é a raiz da agregação contemplando as Customizações
-e Opções como entidades filhas.
+Foram também definidas regras de negócio que destacam o forte relacionamento entre uma Oferta e suas Customizações e
+Opções. Assim, a Oferta foi definida como a entidade principal, com Customizações e Opções como entidades subordinadas.
 
-Algumas regras das propriedades das entidades também foram levantadas e por isso foi necessário criar Objetos de Valor
-que pudessem ser reutilizados e que mantivessem a regra de negócio protegida.
+Algumas regras de propriedades das entidades foram definidas, exigindo a criação de Objetos de Valor reutilizáveis que
+protejam as regras de negócio.
 
-![classes](./images/classes.drawio.png)
+![Diagrama de Classes](./images/classes.drawio.png)
 
-## Mapeando as entidades para o banco de dados
+## Mapeando as Entidades para o Banco de Dados
 
-Após o desenvolvimento do projeto ter sido iniciado e o banco de dados ter sido escolhido, foi necessário mapear as
-entidades para tabelas do banco de dados.
+Após o início do desenvolvimento do projeto e a escolha do banco de dados, foi necessário mapear as entidades para
+tabelas do banco de dados.
 
-O banco de dados escolhido foi o PostgreSQL, mas a implementação também foi realizada um banco de dados não relacional
-(DynamoDB) para afins de teste:
+O banco de dados escolhido foi o PostgreSQL, mas também foi implementado um banco de dados não relacional (DynamoDB)
+para fins de teste.
 
-![db diagram](./images/dbdiagram.png)
+![Diagrama do Banco de Dados](./images/dbdiagram.png)
 
 ## Mapeando a API
 
-A forma escolhida para a utilização do sistema foi uma API Rest por ser fácilmente implementada por aplicações web e
-mobile.
+A interface escolhida para o sistema foi uma API REST, por ser facilmente implementada em aplicações web e mobile.
 
-A API foi documentada utilizando o swagger ui e está disponível para consulta no endpoint padrão do swagger na
-aplicação.
+A API foi documentada usando o Swagger UI e está disponível para consulta no endpoint padrão do Swagger na aplicação.
 
-![swagger](./images/swagger.png)
+![Swagger UI](./images/swagger.png)
